@@ -1,0 +1,11 @@
+# Luarocks
+
+add = "luarocks install --lua-version=5.1 #:?"
+remove = "luarocks remove --lua-version=5.1 #:?"
+
+plural_name = "5.1-rocks"
+
+hook_name = "5.1-rocks"
+
+[config]
+many_args = false

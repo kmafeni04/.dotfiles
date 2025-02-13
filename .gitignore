@@ -1,0 +1,4 @@
+*.log
+.scripts/current_wallpaper.png
+.config/btop/btop.log
+.config/helix/runtime/grammars

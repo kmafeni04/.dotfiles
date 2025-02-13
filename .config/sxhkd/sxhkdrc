@@ -1,0 +1,170 @@
+#! /bin/sh
+
+#Restart bspwm and sxhkd
+super + shift + r
+	bspc wm -r && notify-send BSPWN Restarted && \
+	pkill -USR1 -x sxhkd && notify-send SXHKD Restarted
+
+#Quit bspwm
+ctrl + alt + Escape
+	bspc quit
+
+#Fullscreen Applicatioms
+super + f
+	 bspc node -t ~fullscreen
+
+#Toggle tiling of a window
+super + t
+	 bspc node -t ~tiled
+
+#Toggle floating of a window
+super + d
+	 bspc node -t ~floating
+
+#Set layout to monocle
+super + shift + f
+	bspc desktop -l next
+
+#Change Desktop
+ctrl + alt + {Left,Right}
+	bspc desktop -f {prev,next}
+
+#Move focused window to previous or next desktop
+ctrl + shift + alt + {Left,Right}
+	bspc node -f -d {prev,next} --follow
+
+ctrl + shift + {1,2,3,4,5,6,7,8,9}
+	bspc node -f -d {1,2,3,4,5,6,7,8,9} --follow	
+
+#Change to specific Desktop
+ctrl + {1,2,3,4,5,6,7,8,9}
+	bspc desktop -f {1,2,3,4,5,6,7,8,9} 
+
+#Close application
+{super + q,alt + F4}
+	bspc node -c
+
+#Focus the next/previous window in the current desktop
+alt + Tab
+	bspc node -f next.local.!hidden.window
+
+super + alt + {Left,Right}
+	bspc node -f {next,prev}.local.!hidden.window
+
+alt + shift + Tab
+	bspc node -f prev.local.!hidden.window
+
+#Resize tiled window out
+super + shift + {Left,Down,Up,Right}
+	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+
+#Resize tiled window in
+super + shift + alt + {Left,Down,Up,Right}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+
+#Move windows along the stack
+super + {Left,Down,Up,Right}
+	bspc node -s {west,south,north,east} --follow   
+
+# # preselect the direction
+# super + alt + {Left,Down,Up,Right}
+# 	bspc node -p {west,south,north,east}
+
+# # preselect the ratio
+# super + shift + {1-9}
+# 	bspc node -o 0.{1-9}
+
+# # cancel the preselection for the focused node
+# super + shift + Escape
+# 	bspc node -p cancel
+
+# #Move focused window to preselected area
+# super + Return
+#     bspc node -n last.!automatic
+    
+# # cancel the preselection for the focused desktop
+# super + shift + alt + Escape
+# 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel!
+
+#Toggle compistor
+super + c
+	killall picom || picom & 
+
+#Terminal emulator
+ctrl + alt + t
+	wezterm &
+
+#Program launchers
+super + a
+	rofi -show drun &
+
+super + r
+	rofi -show run &
+
+super + 1 
+	flatpak run app.zen_browser.zen &
+
+super + 2 
+	nemo &
+
+super + 3 
+	wezterm &
+
+super + 4
+	gnome-software &
+
+super + 5 
+	reaper &
+
+super + Tab
+	rofi -show window &
+
+super + e 
+	flatpak run it.mijorus.smile &
+
+#Volume Keys
+{alt + F8, XF86AudioRaiseVolume}
+	pamixer -u && pamixer -i 5 
+
+{alt + F7, XF86AudioLowerVolume}
+	pamixer -u && pamixer -d 5
+
+{alt + F6, XF86AudioMute}
+	pamixer -t #mute
+
+#Brightness Keys
+{alt + F3, XF86MonBrightnessUp}
+	light -A 5
+
+{alt + F2, XF86MonBrightnessDown}
+	light -U 5
+
+#Media Keys
+alt + F11
+	playerctl -p $(tail -1 /tmp/player-last) next
+
+alt + F10
+	playerctl -p $(tail -1 /tmp/player-last) play-pause
+
+alt + F9
+	playerctl -p $(tail -1 /tmp/player-last) previous
+
+#Bar
+super + w 
+	killall polybar || polybar & 
+
+#Screenshot
+shift + Print
+	/home/kome/.scripts/scrot.sh &
+
+#Lock Screen
+super + l 
+	magick /home/kome/.scripts/current_wallpaper.png -resize 1920x /home/kome/.scripts/current_wallpaper.png && \
+	i3lock -i /home/kome/.scripts/current_wallpaper.png -ef &
+
+#Power
+ctrl + shift + F4
+	poweroff
+
+ctrl + shift + F2
+	reboot

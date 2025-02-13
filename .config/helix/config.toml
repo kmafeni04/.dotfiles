@@ -1,0 +1,159 @@
+theme = "tokyonight"
+
+[editor]
+# line-number = "relative"
+bufferline = "multiple"
+auto-save = true
+color-modes = true
+completion-trigger-len = 1
+rulers = [120]
+end-of-line-diagnostics = "hint"
+
+[editor.file-picker]
+hidden = false
+git-ignore = true
+
+[editor.indent-guides]
+render = true
+character = "|" # Some characters that work well: "▏", "┆", "┊", "⸽"
+skip-levels = 0
+
+[editor.statusline]
+left = ["mode", "spinner", "version-control", "file-name"]
+center = []
+right = ["diagnostics", "selections", "position", "file-type"]
+mode.normal = "NORMAL"
+mode.insert = "INSERT"
+mode.select = "SELECT"
+
+[editor.cursor-shape]
+insert = "bar"
+select = "underline"
+
+[editor.soft-wrap]
+enable = true
+max-wrap = 25 
+max-indent-retain = 0
+wrap-indicator = ""  
+
+[editor.inline-diagnostics]
+cursor-line = "warning"
+
+[editor.lsp]
+auto-signature-help = false
+display-messages = true
+
+[keys.normal]
+"esc" =  ["collapse_selection", "keep_primary_selection"]
+# Select lines going down
+"x" = "select_line_below"
+# Select lines going up
+"X" = "select_line_above"
+# Use Insert key to enter insert mode
+"ins" = "insert_mode"
+# Use delete key to delete selection
+"del" = "delete_selection"
+# Use backspace key to delete characters behind the cursor
+"backspace" = "delete_char_backward"
+# Use return key to open a new line below and enter insert mode
+"ret" = "open_below"
+# Use return key to open a new line above and enter insert mode
+"S-ret" = "open_above"
+# Keep cursor centered when going up a page
+"pageup" = ["page_up","align_view_center"]
+# Keep cursor centered when going down a page
+"pagedown" = ["page_down","align_view_center"]
+# Open config
+"A-o" = ":config-open"
+# Open languages config
+"A-l" = ":o ~/.config/helix/languages.toml"
+# Save Document
+"C-s" = ":w" 
+# Force Save Document
+"A-S" = ":w!" 
+# Reload config
+"C-r" = ":config-reload"
+# Close application
+"C-q" = ":wqa"
+# Keep cursor centered when going up half a page
+"C-d" = ["half_page_down","align_view_center"]
+# Keep cursor centered when going down half a page
+"C-u" = ["half_page_up","align_view_center"]
+# Create new buffer
+"C-n" = ":n"
+# Paste from the clipboard and replace highlighted text
+"C-V" = ":clipboard-paste-replace"
+# Move line up
+"A-up" = [
+  "extend_line", 
+  "delete_selection", 
+  "move_line_up", 
+  "move_line_up", 
+  "paste_after", 
+  "collapse_selection"
+]
+# Move line down
+"A-down" = [
+  "extend_line", 
+  "delete_selection", 
+  "paste_after", 
+  "collapse_selection"
+]
+# Format the document
+"A-f" = ":fmt"
+# Move to next buffer
+"A-2" = ":bn"
+# Move to previous buffer
+"A-1" = ":bp"
+# Close current buffer
+"A-q" = [":w", ":bc"]
+# Select lines going up
+"S-up" = "select_line_above"
+# Select lines going down
+"S-down" = "select_line_below"
+# Global searches the word under cursor
+"@" = [
+  "move_prev_word_start",
+  "move_next_word_end",
+  "search_selection",
+  "global_search",
+]
+
+[keys.normal."space"]
+# Open file picker in current directory
+o = "file_picker_in_current_buffer_directory"
+# Copy zenity color selction to clipboard
+"c" = ":insert-output zenity --color-selection"
+
+[keys.insert]
+# Save Document
+C-s = [":w", "normal_mode"] 
+
+[keys.select]
+"esc" =  ["collapse_selection", "keep_primary_selection", "normal_mode"]
+# Shrink selection up
+"X" = "select_line_above"
+# Move Highlighted lines up
+"A-up" = [
+  "goto_line_end",
+  "extend_line_below",
+  "delete_selection",
+  "move_line_up",
+  "paste_before",
+  "select_mode"
+]
+# Move Highlighted lines down
+"A-down" = [
+  "goto_line_end",
+  "extend_line_below",
+  "delete_selection",
+  "paste_after",
+  "select_mode"
+]
+# Global searches the selection under cursor
+"@" = [
+  "search_selection",
+  "global_search",
+]
+
+

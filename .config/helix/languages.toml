@@ -1,0 +1,127 @@
+[language-server.tailwindcss-language-server]
+command = "tailwindcss-language-server"
+args = ["--stdio"]
+config = { userLanguages = { etlua = "html", "*.etlua" = "html" } }
+
+[language-server.emmet-lsp]
+command = "emmet-ls"
+args = ["--stdio"]
+
+[language-server.jedi-language-server]
+command = "jedi-language-server"
+
+[language-server.pyright-langserver]
+command = "pyright-langserver"
+args = ["--stdio"]
+
+[language-server.nelua-lsp]
+command = "nelua"
+args = [
+  "-L", 
+  "/home/kome/Documents/code-projects/languages/lua/nelua-lsp",
+  "--script",
+  "/home/kome/Documents/code-projects/languages/lua/nelua-lsp/main.lua",
+  "DEBUG"
+]
+
+[language-server.buffer-completions-lsp]
+command = "lua"
+args = ["/home/kome/Documents/code-projects/languages/lua/buffer-completions-lsp/main.lua"]
+
+[[language]]
+name = "python"
+formatter = { command = "black", args = ["-l", "80", "-"] }
+language-servers=["jedi-language-server", { name = "pyright-langserver", except-features=["completion"]}]
+auto-format = true
+
+[[language]]
+name = "lua"
+file-types = ["lua","rockspec"]
+formatter = { command = "stylua", args = ["-", "--indent-type", "Spaces", "--indent-width", "2"]}
+language-servers=["lua-language-server"]
+auto-format = true
+
+[[language]]
+name = "php"
+auto-format = true
+
+[[language]]
+name = "html"
+block-comment-tokens = { start = "<!--", end = "-->"}
+formatter = { command = "prettier" , args = ["--parser","html"] }
+language-servers = ["emmet-lsp", "vscode-html-language-server", "tailwindcss-language-server"]
+
+[[language]]
+name = "css"
+file-types = ["css"]
+formatter = { command = "prettier" , args = ["--parser","css"] }
+language-servers = ["vscode-css-language-server", "tailwindcss-language-server"]
+
+[[language]]
+name = "typescript"
+formatter = { command = "prettier" , args = ["--parser","typescript"] }
+auto-format = true
+
+[[language]]
+name = "javascript"
+formatter = { command = "prettier" , args = ["--parser","typescript"] }
+auto-format = true
+
+[[language]]
+name = "tsx"
+formatter = { command = "prettier" , args = ["--parser","typescript"] }
+auto-format = true
+language-servers = ["emmet-lsp", "typescript-language-server", "tailwindcss-language-server"]
+
+[[language]]
+name = "jsx"
+formatter = { command = "prettier" , args = ["--parser","typescript"] }
+auto-format = true
+language-servers = ["emmet-lsp", "typescript-language-server", "tailwindcss-language-server"]
+
+[[language]]
+name = "blade"
+formatter = { command = "blade-formatter", args = ["--stdin"] }
+language-servers = ["emmet-lsp", "vscode-html-language-server", "intelephense"]
+auto-format = true
+
+[[grammar]]
+name = "etlua"
+source = { git = "https://github.com/cattokomo/tree-sitter-etlua", rev = "390426f0e3802d80507b565550116e44a228335a" }
+
+[[language]]
+name = "etlua"
+auto-format = true
+formatter = { command = "prettier" , args = ["--parser","html"] }
+file-types = ["etlua"]
+block-comment-tokens = { start = "<!--", end = "-->"}
+language-servers = ["emmet-lsp", "vscode-html-language-server", "tailwindcss-language-server"]
+injection-regex = "etlua"
+scope = "source.etlua"
+
+[[grammar]]
+name = "moonscript"
+source = { git = "https://github.com/kmafeni04/tree-sitter-moonscript", rev = "e4f174f5a845d5e70e79dc046c928f3f049df65b" }
+
+[[language]]
+name = "moonscript"
+file-types = ["moon"]
+comment-tokens = "--"
+block-comment-tokens = { start = "--[[", end = "]]"}
+injection-regex = "moonscript"
+scope = "source.moonscript"
+
+[[grammar]]
+name = "nelua"
+source = { git = "https://github.com/kmafeni04/tree-sitter-nelua", rev = "ab17eeb2e27f27a8b94e3dc05e76eeafc8b493b5" }
+
+[[language]]
+name = "nelua"
+file-types = ["nelua"]
+comment-tokens = "--"
+block-comment-tokens = { start = "--[[", end = "]]"}
+injection-regex = "nelua"
+scope = "source.nelua"
+indent = { tab-width = 2, unit = "  " }
+# language-servers = ["nelua-lsp"]
+language-servers = ["buffer-completions-lsp"]

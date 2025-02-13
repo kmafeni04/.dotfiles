@@ -1,0 +1,12 @@
+# Lpm
+
+add = "lpm install #:?"
+remove = "luarocks uninstall #:?"
+
+plural_name = "lite-xl-plugins"
+
+hook_name = "lite-xl-plugins"
+
+[config]
+many_args = false
+

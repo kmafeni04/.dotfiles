@@ -1,0 +1,12 @@
+# NPM
+
+add = "sudo npm install -g #:?"
+remove = "sudo npm uninstall -g #:?"
+upgrade = "sudo npm update -g"
+
+plural_name = "node_modules"
+
+hook_name = "node_modules"
+
+[config]
+many_args = true
