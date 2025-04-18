@@ -123,7 +123,7 @@ display-messages = true
 # Open file picker in current directory
 o = "file_picker_in_current_buffer_directory"
 # Copy zenity color selction to clipboard
-"c" = ":insert-output zenity --color-selection"
+"c" = ":insert-output zenity --color-selection 2> /dev/null"
 
 [keys.insert]
 # Save Document

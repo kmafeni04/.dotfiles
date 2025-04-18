@@ -1,8 +1,8 @@
 # NPM
 
-add = "sudo npm install -g #:?"
-remove = "sudo npm uninstall -g #:?"
-upgrade = "sudo npm update -g"
+add = "npm install #:?"
+remove = "npm uninstall #:?"
+upgrade = "npm update"
 
 plural_name = "node_modules"
 

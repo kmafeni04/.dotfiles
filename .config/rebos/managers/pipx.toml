@@ -1,0 +1,12 @@
+# pipx
+
+add = "pipx install #:?"
+remove = "pipx uninstall #:?"
+upgrade = "pipx upgrade-all"
+
+plural_name = "pip packages"
+
+hook_name = "pip-packages"
+
+[config]
+many_args = true

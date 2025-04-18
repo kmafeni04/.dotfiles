@@ -49,16 +49,32 @@ pgrep -x dunst > /dev/null || dunst &
 pgrep -x redshift > /dev/null || redshift &
 pgrep -x gpaste-daemon > /dev/null || gpaste-client start &
 pgrep -x mpris-proxy > /dev/null || mpris-proxy &
-touchegg & # systemctl enable touchegg
 pgrep -f "low_battery.lua" > /dev/null || lua /home/kome/.scripts/low_battery.lua &
+touchegg_count=$(pgrep -xc touchegg)
+[ "$touchegg_count" -le 1 ] && touchegg & # systemctl start touchegg
+
 playerctl status --format '{{ playerName }}' --follow > /tmp/player-last &
 
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 /lib/xdg-desktop-portal-gnome &
 dbus-update-activation-environment --systemd --all &
-"/opt/xdman/jre/bin/java" -Xmx1024m -jar "/opt/xdman/xdman.jar" -m &
+pgrep -x xdman-beta > /dev/null || xdman-beta --background
 
-xinput set-prop "VEN_27C6:00 27C6:0D43 Touchpad" "libinput Natural Scrolling Enabled" 1 &
-xinput set-prop "VEN_27C6:00 27C6:0D43 Touchpad" "libinput Middle Emulation Enabled" 1 &
-xinput set-prop "VEN_27C6:00 27C6:0D43 Touchpad" "libinput Tapping Enabled" 1 &
+: '
+# Add to /etc/X11/xorg.conf.d/30-touchpad.conf
+Section "InputClass"
+        Identifier "libinput touchpad catchall"
+        MatchIsTouchpad "on"
+        MatchDevicePath "/dev/input/event*"
+        Driver "libinput"
+        Option "NaturalScrolling" "True"
+        Option "Tapping" "on"
+        Option "Emulate3Buttons" "yes"
+EndSection
+
+# Add to /etc/security/limits.conf
+@audio           -       rtprio          99
+@audio           -       memlock         unlimited
+@audio           -       nice            -19
+'
 

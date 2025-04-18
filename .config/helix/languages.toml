@@ -21,7 +21,7 @@ args = [
   "/home/kome/Documents/code-projects/languages/lua/nelua-lsp",
   "--script",
   "/home/kome/Documents/code-projects/languages/lua/nelua-lsp/main.lua",
-  "DEBUG"
+  # "DEBUG"
 ]
 
 [language-server.buffer-completions-lsp]
@@ -100,20 +100,21 @@ injection-regex = "etlua"
 scope = "source.etlua"
 
 [[grammar]]
-name = "moonscript"
-source = { git = "https://github.com/kmafeni04/tree-sitter-moonscript", rev = "e4f174f5a845d5e70e79dc046c928f3f049df65b" }
+name = "nelt"
+source = { git = "https://github.com/kmafeni04/tree-sitter-nelt", rev = "213b37663c3da1f942ce7d838edc0545f5d6b5c3" }
 
 [[language]]
-name = "moonscript"
-file-types = ["moon"]
-comment-tokens = "--"
-block-comment-tokens = { start = "--[[", end = "]]"}
-injection-regex = "moonscript"
-scope = "source.moonscript"
+name = "nelt"
+file-types = ["nelt"]
+block-comment-tokens = { start = "<!--", end = "-->"}
+injection-regex = "nelt"
+scope = "source.nelt"
+indent = { tab-width = 2, unit = "  " }
+language-servers = ["buffer-completions-lsp"]
 
 [[grammar]]
 name = "nelua"
-source = { git = "https://github.com/kmafeni04/tree-sitter-nelua", rev = "ab17eeb2e27f27a8b94e3dc05e76eeafc8b493b5" }
+source = { git = "https://github.com/kmafeni04/tree-sitter-nelua", rev = "1dbd50e7cbafc6c5d9e12cefb0d431c9ed4709f7" }
 
 [[language]]
 name = "nelua"

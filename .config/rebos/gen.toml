@@ -29,6 +29,7 @@ items = [
     "cups",
     "docker",
     "dockerfile-language-server-bin",
+    "dosfstools",
     "downgrade",
     "dunst",
     "efibootmgr",
@@ -57,6 +58,7 @@ items = [
     "gnome-tweaks",
     "gnome-user-docs",
     "gnome-weather",
+    "go",
     "gpaste",
     "gtk-engine-murrine",
     "helix",
@@ -69,7 +71,12 @@ items = [
     "loupe",
     "lua51",
     "luajit",
+    "lua-language-server",
     "luarocks",
+    "man-db",
+    "man-pages",
+    "mariadb",
+    "marksman",
     "nautilus",
     "nelua-git",
     "nemo-fileroller",
@@ -87,6 +94,7 @@ items = [
     "pulsemixer",
     "python-black",
     "python-django",
+    "python-pipx",
     "qpwgraph",
     "raylib",
     "rebos-git",
@@ -110,16 +118,18 @@ items = [
     "totem",
     "touchegg",
     "transmission-gtk",
+    "trash-cli",
     "tree",
     "ttf-dejavu-nerd",
     "visual-studio-code-bin",
+    "vlc",
     "vulkan-intel",
     "wezterm",
     "wget",
     "x42-plugins",
     "xclip",
     "xdg-user-dirs-gtk",
-    "xdman",
+    "xdman-beta-bin",
     "xorg-xev",
     "xorg-xinput",
     "xorg-xkill",
@@ -148,6 +158,7 @@ items = [
     "com.simplenote.Simplenote",
     "com.spotify.Client",
     "com.usebottles.bottles",
+    "com.valvesoftware.Steam",
     "fr.handbrake.ghb",
     "io.bassi.Amberol",
     "io.github.celluloid_player.Celluloid",
@@ -205,6 +216,7 @@ items = [
 
 [managers.npm]
 items = [
+    "autocannon",
     "bash-language-server",
     "blade-formatter",
     "browser-sync",
@@ -268,4 +280,10 @@ items = [
     "tokyo-night",
     "widget",
     "wordcount"
+]
+
+[managers.pipx]
+items = [
+    "jedi-language-server",
+    "pyright"
 ]

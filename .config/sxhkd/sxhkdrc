@@ -143,7 +143,7 @@ super + e
 alt + F11
 	playerctl -p $(tail -1 /tmp/player-last) next
 
-alt + F10
+{alt + F10, XF86AudioPlay}
 	playerctl -p $(tail -1 /tmp/player-last) play-pause
 
 alt + F9
