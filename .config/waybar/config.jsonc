@@ -1,0 +1,139 @@
+{
+  "layer": "top", // Waybar at top layer
+  "modules-left": [
+    "custom/launcher",
+    "custom/separator",
+    "hyprland/workspaces",
+    "custom/separator",
+    "hyprland/window"
+  ],
+  "modules-right": [
+    "custom/player_song",
+    "custom/separator",
+    "keyboard-state",
+    "custom/separator",
+    "custom/gpaste",
+    "custom/separator",
+    "tray",
+    "custom/separator",
+    "backlight",
+    "custom/separator",
+    "pulseaudio",
+    "custom/separator",
+    "battery",
+    "custom/separator",
+    "clock",
+    "custom/separator",
+    "custom/dunst",
+    "custom/separator",
+    "custom/menu-apps"
+  ],
+  "hyprland/window": {
+    "on-click-middle": "hyprctl dispatch killactive",
+    "max-length": 35
+  },
+  "custom/player_song": {
+    "exec": "/home/kome/.scripts/player_song.sh",
+    "format": "{}",
+    "restart-interval": 1
+  },
+  "custom/dunst": {
+    "format": "󰂚",
+    "on-click": "dunstctl set-paused toggle && notify-send Notifications on",
+    "on-click-middle": "notify-send History Cleared && sleep 2 && dunstctl close-all && dunstctl history-clear",
+    "on-click-right": "dunstctl history-pop",
+    "tooltip": false
+  },
+  "custom/gpaste": {
+    "format": "",
+    "on-click": "gpaste-client ui",
+    "tooltip": false
+  },
+  "custom/launcher": {
+    "format": "<span size=\"12pt\">󰀻</span>",
+    "on-click": "rofi -show drun",
+    "on-click-right": "rofi -show run",
+    "tooltip": false
+  },
+  "custom/menu-apps": {
+    "format": "⏻",
+    "on-click": "/home/kome/.scripts/rofi-power.sh",
+    "tooltip": false
+  },
+  //sudo usermod -a -G input username
+  "keyboard-state": {
+    "capslock": true,
+    "format": "{icon}",
+    "format-icons": {
+      "locked": "CapsLock",
+      "unlocked": ""
+    }
+  },
+  "hyprland/workspaces": {
+    "on-scroll-up": "hyprctl dispatch workspace e-1",
+    "on-scroll-down": "hyprctl dispatch workspace e+1",
+    "persistent-workspaces": {
+      "*": 10 // 5 workspaces by default on every monitor
+    }
+  },
+  "tray": {
+    "icon-size": 20,
+    "spacing": 10
+  },
+  "clock": {
+    "interval": 1,
+    "format": "{:%H:%M}",
+    "format-alt": "{:%Y-%m-%d %H:%M:%S}"
+  },
+  "backlight": {
+    "device": "intel_backlight",
+    "format": "<span size=\"12pt\">{icon}</span> {percent}%",
+    "format-icons": [
+      "○",
+      "◔",
+      "◑",
+      "◕",
+      "●"
+    ],
+    "on-scroll-up": "light -A 5",
+    "on-scroll-down": "light -U 5",
+    "reverse-scrolling": true,
+    "tooltip-format": "{icon} {percent}%"
+  },
+  "battery": {
+    "states": {
+      // "good": 95,
+      "warning": 35,
+      "critical": 15
+    },
+    "format": "{icon}　{capacity}%",
+    "format-icons": [
+      "",
+      "",
+      "",
+      "",
+      ""
+    ]
+  },
+  "pulseaudio": {
+    "format": "{icon}　{volume}%",
+    "format-muted": " muted",
+    "format-icons": {
+      "default": [
+        "",
+        "",
+        ""
+      ]
+    },
+    "on-scroll-up": "pamixer -u && pamixer -i 5",
+    "on-scroll-down": "pamixer -u && pamixer -d 5",
+    "on-click": "wezterm -e pulsemixer",
+    "reverse-scrolling": true,
+    "on-click-middle": "pamixer -t"
+  },
+  "custom/separator": {
+    "format": " | ",
+    "interval": "once",
+    "tooltip": false
+  }
+}

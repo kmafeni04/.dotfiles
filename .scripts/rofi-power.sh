@@ -22,9 +22,9 @@ case $chosen in
 	systemctl suspend
         ;;
     $lock)
-		magick /home/kome/.scripts/current_wallpaper.png -resize 1920x /home/kome/.scripts/current_wallpaper.png && i3lock -i /home/kome/.scripts/current_wallpaper.png -ef &
+		$LOCK_SCRIPT
         ;;
     $logOut)
-		bspc quit
+    $LOGOUT_SCRIPT
         ;;
 esac

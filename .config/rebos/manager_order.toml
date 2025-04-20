@@ -1,11 +1,12 @@
 begin = [
 	"system",
-	"npm"
 ]
 
 # Any other managers will run in between the begin and end stages.
 
 end = [
-	"flatpak"
+	"pipx"
+	"npm",
+	"services"
 ]
 

@@ -1,0 +1,88 @@
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "DejaVuSansM Nerd Font";
+  font-size: 14px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: #1a1b26;
+  /*border-bottom: 3px solid rgba(100, 114, 125, 0.5);*/
+  color: #9abdf5;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+#workspaces button {
+  padding: 0 5px;
+  background: transparent;
+  color: #9abdf5;
+  border-bottom: 3px solid transparent;
+}
+
+#workspaces button.focused {
+  background: #4c566a;
+  border-bottom: 3px solid #e5e9f0;
+}
+
+#workspaces button.active {
+  background: #373b41;
+  border-bottom: 3px solid #9abdf5;
+}
+
+#workspaces button.urgent {
+  background-color: #bf616a;
+}
+
+#mode {
+  background: #64727d;
+  border-bottom: 3px solid #ffffff;
+}
+
+#clock,
+#battery,
+#backlight,
+#pulseaudio,
+#tray,
+#mode,
+#keyboard-state,
+#custom-menu-apps,
+#custom-gpaste,
+#custom-dunst,
+#custom-player_song,
+#custom-launcher {
+  padding: 0px;
+  margin: 0 5px;
+}
+#custom-launcher {
+  padding-left: 5px;
+}
+#custom-menu-apps {
+  padding-right: 5px;
+}
+
+@keyframes blink {
+  to {
+    color: #9abdf5;
+  }
+}
+
+#battery.critical:not(.charging) {
+  background: #f53c3c;
+  color: #373b41;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#keyboard-state label {
+  opacity: 0;
+}
+#keyboard-state label.locked {
+  opacity: 1;
+  background-color: #9abdf5;
+  color: #1a1b26;
+  padding: 0 3px;
+}

@@ -1,6 +1,9 @@
 #! /bin/sh
 
 #autostart
+export LOGOUT_SCRIPT="bspc quit"
+export LOCK_SCRIPT="magick /home/kome/.scripts/current_wallpaper.png -resize 1920x /home/kome/.scripts/current_wallpaper.png && i3lock -i /home/kome/.scripts/current_wallpaper.png -ef &"
+pgrep -x xrdb > /dev/null || xrdb ~/.Xresources &
 pgrep -x sxhkd > /dev/null || sxhkd &
 
 #bspwm
