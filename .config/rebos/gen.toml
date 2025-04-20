@@ -233,6 +233,7 @@ items = [
     "semver",
     "tailwindcss",
     "@tailwindcss/language-server",
+    "tree-sitter-cli",
     "typescript",
     "typescript-language-server",
     "vscode-langservers-extracted"

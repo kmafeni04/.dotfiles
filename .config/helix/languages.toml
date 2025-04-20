@@ -21,7 +21,7 @@ args = [
   "/home/kome/Documents/code-projects/languages/lua/nelua-lsp",
   "--script",
   "/home/kome/Documents/code-projects/languages/lua/nelua-lsp/main.lua",
-  # "DEBUG"
+  "DEBUG"
 ]
 
 [language-server.buffer-completions-lsp]
@@ -101,7 +101,7 @@ scope = "source.etlua"
 
 [[grammar]]
 name = "nelt"
-source = { git = "https://github.com/kmafeni04/tree-sitter-nelt", rev = "213b37663c3da1f942ce7d838edc0545f5d6b5c3" }
+source = { git = "https://github.com/kmafeni04/tree-sitter-nelt", rev = "5cff475b023d5de8103a2b9c32b1b9bcb6ff915f" }
 
 [[language]]
 name = "nelt"
@@ -109,6 +109,7 @@ file-types = ["nelt"]
 block-comment-tokens = { start = "<!--", end = "-->"}
 injection-regex = "nelt"
 scope = "source.nelt"
+grammar = "nelt"
 indent = { tab-width = 2, unit = "  " }
 language-servers = ["buffer-completions-lsp"]
 
@@ -124,5 +125,5 @@ block-comment-tokens = { start = "--[[", end = "]]"}
 injection-regex = "nelua"
 scope = "source.nelua"
 indent = { tab-width = 2, unit = "  " }
-# language-servers = ["nelua-lsp"]
-language-servers = ["buffer-completions-lsp"]
+language-servers = ["nelua-lsp"]
+# language-servers = ["buffer-completions-lsp"]

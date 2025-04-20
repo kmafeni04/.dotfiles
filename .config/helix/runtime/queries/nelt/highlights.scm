@@ -1,1 +1,3 @@
-[ "{{" "{#" "{{-" "#}" "}}" ] @keyword
+[ "{{" "{#" "{{-" "#}" "}}" "{%" "%}"] @keyword.directive
+
+(comment) @comment
