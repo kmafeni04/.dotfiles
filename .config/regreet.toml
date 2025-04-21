@@ -5,6 +5,8 @@ reboot = ["systemctl", "reboot"]
 # The command used to shut down the system
 poweroff = ["systemctl", "poweroff"]
 
+suspend = ["systemctl", "suspend"]
+
 [GTK]
 # Whether to use the dark theme
 application_prefer_dark_theme = true
@@ -19,4 +21,4 @@ font_name = "Cantarell 16"
 icon_theme_name = "Papirus-Dark"
 
 # GTK theme name
-theme_name = "Tokyonight-Dark"
+theme_name = "adw-gtk3"

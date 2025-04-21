@@ -56,8 +56,6 @@ pgrep -f "low_battery.lua" > /dev/null || lua /home/kome/.scripts/low_battery.lu
 touchegg_count=$(pgrep -xc touchegg)
 [ "$touchegg_count" -le 1 ] && touchegg & # systemctl start touchegg
 
-playerctl status --format '{{ playerName }}' --follow > /tmp/player-last &
-
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 /lib/xdg-desktop-portal-gnome &
 dbus-update-activation-environment --systemd --all &

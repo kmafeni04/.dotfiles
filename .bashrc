@@ -28,6 +28,8 @@ unset rc
 
 eval "$(fzf --bash)"
 
+PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
 #user aliases
 
 alias 'sup'='rebos managers upgrade --sync'
