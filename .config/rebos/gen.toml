@@ -22,6 +22,7 @@ items = [
     "arandr",
     "auto-cpufreq",
     "baobab",
+    "xdg-desktop-portal-gtk",
     "base",
     "base-devel",
     "bc",

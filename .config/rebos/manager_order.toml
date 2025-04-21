@@ -5,7 +5,7 @@ begin = [
 # Any other managers will run in between the begin and end stages.
 
 end = [
-	"pipx"
+	"pipx",
 	"npm",
 	"services"
 ]

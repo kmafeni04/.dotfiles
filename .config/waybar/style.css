@@ -2,13 +2,12 @@
   border: none;
   border-radius: 0;
   font-family: "DejaVuSansM Nerd Font";
-  font-size: 14px;
+  font-size: 13px;
   min-height: 0;
 }
 
 window#waybar {
   background: #1a1b26;
-  /*border-bottom: 3px solid rgba(100, 114, 125, 0.5);*/
   color: #9abdf5;
 }
 
@@ -16,22 +15,28 @@ window#waybar {
 #workspaces button {
   padding: 0 5px;
   background: transparent;
-  color: #9abdf5;
   border-bottom: 3px solid transparent;
 }
 
-#workspaces button.focused {
-  background: #4c566a;
-  border-bottom: 3px solid #e5e9f0;
+/* Not active but has an open window */
+#workspaces button.persistent {
+  color: #9abdf5;
 }
 
+/* Not active and has no open window */
+#workspaces button.empty {
+  color: #404e65;
+}
+
+/* Active workspace */
 #workspaces button.active {
   background: #373b41;
+  color: #9abdf5;
   border-bottom: 3px solid #9abdf5;
 }
 
 #workspaces button.urgent {
-  background-color: #bf616a;
+  background-color: #ff0000;
 }
 
 #mode {
@@ -50,8 +55,9 @@ window#waybar {
 #custom-gpaste,
 #custom-dunst,
 #custom-player_song,
+#custom-player_controls,
 #custom-launcher {
-  padding: 0px;
+  padding: 0;
   margin: 0 5px;
 }
 #custom-launcher {
@@ -80,6 +86,7 @@ window#waybar {
 #keyboard-state label {
   opacity: 0;
 }
+
 #keyboard-state label.locked {
   opacity: 1;
   background-color: #9abdf5;
