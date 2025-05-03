@@ -1,0 +1,12 @@
+# User Groups
+
+add = "sudo gpasswd -a $USER #:?"
+remove = "sudo gpasswd -d $USER #:?"
+
+plural_name = "user-groups"
+
+hook_name = "user-groups"
+
+[config]
+many_args = false
+

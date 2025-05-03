@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+system_files_path="$HOME/.config/rebos/system_files"
+greetd_path="$system_files_path/pam.d/greetd"
+regreet_path="$system_files_path/regreet.toml"
+
+# Taken from OgloTheNerd
+overwrite_file () {
+  use_sudo=0
+
+  src="$1"
+  dest="$2"
+
+  [[ "$OFSUDO" == 1 ]] && use_sudo=1
+
+  cmd_to_exec="cp"
+
+  [[ "$use_sudo" == 1 ]] && cmd_to_exec="sudo ${cmd_to_exec}"
+
+  exit_status=0
+
+  $cmd_to_exec "$src" "$dest" > /dev/null 2>&1 || exit_status=1
+
+  echo -en "\033[1;93mOVERWRITE\033[0m \033[0;96m${src}\033[0m -> \033[0;95m${dest}\033[0m "
+
+  if [[ "$exit_status" == 0 ]]; then
+    echo -e "\033[1;92m(^-^)\033[0m"
+  else
+    echo -e "\033[1;91m(T~T)\033[0m"
+  fi
+
+  return $exit_status
+}
+
+if ! cmp -s "$greetd_path" /etc/pam.d/greetd; then
+  OFSUDO=1 overwrite_file "$greetd_path" /etc/pam.d/greetd || exit 1
+fi
+if ! cmp -s "$regreet_path" /etc/greetd/regreet.toml; then
+  OFSUDO=1 overwrite_file "$regreet_path" /etc/greetd/regreet.toml || exit 1
+fi

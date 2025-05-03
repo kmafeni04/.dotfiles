@@ -141,13 +141,13 @@ super + e
 
 #Media Keys
 alt + F11
-	playerctl -p $(tail -1 /tmp/player-last) next
+	playerctl next
 
 {alt + F10, XF86AudioPlay}
-	playerctl -p $(tail -1 /tmp/player-last) play-pause
+	playerctl play-pause
 
 alt + F9
-	playerctl -p $(tail -1 /tmp/player-last) previous
+	playerctl previous
 
 #Bar
 super + w 

@@ -1,0 +1,158 @@
+(defwidget bar []
+  (box :orientation "h"
+    (left)
+    (right)))
+
+(defwidget left []
+  (box :class "left" :orientation "h" :space-evenly false :halign "start" :spacing 10
+    (workspaces)
+    (activeWindow)
+  )
+)
+(defwidget right []
+  (box :class "right" :orientation "h" :space-evenly false :halign "end" :spacing 10
+    (capsLock)
+    (playerControls)
+    (music)
+    (systray :class "tray" :spacing 10)
+    (metric
+      :label ""
+      :value volume
+      :onchange "pamixer --set-volume {}")
+    (metric
+      :label "●"
+      :value brightness
+      :onchange "light -S {}")
+    (time)
+    (powerMenu)
+  )
+)
+
+(defvar timeFormat false)
+(defwidget time[]
+  (eventbox
+    :onclick {timeFormat == false ? "eww update timeFormat=true" : "eww update timeFormat=false"}
+    (label :text {timeFormat == false ? shortTime : longTime})
+  )
+)
+
+(defwidget powerMenu[]
+  (eventbox
+    :class "power-menu"
+    :cursor "pointer"
+    :onclick "(~/.scripts/rofi-power.sh)"
+    (label :text "⏻" :style "font-size: 18px;")
+  )
+)
+
+(defwidget capsLock []
+  (box
+    :class "caps"
+    :style {caps != "false" ? "color: #1a1b26; background-color: #9abdf5; padding-left: 5px; padding-right: 5px;" : ""}
+    {caps != "false" ? "Caps Lock" : ""}
+  )
+)
+
+(defwidget workspaces []
+  (box :class "workspaces"
+       :orientation "h"
+       :space-evenly true
+       :halign "start"
+    (for num in workspacesCount
+      (eventbox
+        :class "workspace"
+        :cursor "pointer"
+        :onscroll "if [ '{}' == 'up' ]; then hyprctl dispatch workspace e-1; else hyprctl dispatch workspace e+1; fi"
+        :onclick "hyprctl dispatch workspace ${num}"
+        :style {
+          (occupiedWorkspaces[num] == true && activeWorkspace != num)
+          ? "color: #9abdf5;"
+          : activeWorkspace == num
+            ? "color: #9abdf5; border-bottom: 3px solid #9abdf5;"
+            : ""
+        }
+        (label :text "${num}")
+      )
+    )
+  )
+)
+
+(defwidget playerControls []
+  (eventbox
+    :class "player-controls"
+    :onclick "(~/.scripts/rofi-playerctl.sh)"
+    :cursor "pointer"
+    (label :text "")
+  )
+)
+
+(defwidget activeWindow []
+  (eventbox
+    :onmiddleclick "hyprctl dispatch killactive"
+    (label :text {activeWindow != "null" ? activeWindow : ""} :limit-width 30)
+  )
+)
+
+(defwidget music []
+  (box :class "music"
+       :orientation "h"
+       :space-evenly false
+       :halign "center"
+    (label :text {music} :limit-width 30)))
+
+
+(defwidget metric [label value onchange]
+  (box :orientation "h"
+       :class "metric"
+       :space-evenly false
+    (box :class "label" label)
+    (scale :min 0
+           :max 101
+           :active {onchange != ""}
+           :value value
+           :onchange onchange
+    )
+  )
+)
+
+(defvar workspacesCount "[1, 2, 3, 4, 5, 6, 7, 8, 9]")
+
+(defpoll music :interval "0.5s"
+  "~/.scripts/player_song.sh")
+
+(defpoll volume :interval "1s"
+  "pamixer --get-volume")
+
+(defpoll brightness :interval "1s"
+  "light")
+
+(defpoll activeWorkspace :interval "0.1s"
+  "hyprctl activeworkspace -j | jq '.id'")
+
+(defpoll activeWindow :interval "0.1s"
+  "hyprctl activewindow -j | jq '.title' -r")
+
+(defpoll caps :interval "0.1s"
+  "hyprctl devices -j | jq '.keyboards[] | select(.main == true) | .capsLock'")
+
+(defpoll occupiedWorkspaces :interval "0.1s"
+  "hyprctl workspaces -j | jq 'map({(.name): true}) | add'")
+
+(defpoll shortTime :interval "1s"
+  "date '+%H:%M'")
+
+(defpoll longTime :interval "1s"
+  "date '+%Y-%m-%d %H:%M:%S'")
+
+(defwindow bar
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "0%"
+                      :y "0%"
+                      :width "100%"
+                      :height "10px"
+                      :anchor "top center")
+  :reserve (struts :side "top" :distance "0%")
+  :exclusive true
+  :stacking "fg"
+  (bar))
