@@ -111,7 +111,7 @@ super + 3
 	wezterm &
 
 super + 4
-	gnome-software &
+	flatpak run com.spotify.Client &
 
 super + 5 
 	reaper &

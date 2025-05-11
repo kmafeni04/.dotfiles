@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # Options
-shutdown="⏻  Shutdown"
+shutdown="  Shutdown"
 restart="󰜉 Restart"
 suspend="󰒲  Suspend"
 lock="  Lock"
@@ -13,18 +13,18 @@ options="$shutdown\n$restart\n$suspend\n$lock\n$logOut"
 chosen="$(echo -e "$options" | rofi -show -p "Power Menu" -dmenu -selected-row 0)"
 case $chosen in
     $shutdown)
-	 poweroff
+        poweroff
         ;;
     $restart)
-	reboot
+        reboot
         ;;
     $suspend)
-	systemctl suspend
+        systemctl suspend
         ;;
     $lock)
-		$LOCK_SCRIPT
+        $LOCK_SCRIPT
         ;;
     $logOut)
-    $LOGOUT_SCRIPT
+        $LOGOUT_SCRIPT
         ;;
 esac

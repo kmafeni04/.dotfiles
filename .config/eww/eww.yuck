@@ -14,13 +14,14 @@
     (capsLock)
     (playerControls)
     (music)
+    (gpaste)
     (systray :class "tray" :spacing 10)
     (metric
       :label ""
       :value volume
       :onchange "pamixer --set-volume {}")
     (metric
-      :label "●"
+      :label ""
       :value brightness
       :onchange "light -S {}")
     (time)
@@ -36,12 +37,21 @@
   )
 )
 
+(defwidget gpaste[]
+  (eventbox
+    :class "gpaste"
+    :cursor "pointer"
+    :onclick "gpaste-client ui"
+    (label :text "")
+  )
+)
+
 (defwidget powerMenu[]
   (eventbox
     :class "power-menu"
     :cursor "pointer"
     :onclick "(~/.scripts/rofi-power.sh)"
-    (label :text "⏻" :style "font-size: 18px;")
+    (label :text "")
   )
 )
 
@@ -62,7 +72,7 @@
       (eventbox
         :class "workspace"
         :cursor "pointer"
-        :onscroll "if [ '{}' == 'up' ]; then hyprctl dispatch workspace e-1; else hyprctl dispatch workspace e+1; fi"
+        :onscroll "if [ '{}' == 'up' ]; then hyprctl dispatch workspace ${activeWorkspace > 1 ? activeWorkspace - 1 : 9}; else hyprctl dispatch workspace ${activeWorkspace < 9 ? activeWorkspace + 1 : 1}; fi"
         :onclick "hyprctl dispatch workspace ${num}"
         :style {
           (occupiedWorkspaces[num] == true && activeWorkspace != num)
