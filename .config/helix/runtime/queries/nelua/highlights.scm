@@ -53,6 +53,7 @@
   "."
   ","
   ":"
+  ";"
 ] @punctuation.delimiter
 
 [
@@ -80,6 +81,8 @@
 ] @keyword
 
 (string) @string
+
+(char) @string
 
 (number) @constant
 
@@ -155,6 +158,9 @@
 (function_call
   (identifier) @function)
 
+(function_call
+  (preproc_expression) @function)
+
 (dot_field
     (identifier) @variable)
 
@@ -179,3 +185,7 @@
 
 (preproc_expression
   ["#[" "]#" "#|" "|#"] @keyword.directive)
+
+(escape_sequence) @constant.character.escape
+
+(macro_function) @function.macro

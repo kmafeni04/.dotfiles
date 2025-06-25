@@ -1,3 +1,3 @@
-[ "{{" "{#" "{{-" "#}" "}}" "{%" "%}"] @keyword.directive
+[ "{{" "{{-" "}}" "{%" "%}"] @keyword.directive
 
-(comment) @comment
+(nelt_comment) @comment

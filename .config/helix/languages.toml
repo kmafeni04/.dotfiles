@@ -101,7 +101,8 @@ scope = "source.etlua"
 
 [[grammar]]
 name = "nelt"
-source = { git = "https://github.com/kmafeni04/tree-sitter-nelt", rev = "5cff475b023d5de8103a2b9c32b1b9bcb6ff915f" }
+source = { git = "https://github.com/kmafeni04/tree-sitter-nelt", rev = "454bcc92a5163b2a735049630d5debdb41312737" }
+# source = { path = "/home/kome/Documents/code-projects/random/tree-sitter-nelt" }
 
 [[language]]
 name = "nelt"
@@ -111,11 +112,14 @@ injection-regex = "nelt"
 scope = "source.nelt"
 grammar = "nelt"
 indent = { tab-width = 2, unit = "  " }
-language-servers = ["buffer-completions-lsp"]
+formatter = { command = "bash", args = ["/home/kome/.scripts/nelt-format.sh"] }
+language-servers = ["emmet-lsp", "vscode-html-language-server", "buffer-completions-lsp"]
+auto-format = true
 
 [[grammar]]
 name = "nelua"
-source = { git = "https://github.com/kmafeni04/tree-sitter-nelua", rev = "74dcbf15925abcc47e9152bd0e33e002fec5610b" }
+source = { git = "https://github.com/kmafeni04/tree-sitter-nelua", rev = "0c2c67027abbc798a3865595a4ddac8e2fee6752" }
+# source = { path = "/home/kome/Documents/code-projects/random/tree-sitter-nelua" }
 
 [[language]]
 name = "nelua"

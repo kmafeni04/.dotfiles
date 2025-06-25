@@ -9,10 +9,13 @@ imports = [
 
 [managers.services]
 items = [
-    "touchegg",
-    "bluetooth",
     "auto-cpufreq",
+    "bluetooth",
+    "usbmuxd",
     "greetd",
+    "mariadb",
+    "postgresql",
+    "touchegg",
 ]
 
 [managers.user_groups]
@@ -28,6 +31,7 @@ items = [
 items = [
     "adw-gtk-theme",
     "arandr",
+    "argon2",
     "auto-cpufreq",
     "baobab",
     "base",
@@ -60,17 +64,24 @@ items = [
     "glfw",
     "gnome-characters",
     "gnome-disk-utility",
+    "gnome-font-viewer",
     "go",
+    "gopls",
     "gpaste",
     "greetd-regreet",
     "gtk-engine-murrine",
+    "gvfs-afc",
+    "gvfs-gphoto2",
+    "gvfs-mtp",
     "helix",
     "hyprland",
     "hyprshot",
     "i3lock",
+    "ifuse",
     "imagemagick",
     "intel-ucode",
     "lazygit",
+    "libimobiledevice",
     "light",
     "linux-lts",
     "lite-xl",
@@ -83,6 +94,7 @@ items = [
     "man-pages",
     "mariadb",
     "marksman",
+    "mtpfs",
     "nautilus",
     "nelua-git",
     "nemo-fileroller",
@@ -243,6 +255,7 @@ items = [
     "@railway/cli",
     "semver",
     "tailwindcss",
+    "@tailwindcss/cli",
     "@tailwindcss/language-server",
     "tree-sitter-cli",
     "typescript",
@@ -296,6 +309,7 @@ items = [
 
 [managers.pipx]
 items = [
+    "djlint",
     "jedi-language-server",
-    "pyright"
+    "pyright",
 ]

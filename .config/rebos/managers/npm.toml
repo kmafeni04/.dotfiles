@@ -2,7 +2,7 @@
 
 add = "npm install #:?"
 remove = "npm uninstall #:?"
-upgrade = "npm update"
+upgrade = "npm update --loglevel=info"
 
 plural_name = "node_modules"
 

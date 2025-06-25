@@ -140,13 +140,13 @@ super + e
 	light -U 5
 
 #Media Keys
-alt + F11
+{alt + F11, XF86AudioNext}
 	playerctl next
 
 {alt + F10, XF86AudioPlay}
 	playerctl play-pause
 
-alt + F9
+{alt + F9, XF86AudioPrev}
 	playerctl previous
 
 #Bar

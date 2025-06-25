@@ -1,13 +1,18 @@
 theme = "tokyonight"
 
 [editor]
-# line-number = "relative"
+line-number = "relative"
 bufferline = "multiple"
 auto-save = true
 color-modes = true
 completion-trigger-len = 1
 rulers = [120]
 end-of-line-diagnostics = "hint"
+# auto-pairs = false # defaults to `true`
+continue-comments = false
+
+[editor.whitespace]
+render = "all"
 
 [editor.file-picker]
 hidden = false
@@ -155,5 +160,3 @@ C-s = [":w", "normal_mode"]
   "search_selection",
   "global_search",
 ]
-
-
