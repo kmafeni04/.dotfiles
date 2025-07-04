@@ -134,6 +134,7 @@ items = [
     "sxhkd",
     "tailscale",
     "tcc",
+    "terminator",
     "touchegg",
     "transmission-gtk",
     "trash-cli",
@@ -170,6 +171,8 @@ items = [
 # Packages to be installed via Flatpak.
 [managers.flatpak]
 items = [
+    "io.github.flattool.Warehouse",
+    "de.schmidhuberj.tubefeeder",
     "app.drey.EarTag",
     "app.zen_browser.zen",
     "ca.desrt.dconf-editor",
@@ -198,6 +201,7 @@ items = [
     "org.ppsspp.PPSSPP",
     "org.soundconverter.SoundConverter",
     "org.telegram.desktop",
+    "org.vinegarhq.Sober",
     "page.codeberg.libre_menu_editor.LibreMenuEditor"
 ]
 

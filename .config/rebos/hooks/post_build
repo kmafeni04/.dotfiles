@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 system_files_path="$HOME/.config/rebos/system_files"
-greetd_path="$system_files_path/pam.d/greetd"
+greetd_path="$system_files_path/greetd"
 regreet_path="$system_files_path/regreet.toml"
+limits_path="$system_files_path/limits.conf"
 
 # Taken from OgloTheNerd
 overwrite_file () {
@@ -38,3 +39,12 @@ fi
 if ! cmp -s "$regreet_path" /etc/greetd/regreet.toml; then
   OFSUDO=1 overwrite_file "$regreet_path" /etc/greetd/regreet.toml || exit 1
 fi
+if ! cmp -s "$limits_path" /etc/security/limits.conf; then
+  OFSUDO=1 overwrite_file "$limits_path" /etc/security/limits.conf || exit 1
+fi
+
+# Proper nemo open in terminal
+gsettings set org.cinnamon.desktop.default-applications.terminal exec /home/kome/.scripts/wezterm_nemo.sh
+
+# Sober overrides
+flatpak override --user --filesystem=xdg-run/app/com.discordapp.Discord:create --filesystem=xdg-run/discord-ipc-0 --device=input org.vinegarhq.Sober

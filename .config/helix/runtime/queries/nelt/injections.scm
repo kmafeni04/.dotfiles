@@ -5,3 +5,6 @@
 ((expr) @injection.content
  (#set! injection.language "nelua")
  (#set! injection.combined))
+
+((val) @injection.content
+ (#set! injection.language "nelua"))

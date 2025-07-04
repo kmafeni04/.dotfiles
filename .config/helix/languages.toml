@@ -101,7 +101,7 @@ scope = "source.etlua"
 
 [[grammar]]
 name = "nelt"
-source = { git = "https://github.com/kmafeni04/tree-sitter-nelt", rev = "454bcc92a5163b2a735049630d5debdb41312737" }
+source = { git = "https://github.com/kmafeni04/tree-sitter-nelt", rev = "3427b2f839d3e34c325e8a50b88b9bd492657d9e" }
 # source = { path = "/home/kome/Documents/code-projects/random/tree-sitter-nelt" }
 
 [[language]]
@@ -118,7 +118,7 @@ auto-format = true
 
 [[grammar]]
 name = "nelua"
-source = { git = "https://github.com/kmafeni04/tree-sitter-nelua", rev = "0c2c67027abbc798a3865595a4ddac8e2fee6752" }
+source = { git = "https://github.com/kmafeni04/tree-sitter-nelua", rev = "a31404406a1e3b8f482d8278685719b3d8bcc421" }
 # source = { path = "/home/kome/Documents/code-projects/random/tree-sitter-nelua" }
 
 [[language]]

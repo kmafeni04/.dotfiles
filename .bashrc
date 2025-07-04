@@ -32,6 +32,8 @@ PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 #user aliases
 
+alias 'ls'='ls --hyperlink --color=auto'
+
 alias 'sup'='rebos managers upgrade --sync'
 alias 'sups'='rebos managers upgrade --sync && poweroff'
 alias 'rconf'='helix ~/.config/rebos/gen.toml'

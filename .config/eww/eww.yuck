@@ -16,15 +16,29 @@
     (music)
     (gpaste)
     (systray :class "tray" :spacing 10)
-    (metric
-      :label ""
-      :value volume
-      :onchange "pamixer --set-volume {}")
-    (metric
-      :label ""
-      :value brightness
-      :onchange "light -S {}")
+    (eventbox
+      :class "volume"
+      :cursor "pointer"
+      :onscroll "if [ '{}' == 'up' ]; then pamixer -u && pamixer -i 5; else pamixer -u && pamixer -d 5; fi"
+      :onclick "wezterm -e pulsemixer &"
+      :onmiddleclick "pamixer -t"
+      (label :text "󰕾 ${volume}")
+    )
+    (eventbox
+      :class "brightness"
+      :cursor "pointer"
+      :onscroll "if [ '{}' == 'up' ]; then light -A 5 ; else light -U 5; fi"
+      (label :text "󰃚 ${brightness}")
+    )
     (time)
+    (eventbox
+      :class "dunst"
+      :cursor "pointer"
+      :onclick "dunstctl set-paused toggle && notify-send Notifications on"
+      :onmiddleclick "notify-send History Cleared && sleep 2 && dunstctl close-all && dunstctl history-clear &"
+      :onrightclick "dunstctl history-pop"
+      (label :text "󰂚")
+    )
     (powerMenu)
   )
 )
@@ -130,11 +144,11 @@
 (defpoll music :interval "0.5s"
   "~/.scripts/player_song.sh")
 
-(defpoll volume :interval "1s"
-  "pamixer --get-volume")
+(defpoll volume :interval "0.1s"
+  "pamixer --get-volume-human")
 
-(defpoll brightness :interval "1s"
-  "light")
+(defpoll brightness :interval "0.1s"
+  "~/.scripts/light.sh")
 
 (defpoll activeWorkspace :interval "0.1s"
   "hyprctl activeworkspace -j | jq '.id'")

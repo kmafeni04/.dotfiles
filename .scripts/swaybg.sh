@@ -10,6 +10,3 @@ while true; do
     swaybg -m fill -i "$wallpaper" -o 1 &
     sleep 60
 done
-
-
-
