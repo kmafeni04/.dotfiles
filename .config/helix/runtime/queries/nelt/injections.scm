@@ -8,3 +8,6 @@
 
 ((val) @injection.content
  (#set! injection.language "nelua"))
+
+((nelt_comment_body) @injection.content
+ (#set! injection.language "comment"))

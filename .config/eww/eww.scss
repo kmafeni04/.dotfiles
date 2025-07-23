@@ -7,7 +7,7 @@
   background-color: #1a1b26;
   color: #9abdf5;
   padding: 10px;
-  font-family: "DejaVu Sans Nerd Font";
+  font-family: "DejaVuSansM Nerd Font Propo";
 }
 
 // Styles on classes (see eww.yuck for more information)
@@ -17,7 +17,8 @@
 .volume label,
 .brigthness label,
 .dunst label,
-.player-controls label {
+.player-controls label,
+.workspace label {
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -26,10 +27,6 @@
   color: #404e65;
 }
 
-.workspace label {
-  padding-left: 5px;
-  padding-right: 5px;
-}
 
 .workspace:hover {
   color: #9abdf5;

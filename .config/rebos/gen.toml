@@ -31,7 +31,6 @@ items = [
 items = [
     "adw-gtk-theme",
     "arandr",
-    "argon2",
     "auto-cpufreq",
     "baobab",
     "base",
@@ -104,6 +103,7 @@ items = [
     "openssl-1.1",
     "orca",
     "pamixer",
+    "perl-file-mimeinfo",
     "picom",
     "playerctl",
     "polkit-gnome",
@@ -140,6 +140,7 @@ items = [
     "trash-cli",
     "tree",
     "ttf-dejavu-nerd",
+    "ttf-ms-win11-auto",
     "unrar",
     "usbmuxd",
     "visual-studio-code-bin",
@@ -171,8 +172,6 @@ items = [
 # Packages to be installed via Flatpak.
 [managers.flatpak]
 items = [
-    "io.github.flattool.Warehouse",
-    "de.schmidhuberj.tubefeeder",
     "app.drey.EarTag",
     "app.zen_browser.zen",
     "ca.desrt.dconf-editor",
@@ -186,9 +185,11 @@ items = [
     "com.spotify.Client",
     "com.usebottles.bottles",
     "com.valvesoftware.Steam",
+    "de.schmidhuberj.tubefeeder",
     "fr.handbrake.ghb",
     "io.bassi.Amberol",
     "io.github.celluloid_player.Celluloid",
+    "io.github.flattool.Warehouse",
     "it.mijorus.smile",
     "org.gnome.Boxes",
     "org.gnome.World.PikaBackup",

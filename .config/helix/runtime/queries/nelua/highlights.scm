@@ -1,5 +1,7 @@
 (hash_bang) @comment
 
+(identifier) @variable
+
 (ERROR) @error
 
 (comment) @comment
@@ -40,6 +42,8 @@
   "+"
   "-"
   "*"
+  "%"
+  "%%%"
   "/"
   "//"
   "///"
@@ -147,14 +151,14 @@
 (parameter (identifier) @variable.parameter)
 
 (function_call
+  (identifier) @function)
+
+(function_call
   (identifier) @function.builtin
   (#any-of? @function.builtin 
   "require" "print" "panic" "error" "assert" "check" "likely" "unlikely"
   "ipairs" "mipairs" "next" "mnext" "pairs" "mpairs" "select" "tostring"
   "tostringview" "tonumber" "tointeger" "type" "new" "delete" "collectgarbage"))
-
-(function_call
-  (identifier) @function)
 
 (function_call
   (preproc_expression) @function)
@@ -179,4 +183,3 @@
 
 (macro_function) @function.macro
 
-(identifier) @variable

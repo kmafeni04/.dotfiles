@@ -12,8 +12,8 @@
 (defwidget right []
   (box :class "right" :orientation "h" :space-evenly false :halign "end" :spacing 10
     (capsLock)
-    (playerControls)
     (music)
+    (playerControls)
     (gpaste)
     (systray :class "tray" :spacing 10)
     (eventbox

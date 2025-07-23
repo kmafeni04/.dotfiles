@@ -2,11 +2,14 @@
 
 sort_by = "natural"
 show_hidden = true
+ratio = [1, 2, 2]
+
+# [manager]
 
 [opener]
 
 text = [
-  {run = 'helix "$@"', block = true}
+  { run = '/home/kome/.dotfiles/.scripts/yazi-helix.sh "$@"', block = true }
 ]
 
 [open]
@@ -14,8 +17,9 @@ rules = [
 	{ mime = "text/*", use = "text" },
 	{ mime = "image/*", use = "image" },
 
-	# { mime = "application/json", use = "text" },
-	{ name = "*.json", use = "text" },
+	{ mime = "application/json", use = "text" },
+	{ mime = "application/javascript", use = "text" },
+	# { name = "*.json", use = "text" },
 
 	# Multiple openers for a single rule
 	{ name = "*.html", use = [ "browser", "text" ] },

@@ -54,11 +54,8 @@ alias 'ysy'='yay -Syy' # update mirrors
 # alias 'flr'='flatpak remove -y'
 alias 'fls'='flatpak search'
 
-# alias 'pa'='cat ~/Desktop/Packages.txt'
-# alias 'pq'='cat ~/Desktop/Packages.txt | grep -i'
-
-alias 'hx'='helix'
-alias 'nv'='nvim'
+# alias 'hx'='helix'
+# alias 'nv'='nvim'
 
 alias 'lps'='eval $(luarocks path --lua-version=5.1) && lapis server'
 alias 'bs'='browser-sync start --config bs-config.js'
@@ -69,6 +66,8 @@ alias 'tp'='trash-put'
 alias 'lua'='eval $(luarocks path --lua-version=5.4) && lua5.4'
 alias 'lua5.1'='eval $(luarocks path --lua-version=5.1) && lua5.1'
 
+alias 'grep'='grep --colour'
+
 # Prompt colors
 
 red=$(tput setaf 1)
@@ -76,7 +75,6 @@ green=$(tput setaf 2)
 blue=$(tput setaf 4)
 reset=$(tput sgr0)
 PS1='\[$red\]\u\[$reset\]@\[$green\]\h\[$reset\]:\[$blue\]\w\[$reset\]\$ '
-
 
 export EDITOR=helix
 
@@ -98,3 +96,8 @@ COMPREPLY=( $( COMP_WORDS="${COMP_WORDS[*]}" \
 }
 complete -o default -F _pip_completion pip
 # pip bash completion end
+
+hx(){
+  echo -en "\033]0;helix\a"
+	helix $@
+}

@@ -1,7 +1,7 @@
 theme = "tokyonight"
 
 [editor]
-line-number = "relative"
+# line-number = "relative"
 bufferline = "multiple"
 auto-save = true
 color-modes = true
@@ -87,7 +87,7 @@ display-messages = true
 # Create new buffer
 "C-n" = ":n"
 # Paste from the clipboard and replace highlighted text
-"C-V" = ":clipboard-paste-replace"
+"A-v" = ":clipboard-paste-replace"
 # Move line up
 "A-up" = [
   "extend_line", 
@@ -125,7 +125,7 @@ display-messages = true
 ]
 
 [keys.normal."space"]
-# Open file picker in current directory
+# Open file picker in current file's directory
 o = "file_picker_in_current_buffer_directory"
 # Copy zenity color selction to clipboard
 "c" = ":insert-output zenity --color-selection 2> /dev/null"
@@ -160,3 +160,8 @@ C-s = [":w", "normal_mode"]
   "search_selection",
   "global_search",
 ]
+
+[keys.normal.";"]
+# Run the current file based on my predefined cases
+r = ":sh /home/kome/.scripts/helix-run.sh %{buffer_name}"
+f = ":sh /home/kome/.dotfiles/.scripts/helix-yazi.sh %{buffer_name}"
