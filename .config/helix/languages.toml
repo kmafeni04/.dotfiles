@@ -17,7 +17,7 @@ args = ["--stdio"]
 [language-server.nelua-lsp]
 command = "nelua"
 args = [
-  "-L", 
+  "-L",
   "/home/kome/Documents/code-projects/languages/lua/nelua-lsp",
   "--script",
   "/home/kome/Documents/code-projects/languages/lua/nelua-lsp/main.lua",
@@ -69,7 +69,7 @@ auto-format = true
 
 [[language]]
 name = "tsx"
-formatter = { command = "prettier" , args = ["--parser","typescript"] }
+formatter = { command = "prettier" , args = ["--parser","typescript","--plugin=prettier-plugin-tailwindcss"] }
 auto-format = true
 language-servers = ["emmet-lsp", "typescript-language-server", "tailwindcss-language-server"]
 
@@ -107,7 +107,7 @@ source = { git = "https://github.com/kmafeni04/tree-sitter-nelt", rev = "c0e6389
 [[language]]
 name = "nelt"
 file-types = ["nelt"]
-block-comment-tokens = { start = "<!--", end = "-->"}
+block-comment-tokens = { start = "{#", end = "#}" }
 injection-regex = "nelt"
 scope = "source.nelt"
 grammar = "nelt"
@@ -118,16 +118,24 @@ auto-format = true
 
 [[grammar]]
 name = "nelua"
-source = { git = "https://github.com/kmafeni04/tree-sitter-nelua", rev = "a31404406a1e3b8f482d8278685719b3d8bcc421" }
+source = { git = "https://github.com/kmafeni04/tree-sitter-nelua", rev = "970cac35696b8e45bac9c78870d02e91bd953b10" }
 # source = { path = "/home/kome/Documents/code-projects/random/tree-sitter-nelua" }
 
 [[language]]
 name = "nelua"
 file-types = ["nelua"]
 comment-tokens = "--"
-block-comment-tokens = { start = "--[[", end = "]]"}
+block-comment-tokens = { start = "--[[", end = "]]" }
 injection-regex = "nelua"
 scope = "source.nelua"
 indent = { tab-width = 2, unit = "  " }
 # language-servers = ["nelua-lsp"]
+language-servers = ["buffer-completions-lsp"]
+
+# Temporary
+[[language]]
+name = "nim"
+file-types = ["mani"]
+# block-comment-tokens = { start = "/*", end = "*/"}
+indent = { tab-width = 2, unit = "  " }
 language-servers = ["buffer-completions-lsp"]

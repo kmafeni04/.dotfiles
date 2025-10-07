@@ -74,7 +74,7 @@
   "defer"
   "in"
   "do"
-  "return" 
+  "return"
   (break)
   "in"
   "defer"
@@ -106,11 +106,11 @@
 ((identifier) @variable.builtin
  (#eq? @variable.builtin "self"))
 
-((identifier) @constant
- (#match? @constant "^[A-Z][A-Z_0-9]*$"))
-
 (variable_list
   (identifier) @variable)
+
+((identifier) @constant
+ (#match? @constant "^[A-Z][A-Z_0-9]*$"))
 
 (annotation
   ["<"">"] @punctuation.brakcet)
@@ -155,7 +155,7 @@
 
 (function_call
   (identifier) @function.builtin
-  (#any-of? @function.builtin 
+  (#any-of? @function.builtin
   "require" "print" "panic" "error" "assert" "check" "likely" "unlikely"
   "ipairs" "mipairs" "next" "mnext" "pairs" "mpairs" "select" "tostring"
   "tostringview" "tonumber" "tointeger" "type" "new" "delete" "collectgarbage"))

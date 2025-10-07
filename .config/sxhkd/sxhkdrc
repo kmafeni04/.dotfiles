@@ -3,7 +3,7 @@
 #Restart bspwm and sxhkd
 super + shift + r
 	bspc wm -r && notify-send BSPWN Restarted && \
-	pkill -USR1 -x sxhkd && notify-send SXHKD Restarted
+	pkill -USR1 -x sxhkd && notify-send SXHd Restarted
 
 #Quit bspwm
 ctrl + alt + Escape
@@ -34,11 +34,11 @@ ctrl + shift + alt + {Left,Right}
 	bspc node -f -d {prev,next} --follow
 
 ctrl + shift + {1,2,3,4,5,6,7,8,9}
-	bspc node -f -d {1,2,3,4,5,6,7,8,9} --follow	
+	bspc node -f -d {1,2,3,4,5,6,7,8,9} --follow
 
 #Change to specific Desktop
 ctrl + {1,2,3,4,5,6,7,8,9}
-	bspc desktop -f {1,2,3,4,5,6,7,8,9} 
+	bspc desktop -f {1,2,3,4,5,6,7,8,9}
 
 #Close application
 {super + q,alt + F4}
@@ -64,7 +64,7 @@ super + shift + alt + {Left,Down,Up,Right}
 
 #Move windows along the stack
 super + {Left,Down,Up,Right}
-	bspc node -s {west,south,north,east} --follow   
+	bspc node -s {west,south,north,east} --follow
 
 # # preselect the direction
 # super + alt + {Left,Down,Up,Right}
@@ -81,18 +81,14 @@ super + {Left,Down,Up,Right}
 # #Move focused window to preselected area
 # super + Return
 #     bspc node -n last.!automatic
-    
+
 # # cancel the preselection for the focused desktop
 # super + shift + alt + Escape
 # 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel!
 
 #Toggle compistor
 super + c
-	killall picom || picom & 
-
-#Terminal emulator
-ctrl + alt + t
-	wezterm &
+	killall picom || picom &
 
 #Program launchers
 super + a
@@ -101,30 +97,30 @@ super + a
 super + r
 	rofi -show run &
 
-super + 1 
+super + 1
 	flatpak run app.zen_browser.zen &
 
-super + 2 
+super + 2
 	nemo &
 
-super + 3 
+{super + 3, ctrl + alt + t, super + Return}
 	wezterm &
 
 super + 4
 	flatpak run com.spotify.Client &
 
-super + 5 
+super + 5
 	reaper &
 
 super + Tab
 	rofi -show window &
 
-super + e 
+super + e
 	flatpak run it.mijorus.smile &
 
 #Volume Keys
 {alt + F8, XF86AudioRaiseVolume}
-	pamixer -u && pamixer -i 5 
+	pamixer -u && pamixer -i 5
 
 {alt + F7, XF86AudioLowerVolume}
 	pamixer -u && pamixer -d 5
@@ -150,15 +146,15 @@ super + e
 	playerctl previous
 
 #Bar
-super + w 
-	killall polybar || polybar & 
+super + w
+	killall polybar || polybar &
 
 #Screenshot
 shift + Print
 	/home/kome/.scripts/scrot.sh &
 
 #Lock Screen
-super + l 
+super + l
 	magick /home/kome/.scripts/current_wallpaper.png -resize 1920x /home/kome/.scripts/current_wallpaper.png && \
 	i3lock -i /home/kome/.scripts/current_wallpaper.png -ef &
 

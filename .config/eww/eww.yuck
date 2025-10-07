@@ -30,6 +30,10 @@
       :onscroll "if [ '{}' == 'up' ]; then light -A 5 ; else light -U 5; fi"
       (label :text "󰃚 ${brightness}")
     )
+    (eventbox
+      :class "battery"
+      (label :text " ${battery}%")
+    )
     (time)
     (eventbox
       :class "dunst"
@@ -149,6 +153,9 @@
 
 (defpoll brightness :interval "0.1s"
   "~/.scripts/light.sh")
+
+(defpoll battery :interval "0.1s"
+  "cat /sys/class/power_supply/BAT0/capacity")
 
 (defpoll activeWorkspace :interval "0.1s"
   "hyprctl activeworkspace -j | jq '.id'")

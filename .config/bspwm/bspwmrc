@@ -1,14 +1,35 @@
 #! /bin/sh
 
-#autostart
 export LOGOUT_SCRIPT="bspc quit"
 export LOCK_SCRIPT="magick /home/kome/.scripts/current_wallpaper.png -resize 1920x /home/kome/.scripts/current_wallpaper.png && i3lock -i /home/kome/.scripts/current_wallpaper.png -ef &"
+
+#autostart
 pgrep -x xrdb > /dev/null || xrdb ~/.Xresources &
 pgrep -x sxhkd > /dev/null || sxhkd &
+xsetroot -cursor_name left_ptr &
+xset led 3 & # For generic led keyboards
+pgrep -x picom > /dev/null || picom &
+pgrep -x Nitrogen.sh > /dev/null  || /home/kome/.scripts/Nitrogen.sh &
+pgrep -x polybar > /dev/null || polybar &
+pgrep -x nm-applet > /dev/null || nm-applet &
+pgrep -x blueman-applet > /dev/null || blueman-applet &
+pgrep -x caffeine > /dev/null ||caffeine start &
+pgrep -x dunst > /dev/null || dunst &
+pgrep -x redshift > /dev/null || redshift &
+pgrep -x gpaste-daemon > /dev/null || gpaste-client start &
+pgrep -x mpris-proxy > /dev/null || mpris-proxy &
+pgrep -f "low_battery.lua" > /dev/null || lua /home/kome/.scripts/low_battery.lua &
+touchegg_count=$(pgrep -xc touchegg)
+[ "$touchegg_count" -le 1 ] && touchegg & # systemctl start touchegg
+
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+/lib/xdg-desktop-portal-gnome &
+dbus-update-activation-environment --systemd --all &
+pgrep -x xdman-beta > /dev/null || xdman-beta --background &
 
 #bspwm
 bspc monitor -d 1 2 3 4 5 6 7 8 9
- 
+
 bspc config border_width         2
 bspc config window_gap           0
 
@@ -38,44 +59,3 @@ bsp-layout set tall 6 --master-size 0.55
 bsp-layout set tall 7 --master-size 0.55
 bsp-layout set tall 8 --master-size 0.55
 bsp-layout set tall 9 --master-size 0.55
-
-#autostart
-xsetroot -cursor_name left_ptr &
-xset led 3 &
-pgrep -x picom > /dev/null || picom &
-pgrep -x Nitrogen.sh > /dev/null  || /home/kome/.scripts/Nitrogen.sh &
-pgrep -x polybar > /dev/null || polybar &
-pgrep -x nm-applet > /dev/null || nm-applet &
-pgrep -x blueman-applet > /dev/null || blueman-applet &
-pgrep -x caffeine > /dev/null ||caffeine start &
-pgrep -x dunst > /dev/null || dunst &
-pgrep -x redshift > /dev/null || redshift &
-pgrep -x gpaste-daemon > /dev/null || gpaste-client start &
-pgrep -x mpris-proxy > /dev/null || mpris-proxy &
-pgrep -f "low_battery.lua" > /dev/null || lua /home/kome/.scripts/low_battery.lua &
-touchegg_count=$(pgrep -xc touchegg)
-[ "$touchegg_count" -le 1 ] && touchegg & # systemctl start touchegg
-
-/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
-/lib/xdg-desktop-portal-gnome &
-dbus-update-activation-environment --systemd --all &
-pgrep -x xdman-beta > /dev/null || xdman-beta --background
-
-: '
-# Add to /etc/X11/xorg.conf.d/30-touchpad.conf
-Section "InputClass"
-        Identifier "libinput touchpad catchall"
-        MatchIsTouchpad "on"
-        MatchDevicePath "/dev/input/event*"
-        Driver "libinput"
-        Option "NaturalScrolling" "True"
-        Option "Tapping" "on"
-        Option "Emulate3Buttons" "yes"
-EndSection
-
-# Add to /etc/security/limits.conf
-@audio           -       rtprio          99
-@audio           -       memlock         unlimited
-@audio           -       nice            -19
-'
-

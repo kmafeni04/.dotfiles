@@ -14,7 +14,7 @@ case "$extension" in
     run_command="nlpm run nelua --cc=tcc $filename"
     ;;
   "lua")
-    run_command="lua $filename"
+    run_command="lua5.4 $filename || nlpm run nelua --script $filename"
     ;;
   "ts" | "js")
     run_command="node $filename"
@@ -22,11 +22,15 @@ case "$extension" in
   "py")
     run_command="python $filename"
     ;;
-  "html")
-    run_command="app.zen_browser.zen $basedir/$filename"
+  "go")
+    run_command="go run $filename"
     ;;
   "sh")
     run_command="bash $filename"
+    ;;
+  "html")
+    app.zen_browser.zen $basedir/$filename
+    exit 0
     ;;
   *)
     echo "No defined case for extension '$extension'"
@@ -35,11 +39,7 @@ case "$extension" in
 esac
 
 if [ ! -z "$run_command" ]; then
-  pane_id=$(wezterm cli get-pane-direction down)
-  if [ -z "${pane_id}" ]; then
-    pane_id=$(wezterm cli split-pane --bottom --percent 35)
-  fi
-  wezterm cli activate-pane --pane-id $pane_id
+  source ~/.scripts/helix-term.sh
 
   echo "${run_command}" | wezterm cli send-text --pane-id $pane_id --no-paste
 fi
