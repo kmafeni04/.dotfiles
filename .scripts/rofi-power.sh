@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 # Options
-shutdown="  Shutdown"
+shutdown="⏼  Shutdown"
 restart="󰜉 Restart"
 suspend="󰒲  Suspend"
 lock="  Lock"
