@@ -1,0 +1,171 @@
+#!/bin/sh
+
+#Toggle Bar
+super + w
+	killall polybar || polybar &
+
+#Toggle compistor
+super + c
+	killall picom || picom &
+
+#Program launchers
+super + 1
+	flatpak run app.zen_browser.zen
+
+super + 2
+	nemo
+
+{super + 3, ctrl + alt + t, super + Return}
+	wezterm
+
+super + 4
+	flatpak run com.spotify.Client
+
+super + 5
+	reaper
+
+super + e
+	flatpak run it.mijorus.smile
+
+#Rofi
+super + a
+	rofi -show drun
+
+super + r
+	rofi -show run
+
+super + Tab
+	rofi -show window
+
+#Screenshot
+shift + Print
+	/home/kome/.scripts/scrot.sh
+
+#Lock Screen
+super + l
+	magick /home/kome/.scripts/current_wallpaper.png -resize 1920x /home/kome/.scripts/current_wallpaper.png && \
+	i3lock -i /home/kome/.scripts/current_wallpaper.png -ef &
+
+#Volume Keys
+{alt + F8, XF86AudioRaiseVolume}
+	pamixer -u && pamixer -i 5
+
+{alt + F7, XF86AudioLowerVolume}
+	pamixer -u && pamixer -d 5
+
+{alt + F6, XF86AudioMute}
+	pamixer -t #mute
+
+#Brightness Keys
+{alt + F3, XF86MonBrightnessUp}
+	light -A 5
+
+{alt + F2, XF86MonBrightnessDown}
+	light -U 5
+
+#Media Keys
+{alt + F11, XF86AudioNext}
+	playerctl next
+
+{alt + F10, XF86AudioPlay}
+	playerctl play-pause
+
+{alt + F9, XF86AudioPrev}
+	playerctl previous
+
+super + shift + r
+	dkcmd restart && notify-send DK Restarted && \
+	pkill -USR1 -x sxhkd && notify-send SXHd Restarted
+
+# quit dk
+ctrl + alt + Escape
+	dkcmd exit
+
+# reload dkrc
+alt + shift + r
+	$HOME/.config/dk/dkrc
+
+# focus next window
+alt + Tab
+	dkcmd win focus next
+
+super + Right
+	dkcmd win focus right
+
+super + Left
+	dkcmd win focus left
+
+super + Right
+	dkcmd win focus right
+
+super + Right
+	dkcmd win focus right
+
+# close window, swap tiled window in/out of master
+super + {q,space}
+	dkcmd win {kill,swap}
+
+# close window, swap tiled window in/out of master, cycle tiled windows in place
+# super + {q,space,Tab}
+# 	dkcmd win {kill,swap,cycle}
+
+# toggle fullscreen and fake fullscreen (enable manipulating fullscreen window)
+super + f
+	dkcmd win full
+
+# toggle floating, sticky, or scratchpad
+super + {d,s,u}
+	dkcmd win {float,stick,scratch}
+	# alternatively to scratch a window by class "scratchpad"
+	#dkcmd win {float,stick,scratchpad scratch}
+
+# # move window, signed (+/-) for relative changes, for tiled windows
+# # y coord changes will move the window up/down the stack
+# alt + shift + {h,j,k,l}
+# 	dkcmd win resize {x=-20,y=+20,y=-20,x=+20}
+
+# resize window, signed (+/-) for relative changes
+super + shift + {Left,Down,Up,Right}
+	dkcmd win resize {w=-20,h=-20,h=+20,w=+20}
+
+# # view, send, or follow to a workspace (by number)
+# alt + {_,shift + ,ctrl + }{1-6}
+# 	dkcmd ws {view,send,follow} {1-6}
+
+#Change Desktop
+ctrl + alt + {Left,Right}
+	dkcmd ws view {prev,next}
+
+#Move focused window to previous or next desktop
+ctrl + shift + alt + {Left,Right}
+	dkcmd ws follow {prev,next}
+
+ctrl + shift + {1-9}
+	dkcmd ws follow {1-9}
+
+#Change to specific Desktop
+ctrl + {1-9}
+	dkcmd ws view {1-9}
+
+# change active workspace layout or cycle between them
+super + {t,r,m,g,s,w,u,c}
+	dkcmd set layout {tile,rtile,mono,grid,spiral,dwindle,tstack,cycle}
+
+# change number of windows in master or first stack
+super + {_,shift + }{bracketleft,bracketright}
+	dkcmd set {master,stack} {-1,+1}
+
+# # change gap width
+# super + {equal,minus}
+# 	dkcmd set gap {+5,-5}
+
+# # change border widths
+# alt + ctrl + {_,shift + }{equal,minus}
+# 	dkcmd set border {width,outer_width} {+1,-1}
+
+#Power
+ctrl + shift + F4
+	poweroff
+
+ctrl + shift + F2
+	reboot

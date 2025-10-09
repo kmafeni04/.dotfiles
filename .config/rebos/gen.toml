@@ -38,6 +38,7 @@ items = [
     "auto-cpufreq",
     "baobab",
     "base",
+    "dk",
     "base-devel",
     "bc",
     "bitwarden",
