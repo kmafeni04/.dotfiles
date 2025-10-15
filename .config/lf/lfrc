@@ -1,0 +1,210 @@
+#!/bin/sh
+
+# Sets
+set shell sh
+set shellopts "-eu"
+set ifs "\n"
+set scrolloff 10
+set cursorpreviewfmt "\033[7;2m"
+set previewer "~/.config/lf/previewer"
+set icons
+set hidden
+set ignorecase
+set statfmt "\033[7;36m %M \033[0m| \033[36m%p\033[0m| %c| %u| %g| %S| %t| -> %l"
+set dupfilefmt "%b-%n%e"
+
+# Commands
+cmd on-redraw &{{
+  if [ $lf_width -le 40 ]; then
+    lf -remote "send $id set preview false"
+    lf -remote "send $id set ratios 1"
+  elif [ $lf_width -le 80 ]; then
+    lf -remote "send $id set preview true"
+    lf -remote "send $id set ratios 1:1"
+  elif [ $lf_width -le 160 ]; then
+    lf -remote "send $id set preview true"
+    lf -remote "send $id set ratios 1:1:2"
+  else
+    lf -remote "send $id set preview true"
+    lf -remote "send $id set ratios 1:1:2:4"
+  fi
+}}
+
+cmd on-load &{{
+  sleep 0.1
+  lf -remote "send $id :on-redraw"
+}}
+
+cmd open &{{
+  case $(file --mime-type -Lb $f) in
+    text/* | */json | */javascript)
+      /home/kome/.dotfiles/.scripts/lf-helix.sh "$f" &
+      ;;
+    *)
+      case $f in
+        *.nelua | *.env | *.tsx | *.ts)
+          /home/kome/.dotfiles/.scripts/lf-helix.sh "$f" &
+          ;;
+        *)
+          xdg-open "$f" &
+          ;;
+      esac
+      ;;
+  esac
+}}
+
+# extract the current file with the right command
+# (xkcd link: https://xkcd.com/1168/)
+cmd extract ${{
+  set -f
+  case $f in
+    *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf $f;;
+    *.tar.gz|*.tgz) tar xzvf $f;;
+    *.tar.xz|*.txz) tar xJvf $f;;
+    *.zip) unzip $f;;
+    *.rar) unrar x $f;;
+    *.7z) 7z x $f;;
+  esac
+}}
+
+# compress current file or selected files with tar and gunzip
+cmd tar ${{
+  set -f
+  mkdir $1
+  cp -r $fx $1
+  tar czf $1.tar.gz $1
+  rm -rf $1
+}}
+
+# compress current file or selected files with zip
+cmd zip ${{
+  set -f
+  mkdir $1
+  cp -r $fx $1
+  zip -r $1.zip $1
+  rm -rf $1
+}}
+
+cmd delete %{{
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  len=${#files[@]}
+
+  result=$( [ "$len" -gt 1 ] && echo "files" || echo "file" )
+
+  question="Trash ${len} ${result}?"
+
+  for file in "${files[@]}"; do
+    question="$question\n  $file"
+  done
+
+  zenity --question --text="${question}"
+
+  if [ $? -eq 1 ]; then
+    exit 1
+  fi
+
+  for file in "${files[@]}"; do
+    trash-put "$(basename "$file")"
+  done
+}}
+
+cmd trash-empty %{{
+  trash-empty
+  notify-send "Trash directory emptied"
+}}
+
+cmd create ${{
+  if [[ "$1" == */ ]]; then
+    mkdir -p "$1"
+  else
+    DIR_PATH=$(dirname "$1")
+    mkdir -p "$DIR_PATH"
+    touch "$1"
+  fi
+}}
+
+
+# Bindings
+
+# Unbinds
+map d
+map c
+map V
+
+map <c-q> quit
+
+nmap v visual
+vmap v visual-accept
+
+map d delete
+map <delete> delete
+map u ${{
+  echo
+  trash-restore
+}}
+
+map <esc> &{{
+  lf -remote "send $id clear"
+  lf -remote "send $id unselect"
+  lf -remote "send $id visual-discard"
+}}
+
+map "." set hidden!
+
+map p paste
+map x cut
+map y copy
+
+map e open
+map o open
+map <enter> open
+
+map <c-r> reload; on-redraw
+
+map ca &{{
+  # copy absolute path
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  for file in "${files[@]}"; do
+    gpaste-client add "$file"
+  done
+  notify-send "File paths added to clipboard"
+}}
+map ce ${{
+  # copy name without extension
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  for file in "${files[@]}"; do
+    gpaste-client add "$(basename "$file" | sed "s/\.[^.]*$//")"
+  done
+  notify-send "File names added to clipboard"
+}}
+map cn &{{
+  # copy name with extension
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  for file in "${files[@]}"; do
+    gpaste-client add $(basename "$file")
+  done
+  notify-send "File names added to clipboard"
+}}
+map cp &{{
+  # copy parent directory path
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  for file in "${files[@]}"; do
+    gpaste-client add $(dirname "$file")
+  done
+  notify-send "Parent directory paths added to clipboard"
+}}
+
+# show the result of execution of previous commands
+map ` !true
+
+map a push :create<space>
+
+# Movement
+map go cd ~/.config
+map gD cd ~/Documents
+map gd cd ~/Downloads
+map gp cd ~/Pictures
+map gv cd ~/Videos
+map gcc cd ~/Documents/code-projects
+map gcn cd ~/Documents/code-projects/languages/nelua
+map gcl cd ~/Documents/code-projects/languages/lua
