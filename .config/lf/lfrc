@@ -153,6 +153,38 @@ cmd chmod %{{
   lf -remote "send $id reload"
 }}
 
+cmd copy-absolute-path ${{
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  for file in "${files[@]}"; do
+    gpaste-client add "$file"
+  done
+  notify-send "File paths added to clipboard"
+}}
+
+cmd copy-name-w-ext ${{
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  for file in "${files[@]}"; do
+    gpaste-client add $(basename "$file")
+  done
+  notify-send "File names added to clipboard"
+}}
+
+cmd copy-name-wo-ext ${{
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  for file in "${files[@]}"; do
+    gpaste-client add "$(basename "$file" | sed "s/\.[^.]*$//")"
+  done
+  notify-send "File names added to clipboard"
+}}
+
+cmd copy-parent-dir-path ${{
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  for file in "${files[@]}"; do
+    gpaste-client add $(dirname "$file")
+  done
+  notify-send "Parent directory paths added to clipboard"
+}}
+
 # Bindings
 
 # Unbinds
@@ -197,39 +229,10 @@ map <c-r> :{{
   source "~/.config/lf/lfrc"
 }}
 
-map ca &{{
-  # copy absolute path
-  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
-  for file in "${files[@]}"; do
-    gpaste-client add "$file"
-  done
-  notify-send "File paths added to clipboard"
-}}
-map ce ${{
-  # copy name without extension
-  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
-  for file in "${files[@]}"; do
-    gpaste-client add "$(basename "$file" | sed "s/\.[^.]*$//")"
-  done
-  notify-send "File names added to clipboard"
-}}
-map cn &{{
-  # copy name with extension
-  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
-  for file in "${files[@]}"; do
-    gpaste-client add $(basename "$file")
-  done
-  notify-send "File names added to clipboard"
-}}
-map cp &{{
-  # copy parent directory path
-  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
-  for file in "${files[@]}"; do
-    gpaste-client add $(dirname "$file")
-  done
-  notify-send "Parent directory paths added to clipboard"
-}}
-
+map ca copy-absolute-path
+map cn copy-name-w-ext
+map ce copy-name-wo-ext
+map cp copy-parent-dir-path
 # show the result of execution of previous commands
 map ` !true
 
