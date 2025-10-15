@@ -35,6 +35,8 @@ cmd on-load &{{
   lf -remote "send $id :on-redraw"
 }}
 
+cmd paste-img %xclip -selection clipboard -target image/png -o > "pasted-image.png"
+
 cmd open &{{
   case $(file --mime-type -Lb $f) in
     text/* | */json | */javascript)
@@ -123,25 +125,18 @@ cmd create ${{
   fi
 }}
 
-
 # Bindings
 
 # Unbinds
 map d
 map c
 map V
+map p
 
 map <c-q> quit
 
 nmap v visual
 vmap v visual-accept
-
-map d delete
-map <delete> delete
-map u ${{
-  echo
-  trash-restore
-}}
 
 map <esc> &{{
   lf -remote "send $id clear"
@@ -151,7 +146,16 @@ map <esc> &{{
 
 map "." set hidden!
 
-map p paste
+map a push :create<space>
+
+map d delete
+map <delete> delete
+map u ${{
+  echo
+  trash-restore
+}}
+map pp paste
+map pi paste-img
 map x cut
 map y copy
 
@@ -159,7 +163,11 @@ map e open
 map o open
 map <enter> open
 
-map <c-r> reload; on-redraw
+map <c-r> :{{
+  reload
+  on-redraw
+  source "~/.config/lf/lfrc"
+}}
 
 map ca &{{
   # copy absolute path
@@ -196,8 +204,6 @@ map cp &{{
 
 # show the result of execution of previous commands
 map ` !true
-
-map a push :create<space>
 
 # Movement
 map go cd ~/.config
