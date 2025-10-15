@@ -8,7 +8,7 @@ if wezterm.config_builder then
 end
 
 config.enable_wayland = false
-config.window_decorations = "NONE"
+config.window_decorations = "RESIZE"
 config.color_scheme = "Tokyo Night"
 config.window_background_opacity = 0.8
 config.enable_tab_bar = false
