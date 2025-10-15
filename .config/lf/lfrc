@@ -140,6 +140,19 @@ cmd create ${{
   fi
 }}
 
+cmd chmod %{{
+  if [ -z "${1+x}" ] || [ "$1" == "" ]; then
+    echo "No params set" >&2
+    exit 1
+  fi
+
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  for file in "${files[@]}"; do
+    chmod $1 "$file"
+  done
+  lf -remote "send $id reload"
+}}
+
 # Bindings
 
 # Unbinds
