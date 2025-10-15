@@ -48,6 +48,7 @@ bspc rule -a Blueman-manager state=floating center=true
 bspc rule -a gnome-calculator state=floating center=true
 bspc rule -a xdman-Main state=floating center=true
 bspc rule -a Localsend state=tiled
+bspc rule -a REAPER state=tiled
 bspc rule -a i3lock state=fullscreen
 
 bsp-layout set tall 1 --master-size 0.55

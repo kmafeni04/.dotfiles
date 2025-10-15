@@ -154,6 +154,7 @@ fi
 	# open window(s) in a floating state
 	dkcmd rule class="^(pavucontrol|transmission-gtk|steam|lxappearance)$" float=true
 
+	dkcmd rule class="^REAPER$" float=false
 	dkcmd rule class="^zenity$" float=true x=center y=center
 	dkcmd rule class="^smile$" float=true x=center y=center
 	dkcmd rule class="^Blueman-manager$" float=true x=center y=center
