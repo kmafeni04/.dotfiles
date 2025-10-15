@@ -69,7 +69,8 @@ auto-format = true
 
 [[language]]
 name = "tsx"
-formatter = { command = "prettier" , args = ["--parser","typescript","--plugin=prettier-plugin-tailwindcss"] }
+# formatter = { command = "prettier" , args = ["--parser","typescript","--plugin=prettier-plugin-tailwindcss"] }
+formatter = { command = "prettier" , args = ["--parser","typescript"] }
 auto-format = true
 language-servers = ["emmet-lsp", "typescript-language-server", "tailwindcss-language-server"]
 
@@ -84,6 +85,10 @@ name = "blade"
 formatter = { command = "blade-formatter", args = ["--stdin"] }
 language-servers = ["emmet-lsp", "vscode-html-language-server", "intelephense"]
 auto-format = true
+
+[[language]]
+name = "bash"
+indent = { tab-width = 2, unit = "  " }
 
 [[grammar]]
 name = "etlua"
