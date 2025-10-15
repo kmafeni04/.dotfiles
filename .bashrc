@@ -36,7 +36,7 @@ alias 'ls'='ls --hyperlink --color=auto'
 
 alias 'sup'='rebos managers upgrade --sync'
 alias 'sups'='rebos managers upgrade --sync && poweroff'
-alias 'rconf'='helix ~/.config/rebos/gen.toml'
+alias 'rconf'='hx ~/.config/rebos/gen.toml'
 alias 'rclean'='rebos gen tidy-up'
 alias 'rcommit'='rebos gen commit'
 alias 'rswitch'='rebos gen current to-latest && rebos gen current build'
@@ -100,4 +100,20 @@ complete -o default -F _pip_completion pip
 hx(){
   echo -en "\033]0;helix\a"
 	helix $@
+}
+
+# For helix-lf script
+if type lf &>/dev/null; then
+  original_lf=lf
+else
+  original_lf=false  # Set to false if not defined
+fi
+
+lf() {
+  echo -en "\033]0;lf\a"
+  if [ "$original_lf" != false ]; then
+    command "$original_lf" "$@"
+  else
+  	exit 1
+  fi
 }
