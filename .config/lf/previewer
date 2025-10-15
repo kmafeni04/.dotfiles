@@ -19,16 +19,16 @@ case "$(file -Lb --mime-type -- "$1")" in
   text/*|*json)
     bat -p --theme=ansi --terminal-width "$(($4-2))" -f "$1"
     ;;
-	*/pdf)
+  */pdf)
     CACHE="${CACHE_ROOT}/thumb.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)"
-    if [ ! -f "$CACHE_JPG" ] || [ "$1" -nt "$CACHE_JPG" ]; then
-        pdftoppm -jpeg -f 1 -singlefile "$1" "$CACHE"
+    CACHE="$CACHE.jpg"
+    if [ ! -f "$CACHE" ] || [ "$1" -nt "$CACHE" ]; then
+      pdftoppm -jpeg -f 1 -singlefile "$1" "$CACHE"
     fi
-    image "$CACHE.jpg" "40" "60"
+    image "$CACHE" "40" "60"
     ;;
-   *)
-    echo "----- FILE INFO -----"
-    echo ""
+  *)
+    echo -e "----- FILE INFO -----\n"
     stat "$1"
     ;;
 esac

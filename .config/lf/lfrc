@@ -35,7 +35,18 @@ cmd on-load &{{
   lf -remote "send $id :on-redraw"
 }}
 
-cmd paste-img %xclip -selection clipboard -target image/png -o > "pasted-image.png"
+cmd paste-img %{{
+  name="pasted-image"
+  new_name="$name"
+  i=0
+  while [ -f "$new_name.png" ]; do
+    i=$((i+1))
+    new_name="$name-$i"
+  done
+  name="$new_name.png"
+
+  wl-paste -l >> /dev/null && wl-paste --type image/png > "$name" || xclip -selection clipboard -target image/png -o > "$name"
+}}
 
 cmd open &{{
   case $(file --mime-type -Lb $f) in
@@ -48,7 +59,7 @@ cmd open &{{
           /home/kome/.dotfiles/.scripts/lf-helix.sh "$f" &
           ;;
         *)
-          xdg-open "$f" &
+          xdg-open "$f" & disown
           ;;
       esac
       ;;
@@ -99,15 +110,19 @@ cmd delete %{{
     question="$question\n  $file"
   done
 
-  zenity --question --text="${question}"
+  yes="Yes"
+  no="No"
+  options="$yes\n$no"
 
-  if [ $? -eq 1 ]; then
-    exit 1
-  fi
-
-  for file in "${files[@]}"; do
-    trash-put "$(basename "$file")"
-  done
+  chosen="$(echo -e "$options" | rofi -theme-str 'entry { enabled: false;}' -i -show -p "$(echo -e "$question")" -dmenu -selected-row 0)"
+  case $chosen in
+    $yes)
+      echo "Deleting..."
+      for file in "${files[@]}"; do
+        trash-put "$(basename "$file")"
+      done
+      ;;
+  esac
 }}
 
 cmd trash-empty %{{
