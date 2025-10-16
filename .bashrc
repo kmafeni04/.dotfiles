@@ -102,18 +102,7 @@ hx(){
 	helix $@
 }
 
-# For helix-lf script
-if type lf &>/dev/null; then
-  original_lf=lf
-else
-  original_lf=false  # Set to false if not defined
-fi
-
 lf() {
   echo -en "\033]0;lf\a"
-  if [ "$original_lf" != false ]; then
-    command "$original_lf" "$@"
-  else
-  	exit 1
-  fi
+  /usr/bin/lf "$@"
 }

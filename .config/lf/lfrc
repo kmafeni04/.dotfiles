@@ -56,6 +56,10 @@ cmd paste-img %{{
   xclip -selection clipboard -target image/png -o > "$name"
 }}
 
+cmd term %{{
+  wezterm start --cwd "$PWD" & disown
+}}
+
 cmd open &{{
   case $(file --mime-type -Lb $f) in
     text/* | */json | */javascript)
@@ -145,8 +149,19 @@ cmd delete %{{
 }}
 
 cmd trash-empty %{{
-  trash-empty
-  notify-send "Trash directory emptied"
+  question="Are you sure you would like to empty your trash directory"
+  yes="Yes"
+  no="No"
+  options="$yes\n$no"
+
+  chosen="$(echo -e "$options" | rofi -theme-str 'entry { enabled: false;}' -i -show -p "$question" -dmenu -selected-row 0)"
+  case $chosen in
+    $yes)
+      echo "Emptying trash directoru..."
+      trash-empty
+      echo "Trash directory emptied"
+      ;;
+  esac
 }}
 
 cmd create ${{
@@ -207,7 +222,6 @@ cmd copy-parent-dir-path ${{
 # Bindings
 
 # Unbinds
-map d
 map c
 map V
 map p
@@ -230,21 +244,23 @@ map "." set hidden!
 
 map a push :create<space>
 
-map dd delete
-map df drag-from
+map D drag-from
+
+map d delete
 map <delete> delete
 map u ${{
   echo
   trash-restore
 }}
-map pp paste
-map pi paste-img
+map p paste
+map P paste-img
 map x cut
 map y copy
 
 map e open
 map o open
 map <enter> open
+map O open-with
 
 map <c-r> :{{
   reload
@@ -260,12 +276,13 @@ map cp copy-parent-dir-path
 map ` !true
 
 # Movement
-map gD cd ~/Documents
-map gd cd ~/Downloads
+map gd cd ~/Documents
+map gw cd ~/Downloads
 map gp cd ~/Pictures
 map gs cd ~/Pictures/screenshots
 map gv cd ~/Videos
 map gco cd ~/.config
 map gcp cd ~/Documents/code-projects
+map gce cd ~/Documents/code-projects/external-work
 map gcn cd ~/Documents/code-projects/languages/nelua
 map gcl cd ~/Documents/code-projects/languages/lua
