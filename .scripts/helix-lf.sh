@@ -1,3 +1,5 @@
+set -e
+
 pane_id=$(wezterm cli get-pane-direction left)
 if [ -z "${pane_id}" ]; then
   pane_id=$(wezterm cli split-pane --left --percent 20)

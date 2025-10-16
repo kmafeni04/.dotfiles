@@ -1,7 +1,9 @@
 #!/bin/sh
 
+set -e
+
 filename="$1"
-basedir=$(realpath $(dirname "$filename"))
+basedir=$(realpath "$(dirname "$filename" | sed "s|^~|$HOME|")")
 basename=$(basename "$filename")
 basename_without_extension="${basename%.*}"
 extension="${filename##*.}"

@@ -170,3 +170,4 @@ display-messages = true
 t = ":sh /home/kome/.scripts/helix-term.sh"
 r = ":sh /home/kome/.scripts/helix-run.sh '%{buffer_name}'"
 f = ":sh /home/kome/.scripts/helix-lf.sh '%{buffer_name}'"
+l = ":sh /home/kome/.scripts/helix-term.sh lazygit"
