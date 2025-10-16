@@ -4,7 +4,7 @@ configuration {
   display-run: "Run:";
   drun-display-format: "{name}";
   font: "JetBrainsMono Nerd Font Medium 12";
-  modi: "window,run,drun";
+  modi: "window,run,drun,emoji";
   sort: true;
   disable-history: true;
   show-icons: true;

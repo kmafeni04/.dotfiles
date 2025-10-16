@@ -9,7 +9,7 @@ pgrep -x sxhkd > /dev/null || sxhkd &
 xsetroot -cursor_name left_ptr &
 xset led 3 & # For generic led keyboards
 pgrep -x picom > /dev/null || picom &
-pgrep -x Nitrogen.sh > /dev/null  || /home/kome/.scripts/Nitrogen.sh &
+pgrep -x bg.sh > /dev/null  || /home/kome/.scripts/bg.sh &
 pgrep -x polybar > /dev/null || polybar &
 pgrep -x nm-applet > /dev/null || nm-applet &
 pgrep -x blueman-applet > /dev/null || blueman-applet &
@@ -31,9 +31,9 @@ pgrep -x xdman-beta > /dev/null || xdman-beta --background &
 bspc monitor -d 1 2 3 4 5 6 7 8 9
 
 bspc config border_width         2
-bspc config window_gap           0
+bspc config window_gap           10
 
-bspc config split_ratio          0.5
+# bspc config split_ratio          0.5
 bspc config borderless_monocle   true
 bspc config gapless_monocle      true
 bspc config focus_follows_pointer true
@@ -43,13 +43,10 @@ bspc config normal_border_color \#03032F
 
 bspc rule -a zenity state=floating center=true
 bspc rule -a smile state=floating  center=true
-bspc rule -a pavucontrol state=floating center=true
 bspc rule -a Blueman-manager state=floating center=true
-bspc rule -a gnome-calculator state=floating center=true
 bspc rule -a xdman-Main state=floating center=true
 bspc rule -a Localsend state=tiled
 bspc rule -a REAPER state=tiled
-bspc rule -a i3lock state=fullscreen
 
 bsp-layout set tall 1 --master-size 0.55
 bsp-layout set tall 2 --master-size 0.55

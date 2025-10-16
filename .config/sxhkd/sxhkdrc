@@ -101,7 +101,7 @@ super + 1
 	flatpak run app.zen_browser.zen &
 
 super + 2
-	nemo &
+	wezterm -e lf &
 
 {super + 3, ctrl + alt + t, super + Return}
 	wezterm &
@@ -116,7 +116,7 @@ super + Tab
 	rofi -show window &
 
 super + e
-	flatpak run it.mijorus.smile &
+	rofi -show emoji -emoji-mode copy
 
 #Volume Keys
 {alt + F8, XF86AudioRaiseVolume}
@@ -151,7 +151,7 @@ super + w
 
 #Screenshot
 shift + Print
-	/home/kome/.scripts/scrot.sh &
+	/home/kome/.scripts/screenshot.sh &
 
 #Lock Screen
 super + l

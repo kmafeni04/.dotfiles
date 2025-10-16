@@ -50,8 +50,5 @@ if ! cmp -s "$touchpad_30_path" /etc/X11/xorg.conf.d/30-touchpad.conf; then
   OFSUDO=1 overwrite_file "$touchpad_30_path" /etc/X11/xorg.conf.d/30-touchpad.conf || exit 1
 fi
 
-# Proper nemo open in terminal
-gsettings set org.cinnamon.desktop.default-applications.terminal exec /home/kome/.scripts/wezterm_nemo.sh
-
 # Sober overrides
 flatpak override --user --filesystem=xdg-run/app/com.discordapp.Discord:create --filesystem=xdg-run/discord-ipc-0 --device=input org.vinegarhq.Sober
