@@ -14,7 +14,7 @@
     (capsLock)
     (music)
     (playerControls)
-    (gpaste)
+    (clip)
     (systray :class "tray" :spacing 10)
     (eventbox
       :class "volume"
@@ -55,11 +55,13 @@
   )
 )
 
-(defwidget gpaste[]
+(defwidget clip[]
   (eventbox
-    :class "gpaste"
+    :class "clip"
     :cursor "pointer"
-    :onclick "gpaste-client ui"
+    :onclick "/home/kome/.scripts/clip.sh sel &"
+    :onmiddleclick "/home/kome/.scripts/clip.sh clear &"
+    :onrightclick "/home/kome/.scripts/clip.sh recopy &"
     (label :text "")
   )
 )
