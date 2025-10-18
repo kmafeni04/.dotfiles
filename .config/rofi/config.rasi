@@ -29,8 +29,8 @@ configuration {
 
 window {
   width: 30%;
-  border: 2px;
-  border-color: #0B0BB4;
+  border: 1px;
+  border-color: #9ABDF5;
 }
 
 element {

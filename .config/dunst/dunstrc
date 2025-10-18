@@ -88,14 +88,14 @@
     horizontal_padding = 8
 
     # Padding between text and icon.
-    text_icon_padding = 0
+    text_icon_padding = 8
 
     # Defines width in pixels of frame around the notification window.
     # Set to 0 to disable.
-    frame_width = 3
+    frame_width = 1
 
     # Defines color of the frame around the notification window.
-    frame_color = "#1a1b26"
+    frame_color = "#9abdf5"
 
     # Size of gap to display between notifications - requires a compositor.
     # If value is greater than 0, separator_height will be ignored and a border
@@ -214,7 +214,7 @@
     min_icon_size = 0
 
     # Scale larger icons down to this size, set to 0 to disable
-    max_icon_size = 32
+    max_icon_size = 27
 
     # Paths to default icons (only neccesary when not using recursive icon lookup)
     icon_path = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
@@ -317,14 +317,14 @@
     foreground = "#9ABDF5"
     timeout = 2
     # Icon for notifications with low urgency, uncomment to enable
-    #default_icon = /path/to/icon
+    default_icon = /home/kome/.config/dunst/normal.png
 
 [urgency_normal]
     background = "#1a1b26"
     foreground = "#9ABDF5"
     timeout = 4
     # Icon for notifications with normal urgency, uncomment to enable
-    #default_icon = /path/to/icon
+    default_icon = /home/kome/.config/dunst/normal.png
 
 [urgency_critical]
     background = "#900000"
@@ -332,7 +332,7 @@
     frame_color = "#ff0000"
     timeout = 0
     # Icon for notifications with critical urgency, uncomment to enable
-    #default_icon = /path/to/icon
+    default_icon = /home/kome/.config/dunst/critical.png
 
 # Every section that isn't one of the above is interpreted as a rules to
 # override settings for certain messages.
