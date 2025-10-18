@@ -169,3 +169,12 @@ ctrl + shift + F4
 
 ctrl + shift + F2
 	reboot
+
+super + shift + c
+	$HOME/.scripts/clip.sh copy
+
+super + shift + v
+	$HOME/.scripts/clip.sh recopy
+
+super + shift + s
+	$HOME/.scripts/clip.sh sel
