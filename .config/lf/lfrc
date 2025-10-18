@@ -220,17 +220,21 @@ cmd copy-parent-dir-path &{{
 }}
 
 cmd copy-image &{{
+  set +e # So i can actually check if it's an image and pass a notfication
   IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
   for file in "${files[@]}"; do
-    if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-      notify-send "TODO: screenshot wayland"
+    is_img=$(file -Lb --mime-type -- "$file" | grep "image/" 2>/dev/null)
+    if [ -z "$is_img" ]; then
+      notify-send "'$file' is not an image"
       exit 1
+    fi
+    if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+      wl-copy -t image/png < "$file"
     else
       xclip -selection clipboard -target image/png -i "$file"
     fi
     $HOME/.scripts/clip.sh recopy
   done
-  notify-send "Parent directory paths added to clipboard"
 }}
 
 # Bindings
