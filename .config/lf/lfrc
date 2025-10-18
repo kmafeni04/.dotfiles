@@ -237,6 +237,7 @@ cmd copy-image &{{
 
 # Unbinds
 map c
+map d
 map V
 map p
 map G
@@ -258,16 +259,16 @@ map "." set hidden!
 
 map a push :create<space>
 
-map D drag-from
+map dr drag-from
 
-map d delete
+map dd delete
 map <delete> delete
 map u ${{
   echo
   trash-restore
 }}
-map p paste
-map P paste-img
+map pp paste
+map pi paste-img
 map x cut
 map y copy
 
