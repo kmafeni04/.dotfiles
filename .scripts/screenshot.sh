@@ -1,15 +1,19 @@
 #!/bin/env bash
 
 name=$(date '+Screenshot_20%y-%m-%d_%H:%M:%S')
-screenshotDir=~/Pictures/screenshots
-mkdir -p "$screenshotDir"
+screenshot_dir=~/Pictures/screenshots
+path="$screenshot_dir/$name.png"
+mkdir -p "$screenshot_dir"
 
 if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-  grim "$screenshotDir/$name.png"
+  notify-send "TODO: screenshot wayland"
+  exit 1
+  grim "$path"
 else
-  scrot "$screenshotDir/$name.png"
+  scrot "$path"
+  xclip -selection clipboard -target image/png -i "$path"
 fi
 
-xclip -selection clipboard -target image/png -i "$screenshotDir/$name.png"
+$HOME/.scripts/clip.sh recopy
 
-notify-send "$name saved to clipboard and disk"
+notify-send "Image saved to '$path'"

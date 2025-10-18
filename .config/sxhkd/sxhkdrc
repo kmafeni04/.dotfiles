@@ -48,8 +48,8 @@ ctrl + {1,2,3,4,5,6,7,8,9}
 alt + Tab
 	bspc node -f next.local.!hidden.window
 
-super + alt + {Left,Right}
-	bspc node -f {next,prev}.local.!hidden.window
+super + shift + {Left,Down,Up,Right}
+	bspc node -f {west,south,north,east}.local.!hidden.window
 
 alt + shift + Tab
 	bspc node -f prev.local.!hidden.window
@@ -164,3 +164,12 @@ ctrl + shift + F4
 
 ctrl + shift + F2
 	reboot
+
+super + shift + c
+	$HOME/.scripts/clip.sh copy
+
+super + shift + v
+	$HOME/.scripts/clip.sh recopy
+
+super + shift + s
+	$HOME/.scripts/clip.sh sel

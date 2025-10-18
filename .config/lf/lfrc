@@ -40,7 +40,7 @@ cmd on-load &{{
 # }}
 
 cmd drag-from %{{
-  dragon-drop -x -a "$fx"
+  dragon-drop -x -a $fx
 }}
 
 cmd paste-img %{{
@@ -56,7 +56,7 @@ cmd paste-img %{{
   xclip -selection clipboard -target image/png -o > "$name"
 }}
 
-cmd term %{{
+cmd term &{{
   wezterm start --cwd "$PWD" & disown
 }}
 
@@ -187,34 +187,48 @@ cmd chmod %{{
   lf -remote "send $id reload"
 }}
 
-cmd copy-absolute-path ${{
+cmd copy-absolute-path &{{
   IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
   for file in "${files[@]}"; do
-    gpaste-client add "$file"
+    $HOME/.scripts/clip.sh add "$file"
   done
   notify-send "File paths added to clipboard"
 }}
 
-cmd copy-name-w-ext ${{
+cmd copy-name-w-ext &{{
   IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
   for file in "${files[@]}"; do
-    gpaste-client add $(basename "$file")
+    $HOME/.scripts/clip.sh add $(basename "$file")
   done
   notify-send "File names added to clipboard"
 }}
 
-cmd copy-name-wo-ext ${{
+cmd copy-name-wo-ext &{{
   IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
   for file in "${files[@]}"; do
-    gpaste-client add "$(basename "$file" | sed "s/\.[^.]*$//")"
+    $HOME/.scripts/clip.sh add "$(basename "$file" | sed "s/\.[^.]*$//")"
   done
   notify-send "File names added to clipboard"
 }}
 
-cmd copy-parent-dir-path ${{
+cmd copy-parent-dir-path &{{
   IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
   for file in "${files[@]}"; do
-    gpaste-client add $(dirname "$file")
+    $HOME/.scripts/clip.sh add $(dirname "$file")
+  done
+  notify-send "Parent directory paths added to clipboard"
+}}
+
+cmd copy-image &{{
+  IFS=";" read -r -a files <<< "$(echo "$fx" | tr "\n" ";")"
+  for file in "${files[@]}"; do
+    if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+      notify-send "TODO: screenshot wayland"
+      exit 1
+    else
+      xclip -selection clipboard -target image/png -i "$file"
+    fi
+    $HOME/.scripts/clip.sh recopy
   done
   notify-send "Parent directory paths added to clipboard"
 }}
@@ -272,6 +286,7 @@ map ca copy-absolute-path
 map cn copy-name-w-ext
 map ce copy-name-wo-ext
 map cp copy-parent-dir-path
+map ci copy-image
 # show the result of execution of previous commands
 map ` !true
 
@@ -281,6 +296,7 @@ map gw cd ~/Downloads
 map gp cd ~/Pictures
 map gs cd ~/Pictures/screenshots
 map gv cd ~/Videos
+map gm cd ~/Music
 map gco cd ~/.config
 map gcp cd ~/Documents/code-projects
 map gce cd ~/Documents/code-projects/external-work
