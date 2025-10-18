@@ -5,7 +5,7 @@ set -x # for testing
 hist_dir="$HOME/.cache/clip"
 hist_file="$hist_dir/hist"
 new_line="<:NEWLINE:>"
-img_prefix="[:IMAGE:]"
+img_surrond="[:IMAGE:]"
 
 init(){
   mkdir -p "$hist_dir"
@@ -34,13 +34,13 @@ replace_newline(){
 }
 
 copy(){
+  clip=$(xclip -o -selection primary | xclip -i -f -selection clipboard 2>/dev/null)
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-    notification="TODO: wayland add"
-    exit 1
-  else
-    clip=$(xclip -o -selection primary | xclip -i -f -selection clipboard 2>/dev/null)
-    multiline="$(replace_newline "$clip")"
+    [ ! -n "$clip" ] && clip=$(wl-paste --primary | wl-copy && wl-paste -n)
+    echo "$clip" | xclip -i -selection clipboard
   fi
+  [ ! -n "$clip" ] && (notify-send "Nothing to copy" && exit 0)
+  multiline="$(replace_newline "$clip")"
   write "$multiline"
   notification="Copied to clipboard"
 }
@@ -48,13 +48,11 @@ copy(){
 add(){
   input="$1"
   [ -z "$input" ] && exit 0
+  clip=$(echo "$input" | xclip -i -f -selection clipboard 2>/dev/null)
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-    notify-send "TODO: wayland in"
-    exit 1
-  else
-    clip=$(echo "$input" | xclip -i -f -selection clipboard 2>/dev/null)
-    multiline="$(replace_newline "$clip")"
+    echo "$input"| wl-copy
   fi
+  multiline="$(replace_newline "$clip")"
   write "$multiline"
   notification="Copied to clipboard"
 }
@@ -64,38 +62,41 @@ sel() {
   [ ! -n "$selection" ] && exit 0
 
   original=$(echo "$selection" | sed "s/$new_line/\n/g")
-  if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-    notify-send "TODO: wayland sel"
-    exit 1
+  if [[ "$selection" == "$img_surrond"* && "$selection" == *"$img_surrond.png" ]]; then
+    xclip -selection clipboard -target image/png -i "$hist_dir/$selection"
+    [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name"
+    notification="Image saved to clipboard"
   else
-    if [[ "$selection" == "$img_prefix"* ]]; then
-      xclip -selection clipboard -target image/png -i "$hist_dir/$selection"
-      notification="Image saved to clipboard"
-    else
-      echo "$original" | xclip -i -selection clipboard
-      notification="Copied to clipboard"
-    fi
+    echo "$original" | xclip -i -selection clipboard
+    [ "$XDG_SESSION_TYPE" == "wayland" ] && echo "$original" | wl-copy
+    notification="Copied to clipboard"
   fi
   write "$selection"
 }
 
 recopy(){
+  is_img=""
+  img_from=""
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-    notify-send "TODO: wayland readd"
-    exit 1
-  else
-    is_img="$(xclip -selection clipboard -o -t TARGETS | grep png 2>/dev/null)"
-    if [ ! -z "$is_img" ]; then
-      img_name="$img_prefix-$(date '+%a_%b%d%y_%h%m%s')-$img_prefix.png"
-      xclip -selection clipboard -t image/png -o > "$hist_dir/$img_name"
-      write "$img_name"
-      notification="Image saved to clipboard"
+    is_img="$(wl-paste --list-types | grep png 2>/dev/null)"
+  fi
+  [ ! -n "$is_img" ] && (is_img="$(xclip -selection clipboard -o -t TARGETS | grep png 2>/dev/null)"; img_from="x11") || img_from="wayland"
+  if [ -n "$is_img" ]; then
+    img_name="$img_surrond-$(date '+%a_%b%d%y_%h%m%s')-$img_surrond.png"
+    if [ "$img_from" == "wayland" ]; then
+      wl-paste -t image/png > "$hist_dir/$img_name"
+      xclip -i -t image/png "$hist_dir/$img_name"
     else
-      clip=$(xclip -o -selection clipboard 2>/dev/null)
-      multiline="$(replace_newline "$clip")"
-      write "$multiline"
-      notification="Re copied to clipboard"
+      xclip -selection clipboard -t image/png -o > "$hist_dir/$img_name"
+      [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name"
     fi
+    write "$img_name"
+    notification="Image saved to clipboard"
+  else
+    clip=$(xclip -o -selection clipboard 2>/dev/null)
+    multiline="$(replace_newline "$clip")"
+    write "$multiline"
+    notification="Re copied to clipboard"
   fi
 }
 
