@@ -18,8 +18,8 @@ write(){
   multiline="$1"
   grep -Fxq -e "$multiline" "$hist_file"
   if [ "$?" -eq 0 ]; then
-    line="$(grep -Fxon -m 1 -e "$multiline" "$hist_file" | grep -Po -m 1 --color="never" "\d+:")"
-    sed -i ""${line//:/}" d" "$hist_file"
+    line="$(grep -Fxon -m 1 -e "$multiline" "$hist_file" | grep -Po -m 1 --color="never" "^\d+")"
+    sed -i ""$line" d" "$hist_file"
   fi
   echo "$multiline" >> "$hist_file"
 }
@@ -58,7 +58,18 @@ add(){
 }
 
 sel() {
-  selection=$(tac "$hist_file" | rofi -dmenu -p "Clipboard histroy:")
+  temp_file="$hist_dir/clip-buffer"
+  echo -n "" > $temp_file
+  IFS=$'\n'  # Set internal field separator to new line
+  for line in $(cat "$hist_file"); do
+  if [[ "$line" == "$img_surrond"* && "$line" == *"$img_surrond.png" ]]; then
+    echo -en "$line\x00icon\x1f$hist_dir/$line\n" >> $temp_file
+  else
+    echo -n "$line" >> $temp_file
+    echo "" >> $temp_file
+  fi
+  done
+  selection=$(tac "$temp_file" | rofi -theme-str "element-icon { size: 70px; }" -dmenu -p "Clipboard histroy:")
   [ ! -n "$selection" ] && exit 0
 
   original=$(echo "$selection" | sed "s/$new_line/\n/g")
@@ -94,6 +105,10 @@ recopy(){
     notification="Image saved to clipboard"
   else
     clip=$(xclip -o -selection clipboard 2>/dev/null)
+    if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+      [ ! -n "$clip" ] && clip=$(wl-paste | wl-copy && wl-paste -n 2>/dev/null)
+      echo "$clip" | xclip -i -selection clipboard
+    fi
     multiline="$(replace_newline "$clip")"
     write "$multiline"
     notification="Re copied to clipboard"
