@@ -91,7 +91,12 @@ recopy(){
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     is_img="$(wl-paste --list-types | grep png 2>/dev/null)"
   fi
-  [ ! -n "$is_img" ] && (is_img="$(xclip -selection clipboard -o -t TARGETS | grep png 2>/dev/null)"; img_from="x11") || img_from="wayland"
+  if [ -n "$is_img" ]; then
+    img_from="wayland"
+  else
+    is_img="$(xclip -selection clipboard -o -t TARGETS | grep png 2>/dev/null)"
+    img_from="x11"
+  fi
   if [ -n "$is_img" ]; then
     img_name="$img_surrond-$(date '+%a_%b%d%y_%h%m%s')-$img_surrond.png"
     if [ "$img_from" == "wayland" ]; then
