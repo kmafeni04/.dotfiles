@@ -88,32 +88,32 @@ super + {Left,Down,Up,Right}
 
 #Toggle compistor
 super + c
-	killall picom || picom &
+	killall picom || picom
 
 #Program launchers
 super + a
-	rofi -show drun &
+	rofi -show drun
 
 super + r
-	rofi -show run &
+	rofi -show run
 
 super + 1
-	flatpak run app.zen_browser.zen &
+	flatpak run app.zen_browser.zen
 
 super + 2
-	wezterm -e lf &
+	wezterm -e lf
 
 {super + 3, ctrl + alt + t, super + Return}
-	wezterm &
+	wezterm
 
 super + 4
-	flatpak run com.spotify.Client &
+	flatpak run com.spotify.Client
 
 super + 5
-	reaper &
+	reaper
 
 super + Tab
-	rofi -show window &
+	rofi -show window
 
 super + e
 	rofi -show emoji -emoji-mode copy
@@ -147,16 +147,16 @@ super + e
 
 #Bar
 super + w
-	killall polybar || polybar &
+	killall polybar || polybar
 
 #Screenshot
 shift + Print
-	/home/kome/.scripts/screenshot.sh &
+	/home/kome/.scripts/screenshot.sh
 
 #Lock Screen
 super + l
 	magick /home/kome/.scripts/current_wallpaper.png -resize 1920x /home/kome/.scripts/current_wallpaper.png && \
-	i3lock -i /home/kome/.scripts/current_wallpaper.png -ef &
+	i3lock -i /home/kome/.scripts/current_wallpaper.png -ef
 
 #Power
 ctrl + shift + F4
