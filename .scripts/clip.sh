@@ -98,7 +98,7 @@ recopy(){
     img_from="x11"
   fi
   if [ -n "$is_img" ]; then
-    img_name="$img_surrond-$(date '+%a_%b%d%y_%h%m%s')-$img_surrond.png"
+    img_name="$img_surrond-$(date '+Copied_20%y-%m-%d_%H:%M:%S')-$img_surrond.png"
     if [ "$img_from" == "wayland" ]; then
       wl-paste -t image/png > "$hist_dir/$img_name"
       xclip -i -t image/png "$hist_dir/$img_name"
