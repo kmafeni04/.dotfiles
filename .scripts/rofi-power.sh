@@ -22,9 +22,9 @@ case $chosen in
         systemctl suspend
         ;;
     $lock)
-        $LOCK_SCRIPT
+        eval "$LOCK_SCRIPT"
         ;;
     $logOut)
-        $LOGOUT_SCRIPT
+        eval "$LOGOUT_SCRIPT"
         ;;
 esac
