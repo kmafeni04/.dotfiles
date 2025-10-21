@@ -12,6 +12,7 @@ set hidden
 set ignorecase
 set statfmt "\033[7;36m %M \033[0m| \033[36m%p\033[0m| %c| %u| %g| %S| %t| -> %l"
 set dupfilefmt "%b-%n%e"
+set promptfmt ""
 
 # Commands
 cmd on-redraw &{{
@@ -30,9 +31,21 @@ cmd on-redraw &{{
   fi
 }}
 
+cmd on-cd &{{
+  bright="\033[1m"
+  blue="$(tput setaf 4)"
+  reset="\033[0m"
+  if [ $lf_width -le 40 ]; then
+    lf -remote "send $id set promptfmt \"$bright$blue$(basename $PWD)$reset\""
+  else
+    lf -remote "send $id set promptfmt \"\033[32;1m%u@%h\033[0m:\033[34;1m%d\033[0m\033[1m%f\033[0m\""
+  fi
+}}
+
 cmd on-load &{{
   sleep 0.1
   lf -remote "send $id :on-redraw"
+  lf -remote "send $id :on-cd"
 }}
 
 # cmd drag-to %{{
@@ -302,6 +315,7 @@ map gp cd ~/Pictures
 map gs cd ~/Pictures/screenshots
 map gv cd ~/Videos
 map gm cd ~/Music
+map gr cd ~/Documents/REAPER\ Media
 map gco cd ~/.config
 map gcp cd ~/Documents/code-projects
 map gce cd ~/Documents/code-projects/external-work
