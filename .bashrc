@@ -94,7 +94,7 @@ function gen_ps1() {
   ahead=$(git rev-list --count HEAD ^$upstream 2>/dev/null)
   behind=$(git rev-list --count $upstream ^HEAD 2>/dev/null)
 	if [ "${ahead:-0}" -gt 0 ]; then
-		ahead_behind="$ahead"
+		ahead_behind="$ahead_behind$ahead"
 	fi
 	if [ "${behind:-0}" -gt 0 ]; then
 		ahead_behind="$ahead_behind$behind"
@@ -121,11 +121,11 @@ function gen_ps1() {
 	if [ -n "$untracked" ]; then
 		color="$color$red"
 	elif [ -n "$added" ]; then
-		color="$color$orange"
-	elif [ -n "$modified" ]; then
-		color="$color$cyan"
-	else
 		color="$color$green"
+	elif [ -n "$modified" ]; then
+		color="$color$orange"
+	else
+		color="$color$cyan"
 	fi
 	[ "${#git_branch}" -gt 0 ] && PS1="$PS1$color  $git_branch$ahead_behind$reset"
 	PS1="$PS1 $magenta$bright>$reset "
