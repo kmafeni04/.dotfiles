@@ -1,7 +1,7 @@
 #! /bin/sh
 
 export LOGOUT_SCRIPT="bspc quit"
-export LOCK_SCRIPT="magick /home/kome/.scripts/current_wallpaper.png -resize 1920x /home/kome/.scripts/current_wallpaper.png && i3lock -i /home/kome/.scripts/current_wallpaper.png -ef &"
+export LOCK_SCRIPT="magick /home/kome/.scripts/current_wallpaper.png -resize 1920x /home/kome/.scripts/current_wallpaper.png && i3lock -i /home/kome/.scripts/current_wallpaper.png -ef"
 
 #autostart
 pgrep -x xrdb > /dev/null || xrdb ~/.Xresources &
@@ -16,10 +16,9 @@ pgrep -x blueman-applet > /dev/null || blueman-applet &
 pgrep -x caffeine > /dev/null ||caffeine start &
 pgrep -x dunst > /dev/null || dunst &
 pgrep -x redshift > /dev/null || redshift &
-pgrep -x mpris-proxy > /dev/null || mpris-proxy &
 pgrep -f "low_battery.lua" > /dev/null || lua /home/kome/.scripts/low_battery.lua &
 touchegg_count=$(pgrep -xc touchegg)
-[ "$touchegg_count" -le 1 ] && touchegg & # systemctl start touchegg
+[ "$touchegg_count" -le 1 ] && touchegg & # systemctl start touchegg counts as 1
 
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 /lib/xdg-desktop-portal-gnome &
@@ -41,7 +40,6 @@ bspc config focused_border_color \#9ABDF5
 bspc config normal_border_color \#404E65FF
 
 bspc rule -a zenity state=floating center=true
-bspc rule -a smile state=floating  center=true
 bspc rule -a Blueman-manager state=floating center=true
 bspc rule -a xdman-Main state=floating center=true
 bspc rule -a Localsend state=tiled

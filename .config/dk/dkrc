@@ -39,16 +39,16 @@ px=$(xrandr | grep ' connected' | tail -n1 | grep -o '[0-9]\+x[0-9]\+' | cut -d'
 mm=$(xrandr | grep ' connected' | tail -n1 | grep -o '[0-9]\+mm' | tail -n1 | sed 's/mm//')
 dpi=$(( (px / mm) * 25 ))
 
-if [ $dpi -ge 140 ]; then
-	border_width=5
-	border_outer_width=3
-elif [ $dpi -ge 120 ]; then
-	border_width=4
-	border_outer_width=2
-else
-	border_width=2
-	border_outer_width=1
-fi
+# if [ $dpi -ge 140 ]; then
+# 	border_width=5
+# 	border_outer_width=3
+# elif [ $dpi -ge 120 ]; then
+# 	border_width=4
+# 	border_outer_width=2
+# else
+# 	border_width=2
+# 	border_outer_width=1
+# fi
 
 { # compound command to redirect all output
 
@@ -60,7 +60,7 @@ fi
 
 	# default workspace '_' values used when allocating new workspaces
 	# can be applied to all existing workspaces when passed 'apply' after ws=_
-	dkcmd set ws=_ apply layout=tile master=1 stack=0 gap=7 msplit=0.55 ssplit=0.5
+	dkcmd set ws=_ apply layout=tile master=1 stack=0 gap=10 msplit=0.55 ssplit=0.5
 
 	# use grid layout, padding, and gaps on last workspace
 	# dkcmd set ws=6 layout=grid pad left=200 right=200 top=100 bottom=100 gap=50
@@ -124,7 +124,7 @@ fi
 	# alternative
 	# enable split borders and colours, width is overall width, outer_width consumes some of width.
 	# outer_width must be less than width, outer_width of 0 will be single borders
-	dkcmd set border width=$border_width outer_width=$border_outer_width \
+	dkcmd set border width=2 outer_width=0 \
 		colour \
 		focus='#9ABDF5' \
 		unfocus='#404E65FF' \
@@ -151,11 +151,7 @@ fi
 	# dkcmd rule class="^mpv$" instance="^albumart$" float=true ignore_cfg=true callback=albumart bw=0
 
 	# open window(s) in a floating state
-	dkcmd rule class="^(pavucontrol|transmission-gtk|steam|lxappearance)$" float=true
-
-	dkcmd rule class="^REAPER$" float=false
 	dkcmd rule class="^zenity$" float=true x=center y=center
-	dkcmd rule class="^smile$" float=true x=center y=center
 	dkcmd rule class="^Blueman-manager$" float=true x=center y=center
 	dkcmd rule class="^xdman-Main$" float=true x=center y=center
 
@@ -166,7 +162,7 @@ fi
 	# dkcmd rule class="^TelegramDesktop$" ignore_msg=true
 
 	# define some terminals and allow them to be absorbed by spawned windows
-	dkcmd rule class="^(st|st-256color|urxvt|kitty|alacritty|xterm|xterm-256color)$" terminal=true
+	dkcmd rule class="^(st|st-256color|urxvt|kitty|alacritty|xterm|xterm-256color|wezterm)$" terminal=true
 
 	# set a window to never absorb other windows, like the xev event tester
 	dkcmd rule title="^Event Tester$" no_absorb=true

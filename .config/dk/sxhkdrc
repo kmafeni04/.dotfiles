@@ -47,30 +47,30 @@ super + l
 	i3lock -i /home/kome/.scripts/current_wallpaper.png -ef &
 
 #Volume Keys
-{alt + F8, XF86AudioRaiseVolume}
+{super + shift + equal, XF86AudioRaiseVolume}
 	pamixer -u && pamixer -i 5
 
-{alt + F7, XF86AudioLowerVolume}
+{super + shift + minus, XF86AudioLowerVolume}
 	pamixer -u && pamixer -d 5
 
-{alt + F6, XF86AudioMute}
+{super + shift + m, XF86AudioMute}
 	pamixer -t #mute
 
 #Brightness Keys
-{alt + F3, XF86MonBrightnessUp}
+{super + shift + bracketright, XF86MonBrightnessUp}
 	light -A 5
 
-{alt + F2, XF86MonBrightnessDown}
+{super + shift + bracketleft, XF86MonBrightnessDown}
 	light -U 5
 
 #Media Keys
-{alt + F11, XF86AudioNext}
+{super + shift + greater, XF86AudioNext}
 	playerctl next
 
-{alt + F10, XF86AudioPlay}
+{super + shift + p, XF86AudioPlay}
 	playerctl play-pause
 
-{alt + F9, XF86AudioPrev}
+{super + shift + less, XF86AudioPrev}
 	playerctl previous
 
 super + shift + r
