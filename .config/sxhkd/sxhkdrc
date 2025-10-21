@@ -112,13 +112,13 @@ super + e
 	light -U 5
 
 #Media Keys
-{super + shift + greater, XF86AudioNext}
+{super + shift + period, XF86AudioNext}
 	playerctl next
 
 {super + shift + p, XF86AudioPlay}
 	playerctl play-pause
 
-{super + shift + less, XF86AudioPrev}
+{super + shift + comma, XF86AudioPrev}
 	playerctl previous
 
 #Bar

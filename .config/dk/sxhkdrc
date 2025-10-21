@@ -2,11 +2,11 @@
 
 #Toggle Bar
 super + w
-	killall polybar || polybar &
+	killall polybar || polybar
 
 #Toggle compistor
 super + c
-	killall picom || picom &
+	killall picom || picom
 
 #Program launchers
 super + 1
@@ -64,13 +64,13 @@ super + l
 	light -U 5
 
 #Media Keys
-{super + shift + greater, XF86AudioNext}
+{super + shift + period, XF86AudioNext}
 	playerctl next
 
 {super + shift + p, XF86AudioPlay}
 	playerctl play-pause
 
-{super + shift + less, XF86AudioPrev}
+{super + shift + comma, XF86AudioPrev}
 	playerctl previous
 
 super + shift + r

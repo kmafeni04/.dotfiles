@@ -95,7 +95,7 @@
         :onscroll "if [ '{}' == 'up' ]; then hyprctl dispatch workspace ${activeWorkspace > 1 ? activeWorkspace - 1 : 9}; else hyprctl dispatch workspace ${activeWorkspace < 9 ? activeWorkspace + 1 : 1}; fi"
         :onclick "hyprctl dispatch workspace ${num}"
         :style {
-          (occupiedWorkspaces[num] == true && activeWorkspace != num)
+          (occupiedWorkspaces[num] > 0 && activeWorkspace != num)
           ? "color: #9abdf5;"
           : activeWorkspace == num
             ? "color: #9abdf5; border-bottom: 3px solid #9abdf5;"
@@ -110,7 +110,7 @@
 (defwidget playerControls []
   (eventbox
     :class "player-controls"
-    :onclick "(~/.scripts/rofi-playerctl.sh)"
+    :onclick "~/.scripts/rofi-playerctl.sh &"
     :cursor "pointer"
     (label :text "")
   )
@@ -169,13 +169,13 @@
   "hyprctl devices -j | jq '.keyboards[] | select(.main == true) | .capsLock'")
 
 (defpoll occupiedWorkspaces :interval "0.1s"
-  "hyprctl workspaces -j | jq 'map({(.name): true}) | add'")
+  "hyprctl workspaces -j | jq 'map({(.name):(.windows)}) | add'")
 
 (defpoll shortTime :interval "1s"
   "date '+%H:%M'")
 
 (defpoll longTime :interval "1s"
-  "date '+%Y-%m-%d %H:%M:%S'")
+  "date '+%d-%m-%Y %H:%M:%S'")
 
 (defwindow bar
   :monitor 0
