@@ -3,12 +3,12 @@
 # Source global definitions
 
 if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
+  . /etc/bashrc
 fi
 
 # User specific environment
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
-	PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+  PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 export PATH
 
@@ -17,11 +17,11 @@ export PATH
 
 # User specific aliases and functions
 if [ -d ~/.bashrc.d ]; then
-	for rc in ~/.bashrc.d/*; do
-		if [ -f "$rc" ]; then
-			. "$rc"
-		fi
-	done
+  for rc in ~/.bashrc.d/*; do
+    if [ -f "$rc" ]; then
+      . "$rc"
+    fi
+  done
 fi
 
 unset rc
@@ -82,53 +82,54 @@ reset="\[$(tput sgr0)\]"
 bright="\[\033[1m\]"
 
 function gen_ps1() {
-	PS1=""
-	bg_jobs="$(jobs -l | wc -l)"
-	[ "$bg_jobs" -gt 0 ] && PS1="$green$bright[$bg_jobs]$reset "
+  PS1=""
+  bg_jobs="$(jobs -l | wc -l)"
+  [ "$bg_jobs" -gt 0 ] && PS1="$green$bright[$bg_jobs]$reset "
 
-	PS1="$PS1($bright$blue\W$reset)"
+  PS1="$PS1($bright$blue\W$reset)"
   git_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+  if [ -n "$git_branch" ]; then
+    upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/$git_branch" 2>/dev/null)
+    ahead_behind=" "
+    ahead=$(git rev-list --count HEAD ^$upstream 2>/dev/null)
+    behind=$(git rev-list --count $upstream ^HEAD 2>/dev/null)
+    if [ "${ahead:-0}" -gt 0 ]; then
+      ahead_behind="$ahead_behind$ahead"
+    fi
+    if [ "${behind:-0}" -gt 0 ]; then
+      ahead_behind="$ahead_behind$behind"
+    fi
+    [ "$ahead_behind" == " " ] && ahead_behind=""
 
-  upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/$git_branch" 2>/dev/null)
-	ahead_behind=" "
-  ahead=$(git rev-list --count HEAD ^$upstream 2>/dev/null)
-  behind=$(git rev-list --count $upstream ^HEAD 2>/dev/null)
-	if [ "${ahead:-0}" -gt 0 ]; then
-		ahead_behind="$ahead_behind$ahead"
-	fi
-	if [ "${behind:-0}" -gt 0 ]; then
-		ahead_behind="$ahead_behind$behind"
-	fi
-	[ "$ahead_behind" == " " ] && ahead_behind=""
+    git_status="$(git status -s -b --porcelain 2>/dev/null)"
+    modified=""
+    untracked=""
+    added=""
 
-	git_status="$(git status -s -b --porcelain 2>/dev/null)"
-	modified=""
-	untracked=""
-	added=""
-
-	color="$bright"
-	for line in $git_status; do
-		if [ -n "$(echo "$line" | grep -P "^M" 2>/dev/null)" ]; then
-			modified="M"
-		fi
-		if [ -n "$(echo "$line" | grep -P "^\?" 2>/dev/null)" ]; then
-			untracked="?"
-		fi
-		if [ -n "$(echo "$line" | grep -P "^A" 2>/dev/null)" ]; then
-			added="A"
-		fi
-	done
-	if [ -n "$untracked" ]; then
-		color="$color$red"
-	elif [ -n "$added" ]; then
-		color="$color$green"
-	elif [ -n "$modified" ]; then
-		color="$color$orange"
-	else
-		color="$color$cyan"
-	fi
-	[ "${#git_branch}" -gt 0 ] && PS1="$PS1$color  $git_branch$ahead_behind$reset"
-	PS1="$PS1 $magenta$bright>$reset "
+    color="$bright"
+    for line in $git_status; do
+      if [ -n "$(echo "$line" | grep -P "^M" 2>/dev/null)" ]; then
+        modified="M"
+      fi
+      if [ -n "$(echo "$line" | grep -P "^\?" 2>/dev/null)" ]; then
+        untracked="?"
+      fi
+      if [ -n "$(echo "$line" | grep -P "^A" 2>/dev/null)" ]; then
+        added="A"
+      fi
+    done
+    if [ -n "$untracked" ]; then
+      color="$color$red"
+    elif [ -n "$added" ]; then
+      color="$color$green"
+    elif [ -n "$modified" ]; then
+      color="$color$orange"
+    else
+      color="$color$cyan"
+    fi
+    PS1="$PS1$color  $git_branch$ahead_behind$reset"
+  fi
+  PS1="$PS1 $magenta$bright>$reset "
 }
 PROMPT_COMMAND="gen_ps1; $PROMPT_COMMAND"
 
@@ -148,7 +149,7 @@ eval "$(register-python-argcomplete pipx)"
 
 hx(){
   echo -en "\033]0;helix\a"
-	helix $@
+  helix $@
 }
 
 lf() {
