@@ -259,6 +259,8 @@ map V
 map p
 map G
 
+map ";" :term
+
 map ge bottom
 
 map <c-q> quit

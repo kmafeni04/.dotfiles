@@ -68,6 +68,8 @@ alias 'lua5.1'='eval $(luarocks path --lua-version=5.1) && lua5.1'
 
 alias 'grep'='grep --colour'
 
+alias 'mpv'='mpv --player-operation-mode=pseudo-gui'
+
 # Prompt colors
 
 red="\[$(tput setaf 1)\]"
