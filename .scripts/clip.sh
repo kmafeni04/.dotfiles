@@ -39,7 +39,10 @@ copy(){
     [ ! -n "$clip" ] && clip=$(wl-paste --primary | wl-copy && wl-paste -n)
     echo "$clip" | xclip -i -selection clipboard
   fi
-  [ ! -n "$clip" ] && (notify-send "Nothing to copy" && exit 0)
+  if [ ! -n "$clip" ]; then
+    notify-send "Nothing to copy"
+    exit 0
+  fi
   multiline="$(replace_newline "$clip")"
   write "$multiline"
   notification="Copied to clipboard"
@@ -104,14 +107,14 @@ recopy(){
       xclip -i -t image/png "$hist_dir/$img_name"
     else
       xclip -selection clipboard -t image/png -o > "$hist_dir/$img_name"
-      [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name"
+      [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name";
     fi
     write "$img_name"
     notification="Image saved to clipboard"
   else
     clip=$(xclip -o -selection clipboard 2>/dev/null)
     if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-      [ ! -n "$clip" ] && clip=$(wl-paste | wl-copy && wl-paste -n 2>/dev/null)
+      [ ! -n "$clip" ] && clip=$(wl-paste -n 2>/dev/null)
       echo "$clip" | xclip -i -selection clipboard
     fi
     multiline="$(replace_newline "$clip")"
