@@ -30,6 +30,7 @@ config.skip_close_confirmation_for_processes_named = {
   "bash",
   "sh",
   "btop",
+  "lf",
 }
 
 config.mouse_bindings = {
@@ -54,38 +55,29 @@ config.keys = {
     action = wezterm.action.CloseCurrentPane({ confirm = true }),
   },
   {
-    key = "f",
-    mods = "CTRL|SHIFT",
-    action = wezterm.action.SplitPane({
-      direction = "Right",
-      command = { args = { "yazi" } },
-    }),
-  },
-
-  {
     key = "l",
-    mods = "CTRL|SHIFT",
+    mods = "CTRL",
     action = wezterm.action.SplitPane({
       direction = "Right",
     }),
   },
   {
     key = "h",
-    mods = "CTRL|SHIFT",
+    mods = "CTRL",
     action = wezterm.action.SplitPane({
       direction = "Left",
     }),
   },
   {
     key = "k",
-    mods = "CTRL|SHIFT",
+    mods = "CTRL",
     action = wezterm.action.SplitPane({
       direction = "Up",
     }),
   },
   {
     key = "j",
-    mods = "CTRL|SHIFT",
+    mods = "CTRL",
     action = wezterm.action.SplitPane({
       direction = "Down",
     }),
