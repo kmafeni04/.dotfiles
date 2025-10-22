@@ -37,7 +37,7 @@ copy(){
   clip=$(xclip -o -selection primary | xclip -i -f -selection clipboard 2>/dev/null)
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     [ -z "$clip" ] && clip=$(wl-paste --primary | wl-copy && wl-paste -n)
-    echo "$clip" | xclip -i -selection clipboard
+    echo -n "$clip" | xclip -i -selection clipboard
   fi
   if [ -z "$clip" ]; then
     notify-send "Nothing to copy"
@@ -51,9 +51,9 @@ copy(){
 add(){
   input="$1"
   [ -z "$input" ] && exit 0
-  clip=$(echo "$input" | xclip -i -f -selection clipboard 2>/dev/null)
+  clip=$(echo -n "$input" | xclip -i -f -selection clipboard 2>/dev/null)
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-    echo "$input"| wl-copy
+    echo -n "$input"| wl-copy
   fi
   multiline="$(replace_newline "$clip")"
   write "$multiline"
@@ -91,8 +91,8 @@ sel() {
     [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name"
     notification="Image saved to clipboard"
   else
-    echo "$original" | xclip -i -selection clipboard
-    [ "$XDG_SESSION_TYPE" == "wayland" ] && echo "$original" | wl-copy
+    echo -n "$original" | xclip -i -selection clipboard
+    [ "$XDG_SESSION_TYPE" == "wayland" ] && echo -n "$original" | wl-copy
     notification="Copied to clipboard"
   fi
   write "$selection"
@@ -138,7 +138,7 @@ recopy(){
     clip=$(xclip -o -selection clipboard 2>/dev/null)
     if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
       [ -z "$clip" ] && clip=$(wl-paste -n 2>/dev/null)
-      echo "$clip" | xclip -i -selection clipboard
+      echo -n "$clip" | xclip -i -selection clipboard
     fi
     multiline="$(replace_newline "$clip")"
     write "$multiline"
