@@ -51,6 +51,7 @@
 (defwidget time[]
   (eventbox
     :onclick {timeFormat == false ? "eww update timeFormat=true" : "eww update timeFormat=false"}
+    :cursor "pointer"
     (label :text {timeFormat == false ? shortTime : longTime})
   )
 )
