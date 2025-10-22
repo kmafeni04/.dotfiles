@@ -22,7 +22,6 @@ touchegg_count=$(pgrep -xc touchegg)
 [ "$touchegg_count" -le 1 ] && touchegg & # systemctl start touchegg
 
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
-/lib/xdg-desktop-portal-gnome &
 dbus-update-activation-environment --systemd --all &
 pgrep -x xdman-beta > /dev/null || xdman-beta --background &
 
