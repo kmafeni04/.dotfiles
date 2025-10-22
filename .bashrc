@@ -114,7 +114,7 @@ function gen_ps1() {
       if [ -n "$(echo "$line" | grep -P "^\?" 2>/dev/null)" ]; then
         untracked="?"
       fi
-      if [ -n "$(echo "$line" | grep -P "^A" 2>/dev/null)" ]; then
+      if [ -n "$(echo "$line" | grep -P "^[AR]" 2>/dev/null)" ]; then
         added="A"
       fi
     done
