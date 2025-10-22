@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -C -f -e -x
 
@@ -16,7 +16,7 @@ case "$(file -Lb --mime-type -- "$1")" in
   image/*)
     image "$1" "$2" "$3"
     ;;
-  text/*|*json)
+  text/*|*/json|*/javascript)
     bat -p --theme=ansi --terminal-width "$(($4-2))" -f "$1"
     ;;
   video/*)
