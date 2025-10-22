@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Sets
 set shell sh
@@ -29,6 +29,7 @@ cmd on-redraw &{{
     lf -remote "send $id set preview true"
     lf -remote "send $id set ratios 1:1:2:4"
   fi
+  lf -remote "send $id :on-cd"
 }}
 
 cmd on-cd &{{
@@ -56,7 +57,7 @@ cmd drag-from %{{
   dragon-drop -x -a $fx
 }}
 
-cmd paste-img %{{
+cmd paste-img &{{
   name="pasted-image"
   new_name="$name"
   i=0
@@ -65,6 +66,8 @@ cmd paste-img %{{
     new_name="$name-$i"
   done
   name="$new_name.png"
+
+  [ -z "$(xclip -selection clipboard -target TARGETS | grep png 2>/dev/null)" ] && notify-send "Clipboard selection not an image" && exit 0
 
   xclip -selection clipboard -target image/png -o > "$name"
 }}
@@ -150,7 +153,7 @@ cmd delete %{{
   no="No"
   options="$yes\n$no"
 
-  chosen="$(echo -e "$options" | rofi -theme-str 'entry { enabled: false;}' -i -show -p "$(echo -e "$question")" -dmenu -selected-row 0)"
+  chosen="$(echo -e "$options" | rofi -theme-str 'inputbar {children: [prompt];}' -i -show -p "$(echo -e "$question")" -dmenu -selected-row 0)"
   case $chosen in
     $yes)
       echo "Deleting..."
@@ -258,6 +261,7 @@ map d
 map V
 map p
 map G
+map i
 
 map ";" :term
 
@@ -278,16 +282,16 @@ map "." set hidden!
 
 map a push :create<space>
 
-map dr drag-from
+map D drag-from
+map P paste-img
 
-map dd delete
+map d delete
 map <delete> delete
 map u ${{
   echo
   trash-restore
 }}
-map pp paste
-map pi paste-img
+map p paste
 map x cut
 map y copy
 
