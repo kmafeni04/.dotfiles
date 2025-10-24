@@ -67,9 +67,13 @@ cmd paste-img &{{
   done
   name="$new_name.png"
 
-  [ -z "$(xclip -selection clipboard -target TARGETS | grep png 2>/dev/null)" ] && notify-send "Clipboard selection not an image" && exit 0
-
-  xclip -selection clipboard -target image/png -o > "$name"
+  if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
+    [ -z "$(wl-paste --list-types | grep png 2>/dev/null)" ] && notify-send "Clipboard selection not an image" && exit 0
+    wl-paste -t image/png > "$name"
+  else
+    [ -z "$(xclip -selection clipboard -target TARGETS | grep png 2>/dev/null)" ] && notify-send "Clipboard selection not an image" && exit 0
+    xclip -selection clipboard -target image/png -o > "$name"
+  fi
 }}
 
 cmd term &{{
