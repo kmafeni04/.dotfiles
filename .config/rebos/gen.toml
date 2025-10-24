@@ -43,6 +43,7 @@ items = [
     "bat",
     "bc",
     "bitwarden",
+    "bitwarden-cli", # for qutebrowser
     "blueman",
     "bluez-utils",
     "bsp-layout",
@@ -122,7 +123,9 @@ items = [
     "postgresql",
     "pulsemixer",
     "python-pipx",
+    "python-tldextract", # for qutebrowser
     "qpwgraph",
+    "qutebrowser",
     "rebos-git",
     "redshift",
     "rofi-wayland",
