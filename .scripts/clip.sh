@@ -76,7 +76,7 @@ get_selection(){
     echo "" >> $temp_file
   fi
   done
-  selection=$(tac "$temp_file" | rofi -theme-str "element-icon { size: 100px; }" -dmenu -l 3 -p "$prompt")
+  selection=$(tac "$temp_file" | rofi -theme-str "element-icon { size: 100px; }" -dmenu -i -l 3 -p "$prompt")
   rm $temp_file
   echo "$selection"
 }
