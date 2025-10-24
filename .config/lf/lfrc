@@ -331,3 +331,4 @@ map gcp cd ~/Documents/code-projects
 map gce cd ~/Documents/code-projects/external-work
 map gcn cd ~/Documents/code-projects/languages/nelua
 map gcl cd ~/Documents/code-projects/languages/lua
+map gcd cd ~/.dotfiles
