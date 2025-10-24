@@ -32,15 +32,16 @@
     )
     (eventbox
       :class "battery"
-      (label :text " ${battery}%")
+      :tooltip "${battery_state}"
+      (label :text "${battery_icon}${battery_percent}%")
     )
     (time)
     (eventbox
       :class "dunst"
       :cursor "pointer"
-      :onclick "dunstctl set-paused toggle && notify-send Notifications on"
+      :onclick "dunstctl set-paused toggle && notify-send Notifications on &"
       :onmiddleclick "notify-send History Cleared && sleep 2 && dunstctl close-all && dunstctl history-clear &"
-      :onrightclick "dunstctl history-pop"
+      :onrightclick "dunstctl history-pop &"
       (label :text "󰂚")
     )
     (powerMenu)
@@ -157,8 +158,14 @@
 (defpoll brightness :interval "0.1s"
   "~/.scripts/light.sh")
 
-(defpoll battery :interval "0.1s"
-  "cat /sys/class/power_supply/BAT0/capacity")
+(defpoll battery_icon :interval "1s"
+  "/home/kome/.dotfiles/.scripts/eww_battery.sh icon")
+
+(defpoll battery_percent :interval "1s"
+  "/home/kome/.dotfiles/.scripts/eww_battery.sh per")
+
+(defpoll battery_state :interval "1s"
+  "cat /sys/class/power_supply/BAT0/status")
 
 (defpoll activeWorkspace :interval "0.1s"
   "hyprctl activeworkspace -j | jq '.id'")

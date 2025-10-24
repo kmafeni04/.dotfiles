@@ -25,9 +25,7 @@
 
 .workspace {
   color: #404e65;
-
 }
-
 
 .workspace:hover {
   color: #9abdf5;
@@ -36,6 +34,22 @@
 .workspace:active {
   color: #9abdf5;
 }
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.battery label {}
 
 .tray menu {
   background-color: #1a1b26;
