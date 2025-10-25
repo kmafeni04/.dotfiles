@@ -134,7 +134,8 @@ function gen_ps1() {
 PROMPT_COMMAND="gen_ps1; $PROMPT_COMMAND"
 
 export EDITOR=helix
-export TERM=wezterm
+export TERMINAL=wezterm
+export BROWSER=qutebrowser
 
 PATH="/opt/openresty/bin:$PATH"
 
