@@ -8,13 +8,24 @@ bg = "#1A1B26"
 bg_alt="#313349"
 
 c.colors.statusbar.normal.bg = bg
+c.colors.statusbar.normal.fg = fg
+
 c.colors.statusbar.command.bg = bg
 c.colors.statusbar.command.fg = fg
-c.colors.statusbar.normal.fg = fg
-c.colors.statusbar.passthrough.fg = "red"
+
 c.colors.statusbar.url.fg = fg
 c.colors.statusbar.url.success.https.fg = fg
 c.colors.statusbar.url.hover.fg = "cyan"
+
+c.colors.tabs.even.bg = bg
+c.colors.tabs.odd.bg = bg
+c.colors.tabs.even.fg = fg
+c.colors.tabs.odd.fg = fg
+
+c.colors.tabs.selected.even.bg = bg_alt
+c.colors.tabs.selected.odd.bg = bg_alt
+c.colors.tabs.selected.even.fg = fg
+c.colors.tabs.selected.odd.fg = fg
 
 c.colors.tabs.pinned.even.bg = bg
 c.colors.tabs.pinned.odd.bg = bg
@@ -24,15 +35,6 @@ c.colors.tabs.pinned.selected.even.bg = bg_alt
 c.colors.tabs.pinned.selected.odd.bg = bg_alt
 c.colors.tabs.pinned.selected.even.fg = fg
 c.colors.tabs.pinned.selected.odd.fg = fg
-
-c.colors.tabs.even.bg = bg
-c.colors.tabs.odd.bg = bg
-c.colors.tabs.even.fg = fg
-c.colors.tabs.odd.fg = fg
-c.colors.tabs.selected.even.bg = bg_alt
-c.colors.tabs.selected.odd.bg = bg_alt
-c.colors.tabs.selected.even.fg = fg
-c.colors.tabs.selected.odd.fg = fg
 
 c.colors.hints.bg = fg
 c.colors.hints.fg = bg
@@ -58,7 +60,6 @@ c.colors.downloads.start.fg = fg
 c.colors.downloads.stop.bg = bg
 c.colors.downloads.stop.fg = fg
 
-
 c.colors.tooltip.bg = bg
 c.colors.tooltip.fg = fg
 
@@ -74,16 +75,15 @@ config.set('colors.webpage.darkmode.enabled', False, 'file://*')
 c.statusbar.show = "always"
 c.statusbar.padding = {"bottom": 5, "left": 5, "right": 5, "top": 5}
 
-c.tabs.title.format = "{audio}{current_title}"
+c.tabs.title.format= "{index} {audio}{current_title}"
+c.tabs.title.format_pinned = "{index}"
 c.tabs.show = "multiple"
 c.tabs.padding = {'top': 7, 'bottom': 7, 'left': 10, 'right': 10}
 c.tabs.indicator.width = 0 # no tab indicators
 c.tabs.width = '7%'
 
-c.tabs.title.format= "{index} {audio}{current_title}"
-c.tabs.title.format_pinned = "{index}"
-
 c.hints.border = fg
+c.hints.uppercase = True
 
 c.url.searchengines = {
     'DEFAULT': 'https://duckduckgo.com/?q={}',
@@ -93,21 +93,21 @@ c.url.searchengines = {
     '!yt': 'https://www.youtube.com/results?search_query={}',
 }
 
+# NOTE: Doesn't work and just crashes
 # c.fileselect.handler = "external"
 # c.fileselect.multiple_files.command = ['/home/kome/.scripts/qb-fileselect-lf.sh', 'files']
 # c.fileselect.single_file.command = ['/home/kome/.scripts/qb-fileselect-lf.sh', 'file']
 # c.fileselect.folder.command = ['notify-send', '"folder command. not working ATM. fix it somehow when you get to it." ']
-
-filepicker = [
-    "wezterm",
-    "-e",
-    "lf",
-    "-selection-path={}",
-]
-c.fileselect.handler = "external"
-c.fileselect.folder.command = filepicker
-c.fileselect.multiple_files.command = filepicker
-c.fileselect.single_file.command = filepicker
+# filepicker = [
+#     "wezterm",
+#     "-e",
+#     "lf",
+#     "-selection-path={}",
+# ]
+# c.fileselect.handler = "external"
+# c.fileselect.folder.command = filepicker
+# c.fileselect.multiple_files.command = filepicker
+# c.fileselect.single_file.command = filepicker
 
 c.completion.open_categories = ['searchengines', 'quickmarks', 'bookmarks', 'history', 'filesystem']
 
@@ -117,32 +117,44 @@ c.session.lazy_restore = True
 c.scrolling.smooth = True
 c.scrolling.bar = "never"
 c.zoom.default = "125%"
-c.zoom.mouse_divider = 0
-# config.set('zoom.mouse_divider', 0, '*://figma.com/')
-c.hints.uppercase = True
+c.zoom.mouse_divider = 512 # controls mouse zooming
+c.content.autoplay = False
 
 # keybinding changes
 config.unbind("G")
 config.unbind("gf")
 config.unbind("sl")
+config.unbind('<Alt-1>')
+config.unbind('<Alt-2>')
+config.unbind('<Alt-3>')
+config.unbind('<Alt-4>')
+config.unbind('<Alt-5>')
+config.unbind('<Alt-6>')
+config.unbind('<Alt-7>')
+config.unbind('<Alt-8>')
+config.unbind('<Alt-9>')
 
 config.bind('<Space>f', 'cmd-set-text -s :tab-select')
 
 config.bind('<Ctrl-n>', 'open -t')
-config.bind('<Ctrl-r>', 'config-source;; message-info \'Config refreshed\'')
+config.bind('<Ctrl-r>', 'config-source;; message-info \'Config sourced\'')
 config.bind('<Ctrl-Shift-Tab>', 'tab-prev')
 config.bind('<Ctrl-Tab>', 'tab-next')
 
 config.bind('<Alt-q>', 'tab-close')
+config.bind('<Alt-b>', 'tab-prev')
+config.bind('<Alt-n>', 'tab-next')
 config.bind('<Alt-1>', 'tab-prev')
 config.bind('<Alt-2>', 'tab-next')
-config.bind('<Alt-3>', 'tab-select 3')
-config.bind('<Alt-4>', 'tab-select 4')
-config.bind('<Alt-5>', 'tab-select 5')
-config.bind('<Alt-6>', 'tab-select 6')
-config.bind('<Alt-7>', 'tab-select 7')
-config.bind('<Alt-8>', 'tab-select 8')
-config.bind('<Alt-9>', 'tab-select 9')
+config.bind('<Ctrl-1>', 'tab-select 1')
+config.bind('<Ctrl-2>', 'tab-select 2')
+config.bind('<Ctrl-3>', 'tab-select 3')
+config.bind('<Ctrl-4>', 'tab-select 4')
+config.bind('<Ctrl-5>', 'tab-select 5')
+config.bind('<Ctrl-6>', 'tab-select 6')
+config.bind('<Ctrl-7>', 'tab-select 7')
+config.bind('<Ctrl-8>', 'tab-select 8')
+config.bind('<Ctrl-9>', 'tab-select 9')
 
 config.bind('tt', 'spawn --userscript translate')
 config.bind('th', 'config-cycle tabs.show multiple never')
@@ -161,9 +173,18 @@ config.bind("gl", 'tab-focus -1')
 
 config.bind('sh', 'config-cycle statusbar.show always never')
 config.bind("ss", "cmd-set-text -s :session-save")
-config.bind("sld", "session-save;; session-load default;; close")
+config.bind("slh", "session-save;; session-load home;; close")
 config.bind("slw", "session-save;; session-load work;; close")
 config.bind("sll", "session-save;; session-load lang-dev;; close")
+
+c.aliases["yt"] = "open https://www.youtube.com"
+c.aliases["yt!"] = "open -t https://www.youtube.com"
+c.aliases["gh"]  = "open https://www.github.com"
+c.aliases["gh!"] = "open -t https://www.github.com"
+c.aliases["da"]  = "open https://www.duck.ai"
+c.aliases["da!"] = "open -t https://www.duck.ai"
+c.aliases["nf"]  = "open https://www.nerdfonts.com"
+c.aliases["nf!"] = "open -t https://www.nerdfonts.com"
 
 # fonts
 c.fonts.web.size.default = 20
@@ -171,30 +192,26 @@ c.fonts.default_family = ['DejaVuSansM Nerd Font']
 c.fonts.default_size = '20px'
 c.fonts.tabs.selected = 'default_size default_family'
 c.fonts.tabs.unselected = 'default_size default_family'
-# c.fonts.web.family.fixed = 'monospace'
-# c.fonts.web.family.sans_serif = 'monospace'
-# c.fonts.web.family.serif = 'monospace'
-# c.fonts.web.family.standard = 'monospace'
+c.fonts.tooltip = "default_size default_family"
 
+# privacy
+config.set("content.webgl", False, "*")
+config.set("content.webgl", True, 'www.figma.com')
 
-# privacy - adjust these settings based on your preference
-# config.set("completion.cmd_history_max_items", 0)
-# config.set("content.private_browsing", True)
-# config.set("content.webgl", False, "*")
-# config.set("content.canvas_reading", False)
+config.set("content.canvas_reading", False)
+config.set("content.canvas_reading", True, "www.figma.com")
+
+config.set("input.mode_override", "passthrough", "www.figma.com")
+
 config.set("content.geolocation", False)
 config.set("content.webrtc_ip_handling_policy", "default-public-interface-only")
 config.set("content.cookies.accept", "all")
 config.set("content.cookies.store", True)
+config.set("colors.webpage.darkmode.enabled", False, "file://*")
 
-# Adblocking info -->
-# For yt ads: place the greasemonkey script yt-ads.js in your greasemonkey folder (~/.config/qutebrowser/greasemonkey).
-# The script skips through the entire ad, so all you have to do is click the skip button.
-# Yeah it's not ublock origin, but if you want a minimal browser, this is a solution for the tradeoff.
-# You can also watch yt vids directly in mpv, see qutebrowser FAQ for how to do that.
-# If you want additional blocklists, you can get the python-adblock package, or you can uncomment the ublock lists here.
+# Adblocking
 c.content.blocking.enabled = True
-# c.content.blocking.method = 'adblock' # uncomment this if you install python-adblock
+c.content.blocking.method = 'both'
 c.content.blocking.adblock.lists = [
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/legacy.txt",
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/filters.txt",

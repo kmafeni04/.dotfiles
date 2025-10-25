@@ -12,12 +12,19 @@ settings:
     global: false
   content.javascript.clipboard:
     https://github.com: access-paste
+    https://www.figma.com: access-paste
+  content.notifications.enabled:
+    https://web.whatsapp.com: true
+    https://www.snapchat.com: true
   fonts.hints:
     global: bold default_size default_family
   fonts.tabs.selected:
     global: bold 20px default_family
   fonts.tabs.unselected:
-    global: bold default_size default_family
+    global: default_size default_family
+  input.mode_override:
+    figma.com: passthrough
+    global: normal
   statusbar.padding:
     global:
       bottom: 1

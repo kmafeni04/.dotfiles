@@ -122,6 +122,7 @@ items = [
     "polybar",
     "postgresql",
     "pulsemixer",
+    "python-adblock", # for qutebrowser
     "python-pipx",
     "python-tldextract", # for qutebrowser
     "qpwgraph",
