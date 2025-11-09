@@ -8,11 +8,11 @@ while true; do
 
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     killall swaybg
-    swaybg -m fill -i "$wallpaper" -o 0 &
-    swaybg -m fill -i "$wallpaper" -o 1 &
+    swaybg -m fill -i "$wallpaper" -o "*" &
   else
-    nitrogen --set-scaled "$wallpaper" --head=0
-    nitrogen --set-scaled "$wallpaper" --head=1
+    for v in $(xrandr --listactivemonitors | grep -P -o "^ \d"); do
+      nitrogen --set-scaled "$wallpaper" --head=$v
+    done
   fi
   sleep 60
 done
