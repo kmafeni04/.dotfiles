@@ -1,0 +1,5 @@
+# RUNNER :: $TERMINAL -e $FILEBROWSER
+mani :: /home/kome/Documents/code-projects/languages/nelua/mani-lang
+scripts :: /home/kome/.scripts/
+bm conf :: /home/kome/.config/bm
+dotfiles :: /home/kome/.dotfiles

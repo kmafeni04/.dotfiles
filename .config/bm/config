@@ -1,0 +1,4 @@
+RUNNER :: $TERMINAL -e $EDITOR
+bspwmrc :: /home/kome/.config/bspwm/bspwmrc
+sxhkdrc :: /home/kome/.config/sxhkd/sxhkdrc
+bashrc :: /home/kome/.bashrc
