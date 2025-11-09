@@ -32,6 +32,7 @@ PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 #user aliases
 
+alias 'wget'='wget --hsts-file="$XDG_DATA_HOME/wget-hsts"'
 alias 'ls'='ls --hyperlink --color=auto'
 
 alias 'sup'='rebos managers upgrade --sync'
@@ -44,12 +45,12 @@ alias 'rroll'='rebos gen current rollback 1 && rebos gen current build'
 
 # alias 'yup'='yay && flatpak update -y'
 # alias 'yin'='yay -S'
-# alias 'yre'='yay -Rns'
+alias 'yre'='yay -Rns'
 alias 'yar'='yay -Rcns $(yay -Qdtq)' # auto remove unused dependecies
 alias 'yse'='yay -Ss' # package search
-alias 'ysy'='yay -Syy' # update mirrors
+alias 'yum'='yay -Syy' # update mirrors
 
-# alias 'flu'='flatpak update -y'
+alias 'flu'='flatpak update -y'
 # alias 'fli'='flatpak install -y'
 # alias 'flr'='flatpak remove -y'
 alias 'fls'='flatpak search'
@@ -107,17 +108,17 @@ function gen_ps1() {
     added=""
 
     color="$bright"
-    for line in $git_status; do
-      if [ -n "$(echo "$line" | grep -P "^M" 2>/dev/null)" ]; then
+    while read -r line; do
+      if [ -n "$(grep -P "^M" 2>/dev/null <<< "$line")" ]; then
         modified="M"
       fi
-      if [ -n "$(echo "$line" | grep -P "^\?" 2>/dev/null)" ]; then
+      if [ -n "$(grep -P "^\?" 2>/dev/null <<< "$line")" ]; then
         untracked="?"
       fi
-      if [ -n "$(echo "$line" | grep -P "^[AR]" 2>/dev/null)" ]; then
+      if [ -n "$(grep -P "^[AR]" 2>/dev/null <<< "$line")" ]; then
         added="A"
       fi
-    done
+    done <<< "$git_status"
     if [ -n "$untracked" ]; then
       color="$color$red"
     elif [ -n "$added" ]; then
@@ -133,10 +134,6 @@ function gen_ps1() {
 }
 PROMPT_COMMAND="gen_ps1; $PROMPT_COMMAND"
 
-export EDITOR=helix
-export TERMINAL=wezterm
-export BROWSER=qutebrowser
-
 PATH="/opt/openresty/bin:$PATH"
 
 # Luarocks
@@ -146,6 +143,7 @@ eval $(luarocks path)
 # Node
 PATH="$HOME/node_modules/.bin:$PATH"
 
+# Python
 eval "$(register-python-argcomplete pipx)"
 
 hx(){
