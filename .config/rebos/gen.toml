@@ -66,6 +66,7 @@ items = [
     "exfat-utils",
     "ffmpegthumbnailer",
     "flatpak",
+    "freedownloadmanager",
     "gdb",
     "ghostscript",
     "gimp",
@@ -88,7 +89,6 @@ items = [
     "imagemagick",
     "intel-ucode",
     "jq",
-    "kdeconnect",
     "lazygit",
     "lf",
     "libimobiledevice",
@@ -114,7 +114,8 @@ items = [
     "orca",
     "pamixer",
     "papirus-icon-theme",
-    "pcmanfm-gtk3",
+    "pcmanfm",
+    "pdfjs", # for qutebrowser
     "perl-file-mimeinfo",
     "picom",
     "playerctl",
@@ -176,6 +177,8 @@ items = [
     "yay",
     "yay-debug",
     "zam-plugins",
+    "zathura",
+    "zathura-pdf-mupdf",
     "zed",
     "zenity",
     "zram-generator"
@@ -195,6 +198,8 @@ items = [
     "com.spotify.Client",
     "com.usebottles.bottles",
     "com.valvesoftware.Steam",
+    "dev.bragefuglseth.Keypunch",
+    "io.github.swordpuffin.rewaita",
     "org.gnome.Boxes",
     "org.gnome.World.PikaBackup",
     "org.gtk.Gtk3theme.adw-gtk3",
@@ -206,7 +211,7 @@ items = [
     "org.soundconverter.SoundConverter",
     "org.telegram.desktop",
     "org.vinegarhq.Sober",
-    "page.codeberg.libre_menu_editor.LibreMenuEditor"
+    "page.codeberg.libre_menu_editor.LibreMenuEditor",
 ]
 
 [managers.luarocks5_1]
@@ -271,6 +276,7 @@ items = [
 
 [managers.pipx]
 items = [
+    "black",
     "djlint",
     "jedi-language-server",
     "pyright",
