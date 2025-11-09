@@ -1,29 +1,29 @@
 #!/bin/sh
 
 export LOGOUT_SCRIPT="dkcmd exit"
-export LOCK_SCRIPT="magick /home/kome/.scripts/current_wallpaper.png -resize 1920x /home/kome/.scripts/current_wallpaper.png && i3lock -i /home/kome/.scripts/current_wallpaper.png -ef"
+export LOCK_SCRIPT="magick $HOME/.scripts/current_wallpaper.png -resize 1920x $HOME/.scripts/current_wallpaper.png && i3lock -i $HOME/.scripts/current_wallpaper.png -ef"
 
 #autostart
-pgrep -x xrdb > /dev/null || xrdb ~/.Xresources &
+pgrep -x xrdb > /dev/null || source $HOME/.bash_profile && xrdb $XRESOURCES &
 pgrep sxhkd || sxhkd -c "$HOME/.config/dk/sxhkdrc" &
 xsetroot -cursor_name left_ptr &
 xset led 3 & # For generic led keyboards
 pgrep -x picom > /dev/null || picom &
-pgrep -x bg.sh > /dev/null  || /home/kome/.scripts/bg.sh &
+pgrep -x bg.sh > /dev/null  || $HOME/.scripts/bg.sh &
 pgrep -x polybar > /dev/null || polybar &
 pgrep -x nm-applet > /dev/null || nm-applet &
 pgrep -x blueman-applet > /dev/null || blueman-applet &
-pgrep -x caffeine > /dev/null ||caffeine start &
+pgrep -x c > /dev/null || caffeine start &
 pgrep -x dunst > /dev/null || dunst &
 pgrep -x redshift > /dev/null || redshift &
 pgrep -x mpris-proxy > /dev/null || mpris-proxy &
-pgrep -f "low_battery.lua" > /dev/null || lua /home/kome/.scripts/low_battery.lua &
+pgrep -f "low_battery.lua" > /dev/null || lua $HOME/.scripts/low_battery.lua &
 touchegg_count=$(pgrep -xc touchegg)
 [ "$touchegg_count" -le 1 ] && touchegg & # systemctl start touchegg
 
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 dbus-update-activation-environment --systemd --all &
-pgrep -x xdman-beta > /dev/null || xdman-beta --background &
+# pgrep -x xdman-beta > /dev/null || xdman-beta --background &
 
 # determine where to place the log file
 logfile="$HOME/.dkrc.log"

@@ -10,13 +10,13 @@ super + c
 
 #Program launchers
 super + w
-	$BROWSER
+	source ~/.bash_profile && $BROWSER
 
 super + e
-	$TERMINAL -e lf
+	source ~/.bash_profile && $TERMINAL -e lf
 
 super + Return
-	$TERMINAL
+	source ~/.bash_profile && $TERMINAL
 
 super + s
 	com.spotify.Client
@@ -133,3 +133,6 @@ super + shift + {F4,F2}
 # clip.sh
 super + shift + {c,v,s,d}
 	$HOME/.scripts/clip.sh {copy,recopy,sel,del}
+
+super + shift + b
+	$HOME/.scripts/bm.sh

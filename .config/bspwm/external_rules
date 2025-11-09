@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+wid="$1"
+class="$2"
+instance="$3"
+consequences="$4"
+
+name=$(xprop -id "$wid" WM_NAME 2>/dev/null | cut -d '"' -f2)
+[[ "$name" == *"REAPER v"* ]] && echo 'manage=true state=tiled'

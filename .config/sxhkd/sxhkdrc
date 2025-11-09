@@ -45,6 +45,10 @@ super + q
 super + ctrl + {h,j,k,l}
 	bspc node -f {west,south,north,east}.local.!hidden.window
 
+#Move window around stack
+super + ctrl + alt + {h,j,k,l}
+	bspc node -f -s {west,south,north,east}.local.!hidden.window
+
 #Resize tiled window out
 super + shift + {h,j,k,l}
 	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
@@ -65,13 +69,13 @@ super + r
 	rofi -show run
 
 super + w
-	$BROWSER
+	source $HOME/.bash_profile && $BROWSER
 
 super + e
-	$TERMINAL -e lf
+	source $HOME/.bash_profile && $TERMINAL -e lf
 
 super + Return
-	$TERMINAL
+	source $HOME/.bash_profile && $TERMINAL
 
 super + s
 	com.spotify.Client
@@ -130,3 +134,6 @@ super + shift + {F4,F2}
 
 super + shift + {c,v,s,d}
 	$HOME/.scripts/clip.sh {copy,recopy,sel,del}
+
+super + shift + b
+	$HOME/.scripts/bm.sh
