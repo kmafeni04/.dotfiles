@@ -71,8 +71,8 @@ cmd paste-img &{{
     [ -z "$(wl-paste --list-types | grep png 2>/dev/null)" ] && notify-send "Clipboard selection not an image" && exit 0
     wl-paste -t image/png > "$name"
   else
-    [ -z "$(xclip -selection clipboard -target TARGETS | grep png 2>/dev/null)" ] && notify-send "Clipboard selection not an image" && exit 0
-    xclip -selection clipboard -target image/png -o > "$name"
+    [ -z "$(xclip -selection clipboard -o -t TARGETS | grep png 2>/dev/null)" ] && notify-send "Clipboard selection not an image" && exit 0
+    xclip -selection clipboard -t image/png -o > "$name"
   fi
 }}
 
@@ -83,7 +83,11 @@ cmd term &{{
 cmd open &{{
   case $(file --mime-type -Lb $f) in
     text/* | */json | */javascript)
-      /home/kome/.dotfiles/.scripts/lf-helix.sh "$f"
+      case $f in
+        *.RPP|*.rpp) reaper "$f" & disown ;;
+        *.kdenlive) org.kde.kdenlive "$f" & disown ;;
+        *) /home/kome/.dotfiles/.scripts/lf-helix.sh "$f" ;;
+      esac
       ;;
     *)
       case $f in
