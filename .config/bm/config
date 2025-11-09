@@ -1,4 +1,6 @@
 RUNNER :: $TERMINAL -e $EDITOR
 bspwmrc :: /home/kome/.config/bspwm/bspwmrc
 sxhkdrc :: /home/kome/.config/sxhkd/sxhkdrc
+hyprland :: /home/kome/.config/hypr/hyprland.conf
 bashrc :: /home/kome/.bashrc
+rebos conf :: /home/kome/.config/rebos/gen.toml
