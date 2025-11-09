@@ -31,8 +31,7 @@ case "$extension" in
     run_command="bash $filename"
     ;;
   "html")
-    app.zen_browser.zen $basedir/$filename
-    exit 0
+    run_command="$BROWSER $basedir/$filename"
     ;;
   *)
     echo "No defined case for extension '$extension'"
@@ -40,8 +39,7 @@ case "$extension" in
     ;;
 esac
 
-if [ ! -z "$run_command" ]; then
-  source ~/.scripts/helix-term.sh
-
+if [ -n "$run_command" ]; then
+  source $HOME/.scripts/helix-term.sh
   echo "${run_command}" | wezterm cli send-text --pane-id $pane_id --no-paste
 fi
