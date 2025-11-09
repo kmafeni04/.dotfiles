@@ -135,6 +135,7 @@ items = [
     "rustup",
     "sassc",
     "scrot",
+    "shfmt",
     "shotwell",
     "simple-scan",
     "snapshot",
