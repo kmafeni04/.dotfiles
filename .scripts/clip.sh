@@ -16,6 +16,7 @@ init
 
 write(){
   multiline="$1"
+  [ -z $multiline ] && notify-send "Nothing to write" && exit 0
   grep -Fxq -e "$multiline" "$hist_file"
   if [ "$?" -eq 0 ]; then
     line="$(grep -Fxon -m 1 -e "$multiline" "$hist_file" | grep -Po -m 1 --color="never" "^\d+")"
@@ -127,11 +128,12 @@ recopy(){
     img_name="$img_surrond-$(date '+Copied_20%y-%m-%d_%H:%M:%S')-$img_surrond.png"
     if [ "$img_from" == "wayland" ]; then
       wl-paste -t image/png > "$hist_dir/$img_name"
-      xclip -i -t image/png "$hist_dir/$img_name"
     else
       xclip -selection clipboard -t image/png -o > "$hist_dir/$img_name"
-      [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name";
     fi
+    xclip -i -t image/png "$hist_dir/$img_name"
+    [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name";
+
     write "$img_name"
     notification="Image saved to clipboard"
   else
