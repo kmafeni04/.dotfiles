@@ -89,7 +89,7 @@ sel() {
   original=$(echo "$selection" | sed "s/$new_line/\n/g")
   if [[ "$selection" == "$img_surrond"* && "$selection" == *"$img_surrond.png" ]]; then
     xclip -selection clipboard -target image/png -i "$hist_dir/$selection"
-    [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name"
+    [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$selection"
     notification="Image saved to clipboard"
   else
     echo -n "$original" | xclip -i -selection clipboard
