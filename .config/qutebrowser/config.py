@@ -60,14 +60,15 @@ c.colors.downloads.error.bg = bg
 c.colors.downloads.error.fg = fg
 c.colors.downloads.bar.bg = bg
 c.colors.downloads.start.bg = fg
-c.colors.downloads.start.fg = fg
+c.colors.downloads.start.fg = bg
 c.colors.downloads.stop.bg = bg
 c.colors.downloads.stop.fg = fg
 
 c.colors.tooltip.bg = bg
 c.colors.tooltip.fg = fg
 
-c.colors.webpage.bg = bg
+# c.colors.webpage.bg = "#FFFFFF"
+# c.colors.webpage.bg = fg
 c.colors.webpage.preferred_color_scheme = "dark"
 
 # dark mode setup
@@ -75,9 +76,7 @@ c.colors.webpage.darkmode.enabled = True
 c.colors.webpage.darkmode.algorithm = "lightness-cielab"
 c.colors.webpage.darkmode.policy.images = "never"
 config.set("colors.webpage.darkmode.enabled", False, "file://*")
-config.set(
-    "colors.webpage.darkmode.enabled", False, "qute://pdfjs/web/viewer.html*"
-)
+config.set("colors.webpage.darkmode.enabled", False, "qute://pdfjs/*")
 
 c.statusbar.show = "always"
 c.statusbar.padding = {"bottom": 5, "left": 5, "right": 5, "top": 5}
@@ -148,8 +147,6 @@ config.unbind("<Alt-7>")
 config.unbind("<Alt-8>")
 config.unbind("<Alt-9>")
 
-config.bind("<Space>f", "cmd-set-text -s :tab-select")
-
 # In consideration
 # config.bind("h", "scroll-px -50 0")
 # config.bind("j", "scroll-px 0 50")
@@ -157,7 +154,10 @@ config.bind("<Space>f", "cmd-set-text -s :tab-select")
 # config.bind("l", "scroll-px 50 0")
 
 config.bind("<Ctrl-n>", "open -t")
-config.bind("<Ctrl-r>", "config-source;; message-info 'Config sourced'")
+config.bind(
+    "<Ctrl-r>",
+    "config-source /home/kome/.config/qutebrowser/config.py;; message-info 'Config sourced'",
+)
 config.bind("<Ctrl-Shift-Tab>", "tab-prev")
 config.bind("<Ctrl-Tab>", "tab-next")
 
@@ -204,16 +204,6 @@ config.bind("sll", "session-save;; session-load lang-dev;; close")
 
 config.bind(";d", "hint links spawn fdm -u {hint-url}")
 
-# aliases
-c.aliases["yt"] = "open https://www.youtube.com"
-c.aliases["yt!"] = "open -t https://www.youtube.com"
-c.aliases["gh"] = "open https://www.github.com"
-c.aliases["gh!"] = "open -t https://www.github.com"
-c.aliases["da"] = "open https://www.duck.ai"
-c.aliases["da!"] = "open -t https://www.duck.ai"
-c.aliases["nf"] = "open https://www.nerdfonts.com"
-c.aliases["nf!"] = "open -t https://www.nerdfonts.com"
-
 # fonts
 session = os.getenv("XDG_SESSION_TYPE")
 if session == "wayland":
@@ -229,11 +219,11 @@ c.fonts.tabs.unselected = "default_size default_family"
 c.fonts.tooltip = "default_size default_family"
 
 # privacy
-config.set("content.webgl", False, "*")
-config.set("content.webgl", True, "www.figma.com")
+# config.set("content.webgl", False, "*")
+# config.set("content.webgl", True, "www.figma.com")
 
-config.set("content.canvas_reading", False)
-config.set("content.canvas_reading", True, "www.figma.com")
+# config.set("content.canvas_reading", False)
+# config.set("content.canvas_reading", True, "www.figma.com")
 
 config.set("input.mode_override", "passthrough", "www.figma.com")
 
@@ -241,13 +231,14 @@ config.set("content.cookies.accept", "all")
 config.set("content.cookies.store", True)
 
 config.set("content.geolocation", False)
-config.set("content.webrtc_ip_handling_policy", "default-public-interface-only")
+# config.set("content.webrtc_ip_handling_policy", "default-public-interface-only")
 
 # Adblocking
 c.content.blocking.enabled = True
 c.content.blocking.method = "both"
 c.content.blocking.adblock.lists = [
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/legacy.txt",
+    "https://github.com/uBlockOrigin/uAssets/raw/master/filters/filters-general.txt",
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/filters.txt",
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/filters-2020.txt",
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/filters-2021.txt",

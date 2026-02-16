@@ -23,8 +23,6 @@ while [ $counter -lt 10 ]; do
 	# Check if success
 	if pgrep -x "blueman-applet" >/dev/null && pgrep -x "xdm-app" >/dev/null; then
 		exit 0
-	else
-		notify-send -u normal "Attempt $((counter + 1)) to start bluetooth tray applet failed."
 	fi
 	((counter++))
 done

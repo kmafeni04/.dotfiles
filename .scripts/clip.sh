@@ -7,14 +7,14 @@ hist_file="$hist_dir/hist"
 new_line="<:NEWLINE:>"
 img_surrond="[:IMAGE:]"
 
-init(){
+init() {
   mkdir -p "$hist_dir"
   touch "$hist_file"
 }
 
 init
 
-write(){
+write() {
   multiline="$1"
   [ -z $multiline ] && notify-send "Nothing to write" && exit 0
   grep -Fxq -e "$multiline" "$hist_file"
@@ -25,7 +25,7 @@ write(){
   echo "$multiline" >> "$hist_file"
 }
 
-replace_newline(){
+replace_newline() {
   clip="$1"
   [ -z "$clip" ] && exit 0
   # https://github.com/BreadOnPenguins/scripts/blob/1396a09a206dbd6f9a08ffa7a5603e6d55ae5f00/shortcuts-menus/txtcliphist#L15
@@ -34,8 +34,8 @@ replace_newline(){
   echo "$multiline"
 }
 
-copy(){
-  clip=$(xclip -o -selection primary | xclip -i -f -selection clipboard 2>/dev/null)
+copy() {
+  clip=$(xclip -o -selection primary | xclip -i -f -selection clipboard 2> /dev/null)
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     [ -z "$clip" ] && clip=$(wl-paste --primary | wl-copy && wl-paste -n)
     echo -n "$clip" | xclip -i -selection clipboard
@@ -49,33 +49,33 @@ copy(){
   notification="Copied to clipboard"
 }
 
-add(){
+add() {
   input="$1"
   [ -z "$input" ] && exit 0
-  clip=$(echo -n "$input" | xclip -i -f -selection clipboard 2>/dev/null)
+  clip=$(echo -n "$input" | xclip -i -f -selection clipboard 2> /dev/null)
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-    echo -n "$input"| wl-copy
+    echo -n "$input" | wl-copy
   fi
   multiline="$(replace_newline "$clip")"
   write "$multiline"
   notification="Copied to clipboard"
 }
 
-get_selection(){
+get_selection() {
   prompt="$1"
   [ -z "$prompt" ] && exit 0
 
-  temp_file=$(mktemp 2>/dev/null)
+  temp_file=$(mktemp 2> /dev/null)
   [ -z "$temp_file" ] && exit 0
 
-  IFS=$'\n'  # Set internal field separator to new line
+  IFS=$'\n' # Set internal field separator to new line
   for line in $(cat "$hist_file"); do
-  if [[ "$line" == "$img_surrond"* && "$line" == *"$img_surrond.png" ]]; then
-    echo -en "$line\x00icon\x1f$hist_dir/$line\n" >> $temp_file
-  else
-    echo -n "$line" >> $temp_file
-    echo "" >> $temp_file
-  fi
+    if [[ "$line" == "$img_surrond"* && "$line" == *"$img_surrond.png" ]]; then
+      echo -en "$line\x00icon\x1f$hist_dir/$line\n" >> $temp_file
+    else
+      echo -n "$line" >> $temp_file
+      echo "" >> $temp_file
+    fi
   done
   selection=$(tac "$temp_file" | rofi -theme-str "element-icon { size: 100px; }" -dmenu -i -l 3 -p "$prompt")
   rm $temp_file
@@ -99,11 +99,11 @@ sel() {
   write "$selection"
 }
 
-del(){
+del() {
   selection=$(get_selection "Delete clipboard entry:")
   [ -z "$selection" ] && exit 0
 
-  line="$(grep -Fxon -m 1 -e "$selection" "$hist_file" | grep -Po -m 1 --color="never" "^\d+" 2>/dev/null)"
+  line="$(grep -Fxon -m 1 -e "$selection" "$hist_file" | grep -Po -m 1 --color="never" "^\d+" 2> /dev/null)"
   [ ${line:-0} -le 0 ] && exit 0
   sed -i ""$line"d" "$hist_file"
   if [[ "$selection" == "$img_surrond"* && "$selection" == *"$img_surrond.png" && -f "$hist_dir/$selection" ]]; then
@@ -112,16 +112,16 @@ del(){
   notification="Deleted from clipboard"
 }
 
-recopy(){
+recopy() {
   is_img=""
   img_from=""
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-    is_img="$(wl-paste --list-types | grep png 2>/dev/null)"
+    is_img="$(wl-paste --list-types | grep png 2> /dev/null)"
   fi
   if [ -n "$is_img" ]; then
     img_from="wayland"
   else
-    is_img="$(xclip -selection clipboard -o -t TARGETS | grep png 2>/dev/null)"
+    is_img="$(xclip -selection clipboard -o -t TARGETS | grep png 2> /dev/null)"
     img_from="x11"
   fi
   if [ -n "$is_img" ]; then
@@ -132,14 +132,14 @@ recopy(){
       xclip -selection clipboard -t image/png -o > "$hist_dir/$img_name"
     fi
     xclip -i -t image/png "$hist_dir/$img_name"
-    [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name";
+    [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name"
 
     write "$img_name"
     notification="Image saved to clipboard"
   else
-    clip=$(xclip -o -selection clipboard 2>/dev/null)
+    clip=$(xclip -o -selection clipboard 2> /dev/null)
     if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
-      [ -z "$clip" ] && clip=$(wl-paste -n 2>/dev/null)
+      [ -z "$clip" ] && clip=$(wl-paste -n 2> /dev/null)
       echo -n "$clip" | xclip -i -selection clipboard
     fi
     multiline="$(replace_newline "$clip")"
@@ -149,13 +149,13 @@ recopy(){
 }
 
 case "$1" in
-  copy) copy ;;
-  recopy) recopy ;;
-  add) add "$2" ;;
-  sel) sel ;;
-  del) del ;;
-  clear) rm -rf "$hist_dir" && init && notification="Clipboard cleared" ;;
-  *) exit 1
+copy) copy ;;
+recopy) recopy ;;
+add) add "$2" ;;
+sel) sel ;;
+del) del ;;
+clear) rm -rf "$hist_dir" && init && notification="Clipboard cleared" ;;
+*) exit 1 ;;
 esac
 
 [ -z "$notification" ] || notify-send "$notification"

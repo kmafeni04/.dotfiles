@@ -1,0 +1,12 @@
+RUNNER :: $TERMINAL -e $EDITOR
+bspwmrc :: /home/kome/.config/bspwm/bspwmrc
+sxhkdrc :: /home/kome/.config/sxhkd/sxhkdrc
+hyprland :: /home/kome/.config/hypr/hyprland.conf
+bashrc :: /home/kome/.bashrc
+rebos conf :: /home/kome/.config/rebos/gen.toml
+rofi :: /home/kome/.config/rofi/config.rasi
+lfrc :: /home/kome/.config/lf/lfrc
+qutebrowser :: /home/kome/.config/qutebrowser/config.py
+mpv :: /home/kome/.config/mpv/mpv.conf
+eww :: /home/kome/.config/eww/eww.yuck
+dunstrc :: /home/kome/.config/dunst/dunstrc

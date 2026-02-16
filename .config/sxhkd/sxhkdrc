@@ -41,6 +41,10 @@ super + {1,2,3,4,5,6,7,8,9}
 super + q
 	bspc node -c
 
+#Focus next/prev window
+alt + {_,shift} + Tab
+	bspc node -f {next,prev}.local.!hidden.window
+
 #Focus window
 super + ctrl + {h,j,k,l}
 	bspc node -f {west,south,north,east}.local.!hidden.window
@@ -87,7 +91,7 @@ super +  Tab
 	rofi -show window
 
 super + shift + e
-	rofi -show emoji -emoji-mode copy
+	rofi -show emoji -a copy && $HOME/.scripts/clip.sh recopy
 
 #Volume Keys
 {super + shift + equal, XF86AudioRaiseVolume}
@@ -120,9 +124,13 @@ super + shift + e
 super + b
 	killall polybar || polybar
 
-#Screenshot
+#Screenshot sel
+super + Print
+	/home/kome/.scripts/screenshot.sh sel
+
+#Screenshot full
 super + shift + Print
-	/home/kome/.scripts/screenshot.sh
+	/home/kome/.scripts/screenshot.sh full
 
 #Lock Screen
 super + l

@@ -10,11 +10,7 @@ while true; do
     killall swaybg
     swaybg -m fill -i "$wallpaper" -o "*" &
   else
-    for v in $(xrandr --listactivemonitors | grep -P -o "^ \d"); do
-      nitrogen --set-scaled "$wallpaper" --head=$v
-    done
+    xwallpaper --zoom "$wallpaper" &
   fi
   sleep 60
 done
-
-

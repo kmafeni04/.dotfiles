@@ -1,0 +1,2 @@
+RUNNER :: $TERMINAL -e $FILEBROWSER
+nelua :: /home/kome/Documents/code-projects/languages/nelua

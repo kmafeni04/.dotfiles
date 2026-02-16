@@ -147,8 +147,8 @@ PATH="$HOME/node_modules/.bin:$PATH"
 eval "$(register-python-argcomplete pipx)"
 
 hx(){
-  echo -en "\033]0;helix\a"
-  helix $@
+  echo -en "\033]0;hx\a"
+  command helix "$@"
 }
 
 lf() {

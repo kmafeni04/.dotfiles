@@ -10,6 +10,7 @@ settings:
     global:
       normal:
         '0': zoom
+        ;d: hint links spawn fdm -u {hint-url}
         <Alt+1>: tab-prev
         <Alt+2>: tab-next
         <Alt+3>: null
@@ -35,9 +36,10 @@ settings:
         <Ctrl+Tab>: tab-next
         <Ctrl+n>: open -t
         <Ctrl+r>: config-source;; message-info 'Config sourced'
-        <Space>f: cmd-set-text -s :tab-select
         '=': zoom-in
         G: null
+        cm: clear-messages
+        f: hint
         ge: scroll-to-perc 100
         gf: null
         gh: tab-focus 1
@@ -50,32 +52,53 @@ settings:
         sll: session-save;; session-load lang-dev;; close
         slw: session-save;; session-load work;; close
         ss: cmd-set-text -s :session-save
+        tg: cmd-set-text -s :tab-give
         th: config-cycle tabs.show multiple never
         tt: spawn --userscript translate
+        wb: null
         wbb: spawn --userscript qute-bitwarden
-        wbp: spawn --userscript qute-bitwarden -w
-        wbu: spawn --userscript qute-bitwarden -e
+        wbp: spawn --userscript qute-bitwarden --password-only
+        wbu: spawn --userscript qute-bitwarden --username-only
         wd: config-cycle colors.webpage.darkmode.enabled
   colors.webpage.darkmode.algorithm:
     global: lightness-cielab
   colors.webpage.darkmode.enabled:
-    global: true
+    global: false
   completion.scrollbar.padding:
     global: 0
   completion.scrollbar.width:
     global: 0
   completion.shrink:
     global: true
+  content.blocking.hosts.lists:
+    global:
+    - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
   content.desktop_capture:
     https://www.snapchat.com: true
   content.javascript.clipboard:
+    https://duckduckgo.com: access-paste
     https://github.com: access-paste
     https://www.figma.com: access-paste
+    https://www.snapchat.com: access-paste
+  content.media.audio_capture:
+    https://discord.com: true
+    https://www.instagram.com: true
+  content.media.audio_video_capture:
+    https://www.snapchat.com: true
   content.notifications.enabled:
     https://chia-anime.su: false
+    https://rivestream.org: false
     https://web.whatsapp.com: true
     https://www.instagram.com: true
     https://www.snapchat.com: true
+    https://www.youtube.com: false
+    https://ytmp3.as: false
+  content.register_protocol_handler:
+    https://mail.google.com?extsrc=mailto&url=%25s: true
+  content.webgl:
+    global: true
+  downloads.prevent_mixed_content:
+    global: true
   fonts.hints:
     global: bold default_size default_family
   fonts.tabs.selected:
@@ -108,7 +131,7 @@ settings:
   tabs.position:
     global: top
   tabs.show:
-    global: never
+    global: multiple
   tabs.title.format:
     global: '{audio}{current_title}'
   tabs.width:

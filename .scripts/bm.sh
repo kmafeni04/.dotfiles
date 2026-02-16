@@ -4,6 +4,7 @@ set -x
 
 source $HOME/.bash_profile
 
+NAME="bm"
 BM_DIR="${XDG_CONFIG_HOME:-"$HOME/.config"}/bm"
 SEP=" :: "
 
@@ -18,7 +19,7 @@ get_category() {
   category_file="$BM_DIR/$category"
 
   if [ ! -f $category_file ]; then
-    notify-send "$category_file does not exist"
+    notify-send "$NAME" "$category_file does not exist"
     exit 0
   fi
 
@@ -60,14 +61,14 @@ add() {
 
     runner=$(rofi -dmenu -p "Runner:")
     [ -z "$runner" ] && exit 0
-    echo "RUNNER$SEP$runner" >> $category_file && notify-send "Created category '$category' and added '$name'"
+    echo "RUNNER$SEP$runner" >> $category_file && notify-send "$NAME" "Created category '$category' and added '$name'"
   fi
 
   touch "$category_file"
 
-  [ -n "$(cat $category_file | grep "$name$SEP" 2> /dev/null)" ] && notify-send "$name already exists" && exit 0
+  [ -n "$(cat $category_file | grep "$name$SEP" 2> /dev/null)" ] && notify-send "$NAME" "$name already exists" && exit 0
 
-  echo "$name$SEP$val" >> $category_file && notify-send "Added '$name' to '$category' category"
+  echo "$name$SEP$val" >> $category_file && notify-send "$NAME" "Added '$name' to '$category' category"
 }
 
 edit() {
@@ -91,11 +92,11 @@ edit() {
       new_category_file="$BM_DIR/$new_category_name"
 
       if [ -f $new_category_file ]; then
-        notify-send "'$new_category_file' already exists"
+        notify-send "$NAME" "'$new_category_file' already exists"
         exit 1
       fi
 
-      mv $category_file $new_category_file && notify-send "Renamed category '$category' to '$new_category_name'"
+      mv $category_file $new_category_file && notify-send "$NAME" "Renamed category '$category' to '$new_category_name'"
       ;;
     runner)
       runner=$(head -n 1 "$category_file" | awk -F"$SEP" '{print $2}' 2> /dev/null)
@@ -107,10 +108,10 @@ edit() {
         echo "RUNNER$SEP$choice"
         tail -n +2 "$category_file"
       } > "$BM_DIR/temp_file" && mv "$BM_DIR/temp_file" "$category_file"
-      notify-send "'$category' RUNNER set to '$choice'"
+      notify-send "$NAME" "'$category' RUNNER set to '$choice'"
       ;;
     *)
-      notify-send "Unknown command $choice"
+      notify-send "$NAME" "Unknown command $choice"
       exit 1
       ;;
     esac
@@ -125,26 +126,26 @@ edit() {
       new_bookmark=$(rofi -dmenu -p "Edit name:" -filter "$bookmark")
       [ -z "$new_bookmark" ] && exit 0
 
-      [ -n "$(tail -n +2 "$category_file" | grep "$new_bookmark$SEP")" ] && notify-send "'$new_bookmark' bookmark already exists" && exit 0
+      [ -n "$(tail -n +2 "$category_file" | grep "$new_bookmark$SEP")" ] && notify-send "$NAME" "'$new_bookmark' bookmark already exists" && exit 0
 
-      sed -i "s/$bookmark$SEP/$new_bookmark$SEP/" $category_file && notify-send "'$bookmark' renamed to '$new_bookmark'"
+      sed -i "s/$bookmark$SEP/$new_bookmark$SEP/" $category_file && notify-send "$NAME" "'$bookmark' renamed to '$new_bookmark'"
       ;;
     value)
       val=$(tail -n +2 "$category_file" | grep "$bookmark$SEP" | awk -F"$SEP" '{print $2}')
 
-      new_val=$(rofi -dmenu -p "Edit name:" -filter "$val")
+      new_val=$(rofi -dmenu -p "Edit value:" -filter "$val")
       [ -z "$new_val" ] && exit 0
 
-      sed -i "s|$bookmark$SEP$val|$bookmark$SEP$new_val|" $category_file && notify-send "'$bookmark' set to '$new_val'"
+      sed -i "s|$bookmark$SEP$val|$bookmark$SEP$new_val|" $category_file && notify-send "$NAME" "'$bookmark' set to '$new_val'"
       ;;
     *)
-      notify-send "Unknown command $choice"
+      notify-send "$NAME" "Unknown command $choice"
       exit 1
       ;;
     esac
     ;;
   *)
-    notify-send "Unknown command $choice"
+    notify-send "$NAME" "Unknown command $choice"
     exit 1
     ;;
   esac
@@ -161,22 +162,22 @@ delete() {
     choice=$(echo -e "yes\nno" | rofi -dmenu -p "Are you sure you want to delete category '$(basename $category_file)':")
     [ -z "$choice" ] && exit 0
 
-    [ $choice == "yes" ] && rm -rf $category_file && notify-send "Deleted category $choice"
+    [ $choice == "yes" ] && rm -rf $category_file && notify-send "$NAME" "Deleted category $choice"
     ;;
   bookmark)
     bookmark=$(tail -n +2 "$category_file" | awk -F"$SEP" '{print $1}' | rofi -dmenu -p "Bookmark:" 2> /dev/null)
     [ -z "$bookmark" ] && exit 0
 
     line_no=$(cat "$category_file" | grep -n "$bookmark$SEP" | grep -Po "^\d+")
-    [ -z "$line_no" ] && notify-send "Could not determine bookmark line no" && exit 0
+    [ -z "$line_no" ] && notify-send "$NAME" "Could not determine bookmark line no" && exit 0
 
     choice=$(echo -e "yes\nno" | rofi -dmenu -p "Are you sure you want to delete bookmark '$bookmark':")
     [ -z "$choice" ] && exit 0
 
-    [ $choice == "yes" ] && sed -i ""$line_no"d" $category_file && notify-send "Deleted bookmark '$bookmark'"
+    [ $choice == "yes" ] && sed -i ""$line_no"d" $category_file && notify-send "$NAME" "Deleted bookmark '$bookmark'"
     ;;
   *)
-    notify-send "Unknown command $choice"
+    notify-send "$NAME" "Unknown command $choice"
     exit 1
     ;;
   esac
@@ -203,7 +204,7 @@ else
   edit) edit ;;
   delete) delete ;;
   *)
-    notify-send "Unknown command $choice"
+    notify-send "$NAME" "Unknown command $choice"
     exit 1
     ;;
   esac

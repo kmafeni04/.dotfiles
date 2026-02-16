@@ -1,5 +1,10 @@
-# RUNNER :: $TERMINAL -e $FILEBROWSER
-mani :: /home/kome/Documents/code-projects/languages/nelua/mani-lang
+RUNNER :: $TERMINAL -e $FILEBROWSER
 scripts :: /home/kome/.scripts/
-bm conf :: /home/kome/.config/bm
-dotfiles :: /home/kome/.dotfiles
+bm conf :: /home/kome/.config/bm/
+dotfiles :: /home/kome/.dotfiles/
+data-lead :: /home/kome/Documents/code-projects/external-work/DataLeadWeb-frontend/
+reams-engineering :: /home/kome/Documents/code-projects/external-work/reams-engineering
+portal :: /home/kome/Documents/code-projects/external-work/portal-demo
+UpToPaid :: /home/kome/Documents/code-projects/web/nelua/UpToPaid
+mani-lang :: /home/kome/Documents/code-projects/languages/nelua/mani-lang
+pedodent-clinic :: /home/kome/Documents/code-projects/external-work/pedodent-clinic

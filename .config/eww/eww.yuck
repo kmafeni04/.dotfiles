@@ -33,8 +33,16 @@
     (eventbox
       :class "battery"
       :tooltip "${battery_state}"
-      (label :text "${battery_icon}${battery_percent}%")
-    )
+      (label :text "${battery_state == 'Charging' ? "󰂄" :
+      battery_percent < 10 ? '󰁺' :
+        battery_percent < 20 ? '󰁻' :
+          battery_percent < 30 ? '󰁼' :
+            battery_percent < 40 ? '󰁽' :
+              battery_percent < 50 ? '󰁾' :
+                battery_percent < 60 ? '󰁿' :
+                  battery_percent < 70 ? '󰂀' :
+                    battery_percent < 80 ? '󰂁' :
+                      battery_percent < 90 ? '󰂂' : '󰁹' } ${battery_percent}%"))
     (time)
     (eventbox
       :class "dunst"
@@ -51,8 +59,10 @@
 (defvar timeFormat false)
 (defwidget time[]
   (eventbox
-    :onclick {timeFormat == false ? "eww update timeFormat=true" : "eww update timeFormat=false"}
+    :onclick "eww update timeFormat=${!timeFormat}"
+    :onmiddleclick "/home/kome/.scripts/clip.sh add '${longTime}'"
     :cursor "pointer"
+    :tooltip "${calender}"
     (label :text {timeFormat == false ? shortTime : longTime})
   )
 )
@@ -158,11 +168,8 @@
 (defpoll brightness :interval "0.1s"
   "~/.scripts/light.sh")
 
-(defpoll battery_icon :interval "1s"
-  "/home/kome/.dotfiles/.scripts/eww_battery.sh icon")
-
 (defpoll battery_percent :interval "1s"
-  "/home/kome/.dotfiles/.scripts/eww_battery.sh per")
+  "cat /sys/class/power_supply/BAT0/capacity")
 
 (defpoll battery_state :interval "1s"
   "cat /sys/class/power_supply/BAT0/status")
@@ -184,6 +191,9 @@
 
 (defpoll longTime :interval "1s"
   "date '+%d-%m-%Y %H:%M:%S'")
+
+(defpoll calender :interval "1s"
+  "cal")
 
 (defwindow bar
   :monitor 0
