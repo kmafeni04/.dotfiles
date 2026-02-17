@@ -136,11 +136,14 @@
 )
 
 (defwidget music []
-  (box :class "music"
-       :orientation "h"
-       :space-evenly false
-       :halign "center"
-    (label :text {music} :limit-width 30)))
+  (eventbox :class "music"
+      :orientation "h"
+      :space-evenly false
+      :halign "center"
+      :onmiddleclick "playerctl play-pause"
+    (label :text {music} :limit-width 30)
+  )
+)
 
 
 (defwidget metric [label value onchange]
