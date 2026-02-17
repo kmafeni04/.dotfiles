@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
 system_files_path="$HOME/.config/rebos/system_files"
-greetd_path="$system_files_path/greetd"
-regreet_path="$system_files_path/regreet.toml"
 limits_path="$system_files_path/limits.conf"
+ly_path="$system_files_path/config.ini"
 touchpad_30_path="$system_files_path/30-touchpad.conf"
 
 # Taken from OgloTheNerd
@@ -34,12 +33,9 @@ overwrite_file () {
   return $exit_status
 }
 
-if ! cmp -s "$greetd_path" /etc/pam.d/greetd; then
-  OFSUDO=1 overwrite_file "$greetd_path" /etc/pam.d/greetd || exit 1
-fi
 
-if ! cmp -s "$regreet_path" /etc/greetd/regreet.toml; then
-  OFSUDO=1 overwrite_file "$regreet_path" /etc/greetd/regreet.toml || exit 1
+if ! cmp -s "$ly_path" /etc/ly/config.ini; then
+  OFSUDO=1 overwrite_file "$ly_path" /etc/ly/config.ini || exit 1
 fi
 
 if ! cmp -s "$limits_path" /etc/security/limits.conf; then
