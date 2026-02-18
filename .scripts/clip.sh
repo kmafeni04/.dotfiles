@@ -46,7 +46,7 @@ copy() {
   fi
   multiline="$(replace_newline "$clip")"
   write "$multiline"
-  notification="Copied to clipboard"
+  notification="Saved to clipboard"
 }
 
 add() {
@@ -58,7 +58,7 @@ add() {
   fi
   multiline="$(replace_newline "$clip")"
   write "$multiline"
-  notification="Copied to clipboard"
+  notification="Saved to clipboard"
 }
 
 get_selection() {
@@ -90,12 +90,11 @@ sel() {
   if [[ "$selection" == "$img_surrond"* && "$selection" == *"$img_surrond.png" ]]; then
     xclip -selection clipboard -target image/png -i "$hist_dir/$selection"
     [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$selection"
-    notification="Image saved to clipboard"
   else
     echo -n "$original" | xclip -i -selection clipboard
     [ "$XDG_SESSION_TYPE" == "wayland" ] && echo -n "$original" | wl-copy
-    notification="Copied to clipboard"
   fi
+  notification="Selected from clipboard"
   write "$selection"
 }
 
@@ -132,7 +131,7 @@ recopy() {
       xclip -selection clipboard -t image/png -o > "$hist_dir/$img_name"
     fi
     xclip -i -t image/png "$hist_dir/$img_name"
-    [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name"
+    [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$img_name";
 
     write "$img_name"
     notification="Image saved to clipboard"
@@ -144,7 +143,7 @@ recopy() {
     fi
     multiline="$(replace_newline "$clip")"
     write "$multiline"
-    notification="Re copied to clipboard"
+    notification="Primary selection saved to clipboard"
   fi
 }
 
