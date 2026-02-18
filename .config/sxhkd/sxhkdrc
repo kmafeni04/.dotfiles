@@ -81,8 +81,8 @@ super + e
 super + Return
 	source $HOME/.bash_profile && $TERMINAL
 
-super + s
-	com.spotify.Client
+super + y
+	youtube-music-desktop-app
 
 super + m
 	reaper

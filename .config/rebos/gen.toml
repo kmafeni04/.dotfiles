@@ -182,6 +182,7 @@ items = [
     "xwallpaper",
     "yay",
     "yay-debug",
+    "ytmdesktop-bin",
     "zam-plugins",
     "zathura",
     "zathura-pdf-mupdf",
@@ -194,7 +195,6 @@ items = [
 [managers.flatpak]
 items = [
     "app.drey.EarTag",
-    "app.ytmdesktop.ytmdesktop",
     "app.zen_browser.zen",
     "com.brave.Browser",
     "com.discordapp.Discord",
