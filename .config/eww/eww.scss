@@ -2,6 +2,13 @@
   all: unset; // Unsets everything so you can style everything from scratch
 }
 
+tooltip {
+  background-color: #1a1b26;
+  font-family: "DejaVuSansM Nerd Font Mono";
+  color: #9abdf5;
+  border: solid 1px #9abdf5;
+}
+
 // Global Styles
 .bar {
   background-color: #1a1b26;
@@ -30,6 +37,7 @@
 
 .workspace:hover {
   color: #9abdf5;
+
 }
 
 .workspace:active {
