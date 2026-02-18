@@ -6,7 +6,41 @@ image() {
   chafa -f sixel -s "$2x$3" --animate off --polite on -t 1 --bg black "$1"
 }
 
-CACHE_ROOT=${XDG_CACHE_HOME:-$HOME/.cache}/lf
+resize_dimensions() {
+  ORIGINAL_WIDTH=$1
+  ORIGINAL_HEIGHT=$2
+
+  # Calculate new dimensions while maintaining the aspect ratio
+  ASPECT_RATIO=$(bc -l <<< "$ORIGINAL_WIDTH / $ORIGINAL_HEIGHT")
+
+  if (( $(echo "$ASPECT_RATIO < 1.77" | bc -l) )); then
+      MAX_WIDTH=144
+      MAX_HEIGHT=81
+  else
+      MAX_WIDTH=80
+      MAX_HEIGHT=40
+  fi
+  notify-send "$MAX_WIDTH"
+
+  if (( ORIGINAL_WIDTH > ORIGINAL_HEIGHT )); then
+    # Landscape
+    NEW_WIDTH=$MAX_WIDTH
+    NEW_HEIGHT=$(bc -l <<< "$NEW_WIDTH / $ASPECT_RATIO")
+  else
+    # Portrait or square
+    NEW_HEIGHT=$MAX_HEIGHT
+    NEW_WIDTH=$(bc -l <<< "$NEW_HEIGHT * $ASPECT_RATIO")
+  fi
+
+  # Ensure new dimensions are integers
+  NEW_WIDTH=${NEW_WIDTH%.*}
+  NEW_HEIGHT=${NEW_HEIGHT%.*}
+
+  echo "$NEW_WIDTH $NEW_HEIGHT"
+}
+
+
+CACHE_ROOT="/tmp/lf"
 
 if [ ! -d "$CACHE_ROOT" ]; then
   mkdir "$CACHE_ROOT"
@@ -22,7 +56,7 @@ case "$(file -Lb --mime-type -- "$1")" in
   video/*)
     cache_stat=$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)
     CACHE="${CACHE_ROOT}/thumb.$cache_stat"
-    CACHE="$CACHE.jpg"
+    CACHE="$CACHE.png"
     if [ ! -f "$CACHE" ]; then
       ffmpegthumbnailer -i "$1" -o "$CACHE" -s 0
       cached_stat=$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$cache_stat")" | sha256sum | cut -d' ' -f1)
@@ -30,7 +64,8 @@ case "$(file -Lb --mime-type -- "$1")" in
         ffmpegthumbnailer -i "$1" -o "$CACHE" -s 0
       fi
     fi
-    image "$CACHE" "80" "45"
+    read width height <<< "$(file "$CACHE" | grep -Po "\d+ x \d+" | sed 's/ x / /')"
+    image "$CACHE" $(resize_dimensions $width $height)
     ;;
   */pdf)
     cache_stat=$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' -- "$(readlink -f "$1")" | sha256sum | cut -d' ' -f1)
