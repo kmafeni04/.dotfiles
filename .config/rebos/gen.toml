@@ -84,6 +84,7 @@ items = [
     "gvfs-mtp",
     "helix",
     "hyprland",
+    "hyprpicker",
     "i3lock",
     "ifuse",
     "imagemagick",

@@ -125,11 +125,15 @@ super + b
 	killall polybar || polybar
 
 #Screenshot sel
-super + Print
+super + shift + Print
 	/home/kome/.scripts/screenshot.sh sel
 
+#Screenshot active
+super + alt + Print
+	/home/kome/.scripts/screenshot.sh active
+
 #Screenshot full
-super + shift + Print
+super + Print
 	/home/kome/.scripts/screenshot.sh full
 
 #Lock Screen
