@@ -180,6 +180,7 @@ config.bind("cm", "clear-messages")
 
 config.bind("tt", "spawn --userscript translate")
 config.bind("tg", "cmd-set-text -s :tab-give")
+config.bind("tm", "cmd-set-text -s :tab-move")
 config.bind("th", "config-cycle tabs.show multiple never")
 
 config.bind("0", "zoom")
@@ -190,7 +191,6 @@ config.bind("wbb", "spawn --userscript qute-bitwarden")
 config.bind("wbu", "spawn --userscript qute-bitwarden --username-only")
 config.bind("wbp", "spawn --userscript qute-bitwarden --password-only")
 
-config.bind("gm", "tab-move")
 config.bind("ge", "scroll-to-perc 100")
 config.bind("gs", "view-source")
 config.bind("gh", "tab-focus 1")
