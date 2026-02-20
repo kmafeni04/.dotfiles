@@ -2,3 +2,5 @@
 .scripts/current_wallpaper.png
 .config/btop/btop.log
 .config/helix/runtime/grammars
+/.config/qutebrowser/qsettings/QtProject.conf
+/.config/qutebrowser/autoconfig.yml
