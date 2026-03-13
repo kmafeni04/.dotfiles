@@ -10,3 +10,4 @@ qutebrowser :: /home/kome/.config/qutebrowser/config.py
 mpv :: /home/kome/.config/mpv/mpv.conf
 eww :: /home/kome/.config/eww/eww.yuck
 dunstrc :: /home/kome/.config/dunst/dunstrc
+picom :: /home/kome/.dotfiles/.config/picom/picom.conf
