@@ -159,7 +159,7 @@ cmd delete %{{
   question="Trash ${len} ${result}?"
 
   for file in "${files[@]}"; do
-    question="$question\n  $file"
+    question="$question\n  $(basename "$file")"
   done
 
   yes="Yes"
@@ -186,21 +186,54 @@ cmd trash-empty %{{
   chosen="$(echo -e "$options" | rofi -theme-str 'entry { enabled: false;}' -i -show -p "$question" -dmenu -selected-row 0)"
   case $chosen in
     $yes)
-      echo "Emptying trash directoru..."
+      echo "Emptying trash directory..."
       trash-empty
       echo "Trash directory emptied"
       ;;
   esac
 }}
 
-cmd create ${{
-  if [[ "$1" == */ ]]; then
-    mkdir -p "$1"
-  else
-    DIR_PATH=$(dirname "$1")
-    mkdir -p "$DIR_PATH"
-    touch "$1"
-  fi
+cmd bulk-rename ${{
+  set shellopts '-eu'
+  set ifs "\n"
+
+	index=$(mktemp /tmp/lf-bulk-rename-index.XXXXXXXXXX)
+	if [ -n "${fs}" ]; then
+		echo "$fs" > $index
+	else
+		echo "$(ls "$(dirname $f)" | tr ' ' "\n")" > $index
+	fi
+	index_edit=$(mktemp /tmp/lf-bulk-rename.XXXXXXXXXX)
+	cat $index > $index_edit
+	$EDITOR $index_edit
+	if [ $(cat $index | wc -l) -eq $(cat $index_edit | wc -l) ]; then
+		max=$(($(cat $index | wc -l)+1))
+		counter=1
+		while [ $counter -le $max ]; do
+			a="$(cat $index | sed "${counter}q;d")"
+			b="$(cat $index_edit | sed "${counter}q;d")"
+			counter=$(($counter+1))
+
+			[ "$a" = "$b" ] && continue
+			[ -e "$b" ] && echo "File exists: $b" && continue
+			mv "$a" "$b"
+		done
+	else
+		notify-send "lf-bulk-rename" "ERROR: More lines than selected files"
+	fi
+	rm $index $index_edit
+}}
+
+cmd create %{{
+  for name in "$@"; do
+    if [[ "$name" == */ ]]; then
+      mkdir -p "$name"
+    else
+      DIR_PATH=$(dirname "$name")
+      mkdir -p "$DIR_PATH"
+      touch "$name"
+    fi
+  done
 }}
 
 cmd chmod %{{
@@ -307,6 +340,8 @@ map u ${{
 map p paste
 map x cut
 map y copy
+
+map R bulk-rename
 
 map e open
 map o open
