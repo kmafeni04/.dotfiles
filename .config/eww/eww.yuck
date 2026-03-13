@@ -15,43 +15,14 @@
     (music)
     (playerControls)
     (clip)
+    (nm)
+    (blue)
     (systray :class "tray" :spacing 10)
-    (eventbox
-      :class "volume"
-      :cursor "pointer"
-      :onscroll "if [ '{}' == 'up' ]; then pamixer -u && pamixer -i 5; else pamixer -u && pamixer -d 5; fi"
-      :onclick "wezterm -e pulsemixer &"
-      :onmiddleclick "pamixer -t"
-      (label :text "󰕾 ${volume}")
-    )
-    (eventbox
-      :class "brightness"
-      :cursor "pointer"
-      :onscroll "if [ '{}' == 'up' ]; then light -A 5 ; else light -U 5; fi"
-      (label :text "󰃚 ${brightness}")
-    )
-    (eventbox
-      :class "battery"
-      :tooltip "${battery_state}"
-      (label :text "${battery_state == 'Charging' ? "󰂄" :
-      battery_percent < 10 ? '󰁺' :
-        battery_percent < 20 ? '󰁻' :
-          battery_percent < 30 ? '󰁼' :
-            battery_percent < 40 ? '󰁽' :
-              battery_percent < 50 ? '󰁾' :
-                battery_percent < 60 ? '󰁿' :
-                  battery_percent < 70 ? '󰂀' :
-                    battery_percent < 80 ? '󰂁' :
-                      battery_percent < 90 ? '󰂂' : '󰁹' } ${battery_percent}%"))
+    (volume)
+    (brightness)
+    (battery)
     (time)
-    (eventbox
-      :class "dunst"
-      :cursor "pointer"
-      :onclick "dunstctl set-paused toggle && notify-send Notifications on &"
-      :onmiddleclick "notify-send History Cleared && sleep 2 && dunstctl close-all && dunstctl history-clear &"
-      :onrightclick "dunstctl history-pop &"
-      (label :text "󰂚")
-    )
+    (dunst)
     (powerMenu)
   )
 )
@@ -64,6 +35,92 @@
     :cursor "pointer"
     :tooltip "${calender}"
     (label :text {timeFormat == false ? shortTime : longTime})
+  )
+)
+
+(defwidget blue[]
+  (eventbox
+    :class "blue"
+    :tooltip "${bluetooth_state == "yes" ? 'on' : 'off'}"
+    :cursor "pointer"
+    :onclick "~/.scripts/rofi-bluetooth.sh &"
+    (label :text
+      "${
+        bluetooth_state == 'yes' ? "󰂯" : "󰂲"
+      }"
+    )
+  )
+)
+
+
+(defwidget volume[]
+  (eventbox
+    :class "volume"
+    :cursor "pointer"
+    :onscroll "if [ '{}' == 'up' ]; then pamixer -u && pamixer -i 5; else pamixer -u && pamixer -d 5; fi"
+    :onclick "wezterm -e pulsemixer &"
+    :onmiddleclick "pamixer -t"
+    (label :text "󰕾 ${volume}")
+  )
+)
+
+(defwidget brightness[]
+  (eventbox
+    :class "brightness"
+    :cursor "pointer"
+    :onscroll "if [ '{}' == 'up' ]; then light -A 5 ; else light -U 5; fi"
+    (label :text "󰃚 ${brightness}")
+  )
+)
+
+(defwidget nm[]
+  (eventbox
+    :class "nm"
+    :tooltip "Connection:${nm_connection_state}"
+    :cursor "pointer"
+    :onclick "notify-send -t 1500 'rofi-wifi' 'Opening menu' && TERM='ansi' ~/.scripts/rofi-wifi.sh &"
+    (label :text
+      "${
+        nm_connection_state == 'limited' ? "󰤠" :
+        nm_connection_state == 'portal' ? "󰤫" :
+        nm_connection_state != 'full' ? "󰤮" :
+        nm_eth_state == "connected" ? '󰈀' :
+        nm_wifi_state == "connected" ? '󰤨' :
+        ""
+      }"
+    )
+  )
+)
+
+(defwidget battery[]
+  (eventbox
+    :class "battery"
+    :tooltip "${battery_state}"
+    (label :text
+      "${
+        battery_state == 'Charging' ? "󰂄" :
+        battery_percent < 10 ? '󰁺' :
+        battery_percent < 20 ? '󰁻' :
+        battery_percent < 30 ? '󰁼' :
+        battery_percent < 40 ? '󰁽' :
+        battery_percent < 50 ? '󰁾' :
+        battery_percent < 60 ? '󰁿' :
+        battery_percent < 70 ? '󰂀' :
+        battery_percent < 80 ? '󰂁' :
+        battery_percent < 90 ? '󰂂' : '󰁹'
+      } ${battery_percent}%"
+    )
+  )
+)
+
+(defwidget dunst[]
+  (eventbox
+    :class "dunst"
+    :cursor "pointer"
+    :onclick "dunstctl set-paused toggle && notify-send Notifications on &"
+    :onmiddleclick "notify-send History Cleared && sleep 2 && dunstctl close-all && dunstctl history-clear &"
+    :onrightclick "dunstctl history-pop &"
+    (label :text "󰂚")
   )
 )
 
@@ -82,7 +139,7 @@
   (eventbox
     :class "power-menu"
     :cursor "pointer"
-    :onclick "(~/.scripts/rofi-power.sh)"
+    :onclick "~/.scripts/rofi-power.sh &"
     (label :text "")
   )
 )
@@ -104,8 +161,16 @@
       (eventbox
         :class "workspace"
         :cursor "pointer"
-        :onscroll "if [ '{}' == 'up' ]; then hyprctl dispatch workspace ${activeWorkspace > 1 ? activeWorkspace - 1 : 9}; else hyprctl dispatch workspace ${activeWorkspace < 9 ? activeWorkspace + 1 : 1}; fi"
-        :onclick "hyprctl dispatch workspace ${num}"
+        :onscroll { get_env("XDG_SESSION_TYPE") == "x11" ?
+          "if [ '{}' == 'up' ]; then bspc desktop -f prev; else bspc desktop -f next; fi" :
+          "if [ '{}' == 'up' ]; then hyprctl dispatch workspace ${activeWorkspace > 1 ? activeWorkspace - 1 : 9}; else hyprctl dispatch workspace ${activeWorkspace < 9 ? activeWorkspace + 1 : 1}; fi"
+        }
+        :onclick {
+
+          get_env("XDG_SESSION_TYPE") == "x11" ?
+          "bspc desktop -f ${num}" :
+          "hyprctl dispatch workspace ${num}"
+        }
         :style {
           (occupiedWorkspaces[num] > 0 && activeWorkspace != num)
           ? "color: #9abdf5;"
@@ -130,7 +195,10 @@
 
 (defwidget activeWindow []
   (eventbox
-    :onmiddleclick "hyprctl dispatch killactive"
+    :onmiddleclick {get_env("XDG_SESSION_TYPE") == "x11" ?
+      "bspc node -c" :
+      "hyprctl dispatch killactive"
+    }
     (label :text {activeWindow != "null" ? activeWindow : ""} :limit-width 30)
   )
 )
@@ -138,6 +206,7 @@
 (defwidget music []
   (eventbox :class "music"
       :orientation "h"
+      :cursor "pointer"
       :space-evenly false
       :halign "center"
       :onmiddleclick "playerctl play-pause"
@@ -178,16 +247,16 @@
   "cat /sys/class/power_supply/BAT0/status")
 
 (defpoll activeWorkspace :interval "0.1s"
-  "hyprctl activeworkspace -j | jq '.id'")
+  "[ \"$XDG_SESSION_TYPE\" == \"x11\" ] && (bspc query -d -T | jq '.name' -r) || (hyprctl activeworkspace -j | jq '.id')")
 
 (defpoll activeWindow :interval "0.1s"
-  "hyprctl activewindow -j | jq '.title' -r")
+  "[ \"$XDG_SESSION_TYPE\" == \"x11\" ] && (xprop -id $(bspc query -N -n focused) _NET_WM_NAME | grep -o '\".*\"' | tr -d '\"') || (hyprctl activewindow -j | jq '.title' -r)")
 
 (defpoll caps :interval "0.1s"
-  "hyprctl devices -j | jq '.keyboards[] | select(.main == true) | .capsLock'")
+  "[ \"$XDG_SESSION_TYPE\" == \"x11\" ] && (caps=\"$(xset q | grep 'Caps Lock' | awk '{print $4}')\"; [ \"$caps\" = \"off\" ] && echo 'false' || echo 'true') || (hyprctl devices -j | jq '.keyboards[] | select(.main == true) | .capsLock') || (hyprctl devices -j | jq '.keyboards[] | select(.main == true) | .capsLock')")
 
 (defpoll occupiedWorkspaces :interval "0.1s"
-  "hyprctl workspaces -j | jq 'map({(.name):(.windows)}) | add'")
+  "[ \"$XDG_SESSION_TYPE\" == \"x11\" ] && (bspc query -m -T | jq '.desktops | map({(.name): if .root != null then 1 else 0 end}) | add') || (hyprctl workspaces -j | jq 'map({(.name):(.windows)}) | add')")
 
 (defpoll shortTime :interval "1s"
   "date '+%H:%M'")
@@ -198,15 +267,25 @@
 (defpoll calender :interval "1s"
   "cal")
 
+(defpoll nm_connection_state :interval "1s"
+  "nmcli -t g | cut -d ':' -f 2")
+(defpoll nm_wifi_state :interval "1s"
+  "nmcli -t d status | grep wifi | cut -d ':' -f 3")
+(defpoll nm_eth_state :interval "1s"
+  "nmcli -t d status | grep ethernet | cut -d ':' -f 3")
+
+(defpoll bluetooth_state :interval "1s"
+  "bluetoothctl show | grep Powered | cut -d ' ' -f 2")
+
 (defwindow bar
-  :monitor 0
-  :windowtype "dock"
+  :monitor '[0, 1]'
   :geometry (geometry :x "0%"
                       :y "0%"
                       :width "100%"
                       :height "40px"
                       :anchor "top center")
-  :reserve (struts :side "top" :distance "0%")
+  :reserve (struts :side "top" :distance 40)
+  :windowtype "dock"
   :exclusive true
   :stacking "fg"
   (bar))
