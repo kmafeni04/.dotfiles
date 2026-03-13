@@ -4,7 +4,7 @@ wallpaper_dir="/home/kome/Pictures/wallpapers"
 
 while true; do
   wallpaper=$(find "$wallpaper_dir" -type f | shuf -n 1)
-  cp $wallpaper ~/.scripts/current_wallpaper.png
+  cp $wallpaper /tmp/current_wallpaper.png
 
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     killall swaybg
