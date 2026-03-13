@@ -33,7 +33,7 @@ PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 #user aliases
 
 alias 'wget'='wget --hsts-file="$XDG_DATA_HOME/wget-hsts"'
-alias 'ls'='ls --hyperlink --color=auto'
+alias 'ls'='ls -a -p --group-directories-first --hyperlink --color=auto'
 
 alias 'sup'='rebos managers upgrade --sync'
 alias 'sups'='rebos managers upgrade --sync && poweroff'
