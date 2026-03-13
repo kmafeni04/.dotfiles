@@ -3,7 +3,7 @@ configuration {
   display-window: "Windows:";
   display-run: "Run:";
   drun-display-format: "{name}";
-  font: "JetBrainsMono Nerd Font Medium 12";
+  font: "DejaVuSansM Nerd Font Propo Medium 12";
   modi: "window,run,drun,emoji";
   sort: true;
   disable-history: true;
@@ -21,10 +21,10 @@ configuration {
 @theme "/dev/null"
 
 * {
-  bg: #1A1B26;
+  bg: #1a1b26;
 
-  fg: #9ABDF5;
-  fg-alt: #DDD;
+  fg: #9abdf5;
+  fg-alt: #ddd;
 
   background-color: @bg;
 
@@ -38,7 +38,7 @@ window {
   location: north;
   width: 100%;
   border: 1px;
-  border-color: #9ABDF5;
+  border-color: #9abdf5;
 }
 
 element {
