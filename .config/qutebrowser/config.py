@@ -76,17 +76,30 @@ c.colors.webpage.darkmode.enabled = True
 c.colors.webpage.darkmode.algorithm = "lightness-cielab"
 c.colors.webpage.darkmode.policy.images = "never"
 config.set("colors.webpage.darkmode.enabled", False, "file://*")
-config.set("colors.webpage.darkmode.enabled", False, "qute://pdfjs/*")
 
 c.statusbar.show = "always"
 c.statusbar.padding = {"bottom": 5, "left": 5, "right": 5, "top": 5}
 
-c.tabs.title.format = "{index} {audio}{current_title}"
-c.tabs.title.format_pinned = "{index} {audio}"
+session = os.getenv("XDG_SESSION_TYPE")
+# Vertical Tab Setup
+c.tabs.position = "left"
+c.tabs.title.format = "{index}"
+c.tabs.title.format_pinned = c.tabs.title.format
+if session == "wayland":
+    c.tabs.width = 60
+else:
+    c.tabs.width = 50
+
+
+# # Horizontal Tabs Setup
+# c.tabs.width = "7%"
+# c.tabs.max_width = 250
+# c.tabs.title.format = "{index} {audio}{current_title}"
+# c.tabs.title.format_pinned = "{index} {audio}"
+
 c.tabs.show = "multiple"
 c.tabs.padding = {"top": 7, "bottom": 7, "left": 10, "right": 10}
 c.tabs.indicator.width = 0  # no tab indicators
-c.tabs.width = "7%"
 
 c.hints.border = bg
 c.hints.uppercase = True
@@ -99,21 +112,16 @@ c.url.searchengines = {
     "!yt": "https://www.youtube.com/results?search_query={}",
 }
 
-# NOTE: Doesn't work and just crashes
-# c.fileselect.handler = "external"
-# c.fileselect.multiple_files.command = ['/home/kome/.scripts/qb-fileselect-lf.sh', 'files']
-# c.fileselect.single_file.command = ['/home/kome/.scripts/qb-fileselect-lf.sh', 'file']
-# c.fileselect.folder.command = ['notify-send', '"folder command. not working ATM. fix it somehow when you get to it." ']
-# filepicker = [
-#     "wezterm",
-#     "-e",
-#     "lf",
-#     "-selection-path={}",
-# ]
-# c.fileselect.handler = "external"
-# c.fileselect.folder.command = filepicker
-# c.fileselect.multiple_files.command = filepicker
-# c.fileselect.single_file.command = filepicker
+c.fileselect.handler = "external"
+c.fileselect.multiple_files.command = [
+    "/home/kome/.scripts/qb-fileselect-lf.sh",
+]
+c.fileselect.single_file.command = [
+    "/home/kome/.scripts/qb-fileselect-lf.sh",
+]
+c.fileselect.folder.command = [
+    "/home/kome/.scripts/qb-fileselect-lf.sh",
+]
 
 c.completion.open_categories = [
     "searchengines",
@@ -130,7 +138,8 @@ c.scrolling.smooth = True
 c.scrolling.bar = "never"
 c.zoom.mouse_divider = 512  # controls mouse zooming
 c.content.autoplay = False
-c.content.pdfjs = True
+# c.content.pdfjs = True
+# config.set("colors.webpage.darkmode.enabled", False, "qute://pdfjs/*")
 
 # binds
 config.unbind("G")
@@ -205,7 +214,6 @@ config.bind("sll", "session-save;; session-load lang-dev;; close")
 config.bind(";d", "hint links spawn fdm -u {hint-url}")
 
 # fonts
-session = os.getenv("XDG_SESSION_TYPE")
 if session == "wayland":
     c.fonts.default_size = "20px"
     c.zoom.default = "125%"
@@ -213,7 +221,7 @@ else:
     c.fonts.default_size = "16px"
     c.zoom.default = "100%"
 c.fonts.web.size.default = 20
-c.fonts.default_family = ["DejaVuSansM Nerd Font"]
+c.fonts.default_family = ["DejaVuSansM Nerd Font Propo"]
 c.fonts.tabs.selected = "default_size default_family"
 c.fonts.tabs.unselected = "default_size default_family"
 c.fonts.tooltip = "default_size default_family"
@@ -246,6 +254,7 @@ c.content.blocking.adblock.lists = [
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/filters-2023.txt",
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/filters-2024.txt",
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/filters-2025.txt",
+    "https://github.com/uBlockOrigin/uAssets/raw/master/filters/filters-2026.txt",
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/badware.txt",
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/privacy.txt",
     "https://github.com/uBlockOrigin/uAssets/raw/master/filters/badlists.txt",
