@@ -122,18 +122,18 @@ super + shift + e
 
 #Bar
 super + b
-	killall polybar || polybar
+	killall eww || eww open bar
 
 #Screenshot sel
-super + shift + Print
+shift + Print
 	/home/kome/.scripts/screenshot.sh sel
 
 #Screenshot active
-super + alt + Print
+alt + Print
 	/home/kome/.scripts/screenshot.sh active
 
 #Screenshot full
-super + Print
+Print
 	/home/kome/.scripts/screenshot.sh full
 
 #Lock Screen
@@ -149,3 +149,6 @@ super + shift + {c,v,s,d}
 
 super + shift + b
 	$HOME/.scripts/bm.sh
+
+{super + alt + c, XF86Calculator}
+	$HOME/.scripts/quick-calc.sh
