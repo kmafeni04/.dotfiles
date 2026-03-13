@@ -20,7 +20,7 @@ config.window_padding = {
   bottom = 0,
 }
 config.font = wezterm.font_with_fallback({
-  "DejaVuSansM Nerd Font Mono",
+  "DejaVuSansM Nerd Font Propo",
   "JetBrains Mono",
 })
 
@@ -164,6 +164,7 @@ local function open_uri(window, pane, uri)
   if stdout:find("text/") then
     if editor_pane then
       editor_pane:send_text(":o " .. path .. "\r")
+      editor_pane:activate()
       return false
     end
 
