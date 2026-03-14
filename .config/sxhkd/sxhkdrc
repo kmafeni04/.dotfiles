@@ -91,7 +91,7 @@ super +  Tab
 	rofi -show window
 
 super + shift + e
-	rofi -show emoji -a copy && $HOME/.scripts/clip.sh recopy
+	$HOME/.scripts/clip.sh add "$(rofi -show emoji -emoji-mode stdout)"
 
 #Volume Keys
 {super + shift + equal, XF86AudioRaiseVolume}
