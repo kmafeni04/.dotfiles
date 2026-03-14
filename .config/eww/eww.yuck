@@ -78,7 +78,7 @@
     :class "nm"
     :tooltip "Connection:${nm_connection_state}"
     :cursor "pointer"
-    :onclick "notify-send -t 1500 'rofi-wifi' 'Opening menu' && TERM='ansi' ~/.scripts/rofi-wifi.sh &"
+    :onclick "notify-send -t 1500 'Network Manager' 'Opening menu' && TERM='ansi' ~/.scripts/rofi-wifi.sh &"
     (label :text
       "${
         nm_connection_state == 'limited' ? "󰤠" :

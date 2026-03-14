@@ -14,7 +14,7 @@ get_network_info() {
 
 notify() {
   local status="$1"
-  notify-send -t 1000 "rofi-wifi" "$status"
+  notify-send -t 1500 "Network Manager" "$status"
 }
 
 show_menu() {
