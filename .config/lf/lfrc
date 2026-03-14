@@ -193,17 +193,14 @@ cmd trash-empty %{{
   esac
 }}
 
-cmd bulk-rename ${{
+cmd rename-in-editor ${{
   set shellopts '-eu'
   set ifs "\n"
 
-	index=$(mktemp /tmp/lf-bulk-rename-index.XXXXXXXXXX)
-	if [ -n "${fs}" ]; then
-		echo "$fs" > $index
-	else
-		echo "$(ls "$(dirname $f)" | tr ' ' "\n")" > $index
-	fi
-	index_edit=$(mktemp /tmp/lf-bulk-rename.XXXXXXXXXX)
+	index=$(mktemp /tmp/lf-rename-in-editor-index.XXXXXXXXXX)
+	[ -n "${fs}" ] && echo "$fs" > $index || echo "$f" > $index
+
+	index_edit=$(mktemp /tmp/lf-rename-in-editor.XXXXXXXXXX)
 	cat $index > $index_edit
 	$EDITOR $index_edit
 	if [ $(cat $index | wc -l) -eq $(cat $index_edit | wc -l) ]; then
@@ -219,7 +216,7 @@ cmd bulk-rename ${{
 			mv "$a" "$b"
 		done
 	else
-		notify-send "lf-bulk-rename" "ERROR: More lines than selected files"
+		notify-send "lf-rename-in-editor" "ERROR: More lines than selected files"
 	fi
 	rm $index $index_edit
 }}
@@ -341,7 +338,7 @@ map p paste
 map x cut
 map y copy
 
-map R bulk-rename
+map R rename-in-editor
 
 map e open
 map o open
