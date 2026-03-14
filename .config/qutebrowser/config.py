@@ -83,12 +83,12 @@ c.statusbar.padding = {"bottom": 5, "left": 5, "right": 5, "top": 5}
 session = os.getenv("XDG_SESSION_TYPE")
 # Vertical Tab Setup
 c.tabs.position = "left"
-c.tabs.title.format = "{index}"
-c.tabs.title.format_pinned = c.tabs.title.format
+c.tabs.title.format = "¦{index}"
+c.tabs.title.format_pinned = "∣{index}"
 if session == "wayland":
-    c.tabs.width = 60
+    c.tabs.width = 75
 else:
-    c.tabs.width = 50
+    c.tabs.width = 65
 
 
 # # Horizontal Tabs Setup
@@ -108,6 +108,7 @@ c.url.searchengines = {
     "DEFAULT": "https://duckduckgo.com/?q={}",
     "!aw": "https://wiki.archlinux.org/?search={}",
     "!apkg": "https://archlinux.org/packages/?sort=&q={}&maintainer=&flagged=",
+    "!aur": "https://aur.archlinux.org/packages?K={}",
     "!gh": "https://github.com/search?o=desc&q={}&s=stars",
     "!yt": "https://www.youtube.com/results?search_query={}",
 }
