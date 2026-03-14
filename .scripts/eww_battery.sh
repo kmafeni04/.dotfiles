@@ -1,7 +1,6 @@
+#!/usr/bin/env bash
+
 charge=$(cat /sys/class/power_supply/BAT0/capacity)
-
-battery_frames=("" "" "" "" "")
-
 
 icon() {
   if [ "$charge" -le 20 ]; then
@@ -25,6 +24,3 @@ case "$1" in
   icon) icon;;
   per) per;;
 esac
-
-exit
-
