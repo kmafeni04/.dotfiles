@@ -45,7 +45,6 @@ items = [
     "bitwarden",
     "bitwarden-cli", # for qutebrowser
     "bluez-utils",
-    "bsp-layout",
     "bspwm",
     "btop",
     "caffeine-ng",
