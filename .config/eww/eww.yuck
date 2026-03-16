@@ -18,6 +18,7 @@
     (nm)
     (blue)
     (systray :class "tray" :spacing 10)
+    (timer)
     (volume)
     (brightness)
     (battery)
@@ -41,7 +42,7 @@
 (defwidget blue[]
   (eventbox
     :class "blue"
-    :tooltip "${bluetooth_state == "yes" ? 'on' : 'off'}"
+    :tooltip "Connection: ${bluetooth_state == "yes" ? 'on' : 'off'}"
     :cursor "pointer"
     :onclick "~/.scripts/rofi-bluetooth.sh &"
     (label :text
@@ -52,6 +53,17 @@
   )
 )
 
+(defvar timerTime "--:--:--")
+(defwidget timer[]
+  (eventbox
+    :class "timer"
+    :cursor "pointer"
+    :onclick "${timerTime != "--:--:--" ? "notify-send 'Timer' 'A timer is already running'" : "~/.scripts/eww-timer.sh &"}"
+    :onmiddleclick "pkill -f ~/.scripts/eww-timer.sh && eww update timerTime='--:--:--' && notify-send 'Timer' 'Cancelled Timer'"
+    (label :text "󰥔${timerTime != "--:--:--" ? ' ${timerTime}' : ""}")
+    ; (label :text "󰥔 ${timerTime}") ; Undecided on what to use
+  )
+)
 
 (defwidget volume[]
   (eventbox
@@ -76,7 +88,7 @@
 (defwidget nm[]
   (eventbox
     :class "nm"
-    :tooltip "Connection:${nm_connection_state}"
+    :tooltip "Connection: ${nm_connection_state}"
     :cursor "pointer"
     :onclick "notify-send -t 1500 'Network Manager' 'Opening menu' && TERM='ansi' ~/.scripts/rofi-wifi.sh &"
     (label :text
