@@ -3,9 +3,9 @@
 set -x
 
 bspc subscribe node_{state,focus} desktop_focus | while read -a line; do
-  subscribed="${line[0]}"
+  event="${line[0]}"
 
-  case "$subscribed" in
+  case "$event" in
   "node_state")
     state="${line[4]}"
     flag="${line[5]}"
