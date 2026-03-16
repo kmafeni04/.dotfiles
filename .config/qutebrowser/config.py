@@ -86,9 +86,9 @@ c.tabs.position = "left"
 c.tabs.title.format = "¦{index}"
 c.tabs.title.format_pinned = "∣{index}"
 if session == "wayland":
-    c.tabs.width = 75
+    c.tabs.width = 80
 else:
-    c.tabs.width = 65
+    c.tabs.width = 70
 
 
 # # Horizontal Tabs Setup
