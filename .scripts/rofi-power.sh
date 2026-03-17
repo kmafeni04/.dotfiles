@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 # Options
 shutdown="⏼  Shutdown"
@@ -9,22 +9,28 @@ logOut="󰍃  Log Out"
 
 # Variable passed to rofi
 options="$shutdown\n$restart\n$suspend\n$lock\n$logOut"
+yes_no="  Yes\n  No"
 
-chosen="$(echo -e "$options" | rofi -show -p "Power Menu:" -dmenu -selected-row 0)"
-case $chosen in
+choice="$(echo -e "$options" | rofi -dmenu -i -p "Power Menu:")"
+[ -z "$choice" ] && exit 1
+
+confirm="$(echo -e "$yes_no" | rofi -dmenu -i -p "Are you sure:")"
+[ -z "$confirm" ] && exit 1
+
+case $choice in
 $shutdown)
-  poweroff
+  [ "$confirm" = "  Yes" ] && poweroff
   ;;
 $restart)
-  reboot
+  [ "$confirm" = "  Yes" ] && reboot
   ;;
 $suspend)
-  systemctl suspend
+  [ "$confirm" = "  Yes" ] && systemctl suspend
   ;;
 $lock)
-  eval "$LOCK_SCRIPT"
+  [ "$confirm" = "  Yes" ] && eval "$LOCK_SCRIPT"
   ;;
 $logOut)
-  eval "$LOGOUT_SCRIPT"
+  [ "$confirm" = "  Yes" ] && pkill -u "$USER"
   ;;
 esac
