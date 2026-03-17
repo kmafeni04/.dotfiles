@@ -43,18 +43,18 @@ else
 fi
 
 $HOME/.scripts/clip.sh recopy
-screenshot_action=$(notify-send "Screenshot taken" -A save-to-file="Save Screenshot as file" -A ignore="ignore")
+screenshot_action="$(notify-send "Screenshot" "Screenshot taken" -A save-to-file="Save Screenshot as file" -A ignore="ignore")"
 
 if [ "$screenshot_action" == "save-to-file" ]; then
   dir="$HOME/Pictures/screenshots"
   mkdir -p "$dir"
   screenshot_path="$dir/screenshot-$(date '+%d-%m-%Y-%H:%M:%S').png"
   cp "$path" "$screenshot_path"
-  file_action=$(
-    notify-send "File saved to $screenshot_path" \
+  file_action="$(
+    notify-send "Screenshot" "File saved to $screenshot_path" \
       -A browser="Open Screenshot in filebrowser" \
       -A open="Open Screenshot with default application"
-  )
+  )"
   (
     [ "$file_action" == "browser" ] && $TERMINAL -e $FILEBROWSER $screenshot_path &
     disown
