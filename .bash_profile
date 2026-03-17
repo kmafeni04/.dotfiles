@@ -26,6 +26,9 @@ export LESSHISTFILE="$XDG_CACHE_HOME/less_history"
 export PYTHON_HISTORY="$XDG_DATA_HOME/python/history"
 
 # move files to xdg dirs
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+export ICEAUTHORITY="$XDG_CACHE_HOME"/ICEauthority
+export XCURSOR_PATH=/usr/share/icons:$XDG_DATA_HOME/icons
 export PKG_CACHE_PATH="$XDG_CACHE_HOME"/pkg-cache
 export XINITRC="$XDG_CONFIG_HOME/x11/xinitrc"
 export XPROFILE="$XDG_CONFIG_HOME/x11/xprofile"
