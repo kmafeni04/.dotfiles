@@ -88,9 +88,9 @@
 (defwidget nm[]
   (eventbox
     :class "nm"
-    :tooltip "Connection: ${nm_connection_state}"
+    :tooltip "Connection: ${nm_connection_name}"
     :cursor "pointer"
-    :onclick "notify-send -t 1500 'Network Manager' 'Opening menu' && TERM='ansi' ~/.scripts/rofi-wifi.sh &"
+    :onclick "~/.scripts/rofi-network-manager.sh &"
     (label :text
       "${
         nm_connection_state == 'limited' ? "󰤠" :
@@ -279,12 +279,14 @@
 (defpoll calender :interval "1s"
   "cal")
 
-(defpoll nm_connection_state :interval "1s"
+(defpoll nm_connection_state :interval "2s"
   "nmcli -t g | cut -d ':' -f 2")
-(defpoll nm_wifi_state :interval "1s"
+(defpoll nm_wifi_state :interval "2s"
   "nmcli -t d status | grep wifi | cut -d ':' -f 3")
-(defpoll nm_eth_state :interval "1s"
+(defpoll nm_eth_state :interval "2s"
   "nmcli -t d status | grep ethernet | cut -d ':' -f 3")
+(defpoll nm_connection_name :interval "2s"
+  "if nmcli -t d status | grep -q ethernet; then nmcli -t d status | grep ethernet | cut -d ':' -f 4; elif nmcli -t d status | grep -q wifi; then nmcli -t d status | grep wifi | cut -d ':' -f 4; else echo 'none'; fi")
 
 (defpoll bluetooth_state :interval "1s"
   "bluetoothctl show | grep Powered | cut -d ' ' -f 2")
