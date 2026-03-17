@@ -7,7 +7,7 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # User specific environment
-if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
+if ! [[ $PATH =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
   PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 export PATH
@@ -47,8 +47,8 @@ alias 'rroll'='rebos gen current rollback 1 && rebos gen current build'
 # alias 'yin'='yay -S'
 alias 'yre'='yay -Rns'
 alias 'yar'='yay -Rcns $(yay -Qdtq)' # auto remove unused dependecies
-alias 'yse'='yay -Ss' # package search
-alias 'yum'='yay -Syy' # update mirrors
+alias 'yse'='yay -Ss'                # package search
+alias 'yum'='yay -Syy'               # update mirrors
 
 alias 'flu'='flatpak update -y'
 # alias 'fli'='flatpak install -y'
@@ -71,66 +71,68 @@ alias 'grep'='grep --colour'
 
 # Prompt colors
 
-red="\[$(tput setaf 1)\]"
-green="\[$(tput setaf 2)\]"
-orange="\[$(tput setaf 3)\]"
-blue="\[$(tput setaf 4)\]"
-magenta="\[$(tput setaf 5)\]"
-cyan="\[$(tput setaf 6)\]"
-grey="\[$(tput setaf 7)\]"
-black="\[$(tput setaf 8)\]"
-reset="\[$(tput sgr0)\]"
-bright="\[\033[1m\]"
+gen_ps1() {
+  local red="\[$(tput setaf 1)\]"
+  local green="\[$(tput setaf 2)\]"
+  local orange="\[$(tput setaf 3)\]"
+  local blue="\[$(tput setaf 4)\]"
+  local magenta="\[$(tput setaf 5)\]"
+  local cyan="\[$(tput setaf 6)\]"
+  local grey="\[$(tput setaf 7)\]"
+  local black="\[$(tput setaf 8)\]"
+  local reset="\[$(tput sgr0)\]"
+  local bold="\[$(tput bold)\]"
 
-function gen_ps1() {
   PS1=""
-  bg_jobs="$(jobs -l | wc -l)"
-  [ "$bg_jobs" -gt 0 ] && PS1="$green$bright[$bg_jobs]$reset "
+  local bg_jobs="$(jobs -l | wc -l)"
+  [ "$bg_jobs" -gt 0 ] && PS1="$green$bold[$bg_jobs]$reset "
 
-  PS1="$PS1($bright$blue\W$reset)"
-  git_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+  PS1="$PS1($bold$blue\W$reset)"
+
+  local git_branch="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
   if [ -n "$git_branch" ]; then
-    upstream=$(git for-each-ref --format='%(upstream:short)' "refs/heads/$git_branch" 2>/dev/null)
-    ahead_behind=" "
-    ahead=$(git rev-list --count HEAD ^$upstream 2>/dev/null)
-    behind=$(git rev-list --count $upstream ^HEAD 2>/dev/null)
-    if [ "${ahead:-0}" -gt 0 ]; then
-      ahead_behind="$ahead_behind$ahead"
-    fi
-    if [ "${behind:-0}" -gt 0 ]; then
-      ahead_behind="$ahead_behind$behind"
-    fi
-    [ "$ahead_behind" == " " ] && ahead_behind=""
+    PS1="$PS1$cyan$bold  $git_branch"
 
-    git_status="$(git status -s -b --porcelain 2>/dev/null)"
-    modified=""
-    untracked=""
-    added=""
+    local upstream="$(git for-each-ref --format='%(upstream:short)' "refs/heads/$git_branch" 2> /dev/null)"
 
-    color="$bright"
-    while read -r line; do
-      if [ -n "$(grep -P "^M" 2>/dev/null <<< "$line")" ]; then
-        modified="M"
-      fi
-      if [ -n "$(grep -P "^\?" 2>/dev/null <<< "$line")" ]; then
-        untracked="?"
-      fi
-      if [ -n "$(grep -P "^[AR]" 2>/dev/null <<< "$line")" ]; then
-        added="A"
-      fi
-    done <<< "$git_status"
-    if [ -n "$untracked" ]; then
-      color="$color$red"
-    elif [ -n "$added" ]; then
-      color="$color$green"
-    elif [ -n "$modified" ]; then
-      color="$color$orange"
-    else
-      color="$color$cyan"
+    if [ -n "$upstream" ]; then
+      local ahead_behind=" "
+      local ahead=$(git rev-list --count HEAD ^"$upstream" 2> /dev/null)
+      local behind=$(git rev-list --count "$upstream" ^HEAD 2> /dev/null)
+
+      [ "${ahead:-0}" -gt 0 ] && ahead_behind="$ahead_behind$ahead"
+      [ "${behind:-0}" -gt 0 ] && ahead_behind="$ahead_behind$behind"
+      [ "$ahead_behind" = " " ] && ahead_behind=""
+
+      PS1="$PS1$ahead_behind"
     fi
-    PS1="$PS1$color  $git_branch$ahead_behind$reset"
+
+    PS1="$PS1$reset"
+
+    local modified=0
+    local untracked=0
+    local added=0
+    local renamed=0
+    local deleted=0
+
+    local git_status="$(git status -s --porcelain 2> /dev/null)"
+    if [ -n "$git_status" ]; then
+      modified="$(echo "$git_status" | grep -Po "^[\s]*M " | wc -l)"
+      untracked="$(echo "$git_status" | grep -Po "^[\s]*\?\? " | wc -l)"
+      added="$(echo "$git_status" | grep -Po "^[\s]*A " | wc -l)"
+      renamed="$(echo "$git_status" | grep -Po "^[\s]*R " | wc -l)"
+      deleted="$(echo "$git_status" | grep -Po "^[\s]*D " | wc -l)"
+    fi
+
+    [ "${modified:-0}" -gt 0 ] && PS1="$PS1$orange M:$modified$reset"
+    [ "${added:-0}" -gt 0 ] && PS1="$PS1$green A:$added$reset"
+    [ "${renamed:-0}" -gt 0 ] && PS1="$PS1$cyan R:$renamed$reset"
+    [ "${untracked:-0}" -gt 0 ] && PS1="$PS1$red U:$untracked$reset"
+    [ "${deleted:-0}" -gt 0 ] && PS1="$PS1$red D:$deleted$reset"
+
+    PS1="$PS1$reset"
   fi
-  PS1="$PS1 $magenta$bright>$reset "
+  PS1="$PS1 $magenta$bold>$reset "
 }
 PROMPT_COMMAND="gen_ps1; $PROMPT_COMMAND"
 
@@ -146,7 +148,7 @@ PATH="$HOME/node_modules/.bin:$PATH"
 # Python
 eval "$(register-python-argcomplete pipx)"
 
-hx(){
+hx() {
   echo -en "\033]0;hx\a"
   command helix "$@"
 }
