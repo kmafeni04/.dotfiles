@@ -9,6 +9,7 @@ set cursorpreviewfmt "\033[7;2m"
 set previewer "~/.config/lf/previewer"
 set icons
 set hidden
+set period 1
 set ignorecase
 set statfmt "\033[7;36m %M \033[0m| \033[36m%p\033[0m| %c| %u| %g| %S| %t| -> %l"
 set dupfilefmt "%b-%n%e"
@@ -77,22 +78,22 @@ cmd paste-img &{{
 }}
 
 cmd term &{{
-  wezterm start --cwd "$PWD" & disown
+  $TERMINAL -e --cwd "$PWD" & disown
 }}
 
 cmd open &{{
-  case $(file --mime-type -Lb $f) in
+  case $(file --mime-type -Lb "$f") in
     text/* | */json | */javascript)
       case $f in
         *.RPP|*.rpp) reaper "$f" & disown ;;
         *.kdenlive) org.kde.kdenlive "$f" & disown ;;
-        *) /home/kome/.dotfiles/.scripts/lf-helix.sh "$f" ;;
+        *) $HOME/.dotfiles/.scripts/lf-helix.sh "$f" ;;
       esac
       ;;
     *)
       case $f in
         *.nelua | *.env | *.tsx | *.ts)
-          /home/kome/.dotfiles/.scripts/lf-helix.sh "$f"
+          $HOME/.dotfiles/.scripts/lf-helix.sh "$f"
           ;;
         *)
           xdg-open "$f" & disown
@@ -178,14 +179,14 @@ cmd delete %{{
 }}
 
 cmd trash-empty %{{
-  question="Are you sure you would like to empty your trash directory"
+  question="Are you sure you want to empty your trash directory"
   yes="Yes"
   no="No"
   options="$yes\n$no"
 
   chosen="$(echo -e "$options" | rofi -theme-str 'entry { enabled: false;}' -i -show -p "$question" -dmenu -selected-row 0)"
-  case $chosen in
-    $yes)
+  case "$chosen" in
+    "$yes")
       echo "Emptying trash directory..."
       trash-empty
       echo "Trash directory emptied"
@@ -296,6 +297,12 @@ cmd copy-image &{{
   done
 }}
 
+cmd full-clear &{{
+  lf -remote "send $id clear"
+  lf -remote "send $id unselect"
+  lf -remote "send $id visual-discard"
+}}
+
 # Bindings
 
 # Unbinds
@@ -315,17 +322,12 @@ map <c-q> quit
 nmap v visual
 vmap v visual-accept
 
-map <esc> &{{
-  lf -remote "send $id clear"
-  lf -remote "send $id unselect"
-  lf -remote "send $id visual-discard"
-}}
-
+map <esc> full-clear
 map "." set hidden!
 
 map a push :create<space>
 
-map D drag-from
+map D :drag-from; full-clear
 map P paste-img
 
 map d delete
@@ -334,7 +336,7 @@ map u ${{
   echo
   trash-restore
 }}
-map p paste
+map p :paste; full-clear
 map x cut
 map y copy
 
