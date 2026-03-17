@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 readonly MINUTE=60
-readonly HOUR=3600
+readonly HOUR=$((MINUTE * 60))
 
 set_time="$(rofi -dmenu -p "Set Timer (hours:minutes:seconds):")"
 until [[ $set_time =~ ^[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}$ ]]; do
