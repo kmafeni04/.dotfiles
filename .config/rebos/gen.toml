@@ -52,7 +52,6 @@ items = [
     "chafa",
     "cjson",
     "clang",
-    "cosmic",
     "cups",
     "docker",
     "dosfstools",
@@ -259,7 +258,6 @@ items = [
 [managers.npm]
 items = [
     "autocannon",
-    "bash-language-server",
     "browser-sync",
     "corepack",
     "dockerfile-language-server-nodejs",

@@ -81,15 +81,10 @@ auto-format = true
 language-servers = ["emmet-lsp", "typescript-language-server", "tailwindcss-language-server"]
 
 [[language]]
-name = "blade"
-formatter = { command = "blade-formatter", args = ["--stdin"] }
-language-servers = ["emmet-lsp", "vscode-html-language-server", "intelephense"]
-auto-format = true
-
-[[language]]
 name = "bash"
 indent = { tab-width = 2, unit = "  " }
 formatter = { command = "shfmt", args = ["-i", "2", "-s", "-bn", "-sr"] }
+language-servers = ["buffer-completions-lsp"]
 auto-format = false
 
 [[grammar]]
@@ -137,6 +132,10 @@ block-comment-tokens = { start = "--[[", end = "]]" }
 injection-regex = "nelua"
 indent = { tab-width = 2, unit = "  " }
 # language-servers = ["nelua-lsp"]
+language-servers = ["buffer-completions-lsp"]
+
+[[language]]
+name = "toml"
 language-servers = ["buffer-completions-lsp"]
 
 # Temporary
