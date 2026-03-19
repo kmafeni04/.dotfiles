@@ -286,7 +286,7 @@
 (defpoll nm_eth_state :interval "2s"
   "nmcli -t d status | grep ethernet | cut -d ':' -f 3")
 (defpoll nm_connection_name :interval "2s"
-  "if nmcli -t d status | grep -q ethernet; then nmcli -t d status | grep ethernet | cut -d ':' -f 4; elif nmcli -t d status | grep -q wifi; then nmcli -t d status | grep wifi | cut -d ':' -f 4; else echo 'none'; fi")
+  "if (nmcli -t d status | grep ethernet | grep -q connected); then nmcli -t d status | grep ethernet | cut -d ':' -f 4; elif (nmcli -t d status | grep wifi | grep -q connected); then nmcli -t d status | grep wifi | cut -d ':' -f 4; else echo 'none'; fi")
 
 (defpoll bluetooth_state :interval "1s"
   "bluetoothctl show | grep Powered | cut -d ' ' -f 2")
