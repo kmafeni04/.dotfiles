@@ -118,7 +118,7 @@ super + shift + e
 
 #Bar
 super + b
-	killall eww || eww open bar
+	[ -n "$(eww active-windows | grep bar)" ] && (eww close bar && bspc config top_padding 0) || (eww open bar && bspc config top_padding 40)
 
 #Screenshot sel
 shift + Print
@@ -151,3 +151,6 @@ super + shift + b
 
 super + n
 	~/.scripts/rofi-network-manager.sh
+
+super + o
+	org.onlyoffice.desktopeditors
