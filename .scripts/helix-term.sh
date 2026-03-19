@@ -1,10 +1,9 @@
+#!/usr/bin/env bash
+
 set -e
 
 pane_id=$(wezterm cli get-pane-direction down)
-if [ -z "${pane_id}" ]; then
-  pane_id=$(wezterm cli split-pane --bottom --percent 30)
-fi
+[ -n "${pane_id}" ] && wezterm cli kill-pane --pane-id "$pane_id"
+pane_id=$(wezterm cli split-pane --bottom --percent 30)
+
 wezterm cli activate-pane --pane-id $pane_id
-if [ "$#" -ne 0 ]; then
-  echo "$@" | wezterm cli send-text --pane-id $pane_id --no-paste
-fi

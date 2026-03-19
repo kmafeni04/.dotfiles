@@ -170,6 +170,14 @@ display-messages = true
 # Run the current file based on my predefined cases
 t = ":sh /home/kome/.scripts/helix-term.sh"
 r = ":sh /home/kome/.scripts/helix-run.sh '%{buffer_name}'"
+c = ":sh /home/kome/.scripts/helix-run.sh '%{buffer_name}' yes"
 f = ":sh /home/kome/.scripts/helix-lf.sh '%{buffer_name}'"
 l = ":sh /home/kome/.scripts/helix-term.sh lazygit"
 s = ":pipe sort"
+
+[keys.select.";"]
+# Open run command error path
+f = [
+  ":sh /home/kome/.scripts/helix-run-open-error.sh '%{selection}'",
+  "normal_mode"
+]
