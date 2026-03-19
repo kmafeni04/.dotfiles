@@ -4,7 +4,7 @@ set -x
 
 readonly MASTER_SIZE=55
 
-bspc subscribe node_{remove,add,state,flag} desktop_focus | while read -a line; do
+bspc subscribe node_{remove,add} desktop_focus | while read -a line; do
 
   event="${line[0]}"
 
