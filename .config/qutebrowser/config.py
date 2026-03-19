@@ -105,7 +105,8 @@ c.hints.border = bg
 c.hints.uppercase = True
 
 c.url.searchengines = {
-    "DEFAULT": "https://duckduckgo.com/?q={}",
+    "DEFAULT": "https://4get.ca/web?s={}",
+    "!du": "https://duckduckgo.com/?q={}",
     "!aw": "https://wiki.archlinux.org/?search={}",
     "!apkg": "https://archlinux.org/packages/?sort=&q={}&maintainer=&flagged=",
     "!aur": "https://aur.archlinux.org/packages?K={}",
