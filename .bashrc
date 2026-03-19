@@ -126,11 +126,11 @@ gen_ps1() {
       deleted="$(echo "$git_status" | grep -Po "^[\s]*D " | wc -l)"
     fi
 
-    [ "${modified:-0}" -gt 0 ] && PS1="$PS1$orange M:$modified$reset"
-    [ "${added:-0}" -gt 0 ] && PS1="$PS1$green A:$added$reset"
-    [ "${renamed:-0}" -gt 0 ] && PS1="$PS1$cyan R:$renamed$reset"
-    [ "${untracked:-0}" -gt 0 ] && PS1="$PS1$red U:$untracked$reset"
-    [ "${deleted:-0}" -gt 0 ] && PS1="$PS1$red D:$deleted$reset"
+    [ "${modified:-0}" -gt 0 ] && PS1="$PS1$orange !$modified$reset"
+    [ "${added:-0}" -gt 0 ] && PS1="$PS1$green +$added$reset"
+    [ "${deleted:-0}" -gt 0 ] && PS1="$PS1$red -$deleted$reset"
+    [ "${renamed:-0}" -gt 0 ] && PS1="$PS1$cyan $renamed$reset"
+    [ "${untracked:-0}" -gt 0 ] && PS1="$PS1$red ?$untracked$reset"
 
     PS1="$PS1$reset"
   fi
@@ -141,7 +141,7 @@ PROMPT_COMMAND="gen_ps1; $PROMPT_COMMAND"
 PATH="/opt/openresty/bin:$PATH"
 
 # Luarocks
-PATH="$HOME/.luarocks/bin:$PATH"
+PATH="$XDG_CONFIG_HOME/luarocks/bin:$PATH"
 eval $(luarocks path)
 
 # Node
@@ -159,3 +159,5 @@ lf() {
   echo -en "\033]0;lf\a"
   command lf "$@"
 }
+
+eval "$(eww shell-completions --shell bash)"
