@@ -40,6 +40,7 @@ bspc subscribe node_{remove,add,state,flag} desktop_focus | while read -a line; 
   fi
 
   for ((i = 1; i < count; i++)); do
+    bspc node "${windows[$i]}" -f # Doing this so when I'm closing, the focus follows the stack
     bspc node "${windows[$i]}" -n "@/2"
   done
 
