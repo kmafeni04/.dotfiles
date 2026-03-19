@@ -5,6 +5,9 @@ super + shift + r
 	bspc wm -r && notify-send BSPWN Restarted && \
 	pkill -USR1 -x sxhkd && notify-send SXHd Restarted
 
+super + shift + Escape
+	pkill -u "$USER"
+
 #Fullscreen Applicatioms
 super + f
 	 bspc node -t ~fullscreen
@@ -149,8 +152,11 @@ super + shift + b
 {super + alt + c, XF86Calculator}
 	$HOME/.scripts/quick-calc.sh
 
-super + n
-	~/.scripts/rofi-network-manager.sh
+super + {_, shift} + n
+	{~/.scripts/rofi-network-manager.sh , ~/.scripts/rofi-bluetooth.sh}
 
 super + o
 	org.onlyoffice.desktopeditors
+
+super + shift + t
+  ~/.scripts/eww-timer.sh
