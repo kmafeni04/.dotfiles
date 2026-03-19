@@ -14,6 +14,7 @@ set ignorecase
 set statfmt "\033[7;36m %M \033[0m| \033[36m%p\033[0m| %c| %u| %g| %S| %t| -> %l"
 set dupfilefmt "%b-%n%e"
 set promptfmt ""
+set mouse true
 
 # Commands
 cmd on-redraw &{{
@@ -78,7 +79,7 @@ cmd paste-img &{{
 }}
 
 cmd term &{{
-  $TERMINAL -e --cwd "$PWD" & disown
+  $HOME/.dotfiles/.scripts/swallow.sh $TERMINAL -e --cwd "$PWD"
 }}
 
 cmd open &{{
@@ -103,7 +104,7 @@ cmd open &{{
 }}
 
 cmd open-with &{{
-  eval "$@ $f" & disown
+  $HOME/.dotfiles/.scripts/swallow.sh eval "$@ $f"
 }}
 
 # extract the current file with the right command
@@ -315,8 +316,21 @@ map V
 map p
 map G
 map i
+map ";"
 
-map ";" :term
+map <m-2> open
+map <m-3> push :open-with<space>
+
+# Sort
+map sa :{{ set sortby atime; set info atime; set reverse!; }}
+map sb :{{ set sortby btime; set info btime; set reverse!; }}
+map sc :{{ set sortby ctime; set info ctime; set reverse!; }}
+map se :{{ set sortby ext; set info; set reverse!; }}
+map sn :{{ set sortby natural; set info; set reverse!; }}
+map ss :{{ set sortby size; set info size; set reverse!; }}
+map st :{{ set sortby time; set info time; set reverse!; }}
+
+map <c-t> :term
 
 map ge bottom
 
@@ -338,6 +352,7 @@ map <delete> delete
 map u ${{
   echo
   trash-restore
+  clear
 }}
 map p :paste; full-clear
 map x cut
@@ -350,10 +365,12 @@ map o open
 map <enter> open
 map O push :open-with<space>
 
-map <c-r> :{{
-  reload
-  redraw
-  source "~/.config/lf/lfrc"
+map <c-r> %{{
+  lf -remote "send $id reload"
+  lf -remote "send $id redraw"
+  lf -remote "send $id source '~/.config/lf/lfrc'"
+  sleep 0.2
+  echo "Config Reloaded"
 }}
 
 map ca copy-absolute-path
