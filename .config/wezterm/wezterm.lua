@@ -10,7 +10,7 @@ end
 config.enable_wayland = false
 config.window_decorations = "RESIZE"
 config.color_scheme = "Tokyo Night"
-config.window_background_opacity = 0.8
+config.window_background_opacity = 0.75
 config.enable_tab_bar = false
 config.scrollback_lines = 1000000
 config.window_padding = {
@@ -31,6 +31,7 @@ config.skip_close_confirmation_for_processes_named = {
   "sh",
   "btop",
   "lf",
+  "pulsemixer",
 }
 
 config.mouse_bindings = {
@@ -52,35 +53,75 @@ config.keys = {
   {
     key = "w",
     mods = "CTRL",
-    action = wezterm.action.CloseCurrentPane({ confirm = true }),
+    action = act.CloseCurrentPane({ confirm = true }),
   },
   {
     key = "l",
     mods = "CTRL",
-    action = wezterm.action.SplitPane({
+    action = act.SplitPane({
       direction = "Right",
     }),
   },
   {
     key = "h",
     mods = "CTRL",
-    action = wezterm.action.SplitPane({
+    action = act.SplitPane({
       direction = "Left",
     }),
   },
   {
     key = "k",
     mods = "CTRL",
-    action = wezterm.action.SplitPane({
+    action = act.SplitPane({
       direction = "Up",
     }),
   },
   {
     key = "j",
     mods = "CTRL",
-    action = wezterm.action.SplitPane({
+    action = act.SplitPane({
       direction = "Down",
     }),
+  },
+  {
+    key = "LeftArrow",
+    mods = "CTRL|SHIFT",
+    action = act.Nop,
+  },
+  {
+    key = "RightArrow",
+    mods = "CTRL|SHIFT",
+    action = act.Nop,
+  },
+  {
+    key = "UpArrow",
+    mods = "CTRL|SHIFT",
+    action = act.Nop,
+  },
+  {
+    key = "DownArrow",
+    mods = "CTRL|SHIFT",
+    action = act.Nop,
+  },
+  {
+    key = "l",
+    mods = "ALT|SHIFT",
+    action = act.ActivatePaneDirection("Right"),
+  },
+  {
+    key = "h",
+    mods = "ALT|SHIFT",
+    action = act.ActivatePaneDirection("Left"),
+  },
+  {
+    key = "k",
+    mods = "ALT|SHIFT",
+    action = act.ActivatePaneDirection("Up"),
+  },
+  {
+    key = "j",
+    mods = "ALT|SHIFT",
+    action = act.ActivatePaneDirection("Down"),
   },
 }
 
