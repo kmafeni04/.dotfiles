@@ -44,25 +44,19 @@ if [ -z "$run_command" ]; then
   esac
 fi
 
-[ -z "$run_command" ] && echo "No commnand procvided" && exit
-
-source $HOME/.scripts/helix-term.sh
-echo "${run_command}" | wezterm cli send-text --pane-id $pane_id --no-paste
+[ -z "$run_command" ] && echo "No commnand provided" && exit
 
 if [ -n "$in_editor" ]; then
-  sleep 1
-  tmp_file_buffer="$(mktemp /tmp/helix-run-open-error.XXXXXXXXXX)"
-  tmp_file_final="$(mktemp /tmp/helix-run-open-error.XXXXXXXXXX)"
-
-  echo -e "wezterm cli get-text --start-line 4 > $tmp_file_buffer" | wezterm cli send-text --pane-id $pane_id --no-paste
-
-  sleep 1
-  sed -i ':a;N;$!ba;s/\n\+$//g' "$tmp_file_buffer"
-  head -n "-1" "$tmp_file_buffer" > "$tmp_file_final"
-  rm "$tmp_file_buffer"
-
-  echo -e "hx $tmp_file_final" | wezterm cli send-text --pane-id $pane_id --no-paste
-
-  sleep 1
-  rm "$tmp_file_final"
+  run_command="$run_command;source ~/.bash_profile;"
+  run_command="$run_command tmp_file=\$(mktemp /tmp/helix-run-open-error.XXXXXXXXXX);"
+  run_command="$run_command wezterm cli get-text > \$tmp_file;"
+  run_command="$run_command sed -i ':a;N;\$!ba;s/\n\+$//g' \$tmp_file_buffer;"
+  run_command="$run_command hx \$tmp_file;"
+  run_command="$run_command rm \$tmp_file;"
+else
+  run_command="$run_command; read -p 'Press Enter to close:'"
 fi
+
+pane_id=$(wezterm cli get-pane-direction down)
+[ -n "$pane_id" ] && wezterm cli kill-pane --pane-id "$pane_id"
+pane_id="$(wezterm cli split-pane --bottom --percent 30 bash -c "$run_command")"

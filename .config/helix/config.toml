@@ -167,17 +167,16 @@ display-messages = true
 ]
 
 [keys.normal.";"]
-# Run the current file based on my predefined cases
-t = ":sh /home/kome/.scripts/helix-term.sh"
+
+# Open Terminal
+t = ':sh pane_id=$(wezterm cli get-pane-direction down); [ -n "$pane_id" ] && wezterm cli kill-pane --pane-id "$pane_id" || wezterm cli split-pane --bottom --percent 30 > /dev/null'
+# Open lf file manager
+f = ':sh pane_id=$(wezterm cli get-pane-direction left); [ -n "$pane_id" ] && wezterm cli kill-pane --pane-id "$pane_id" || wezterm cli split-pane --left --percent 20 lf "%{buffer_name}" > /dev/null'
+
 r = ":sh /home/kome/.scripts/helix-run.sh '%{buffer_name}'"
-c = ":sh /home/kome/.scripts/helix-run.sh '%{buffer_name}' yes"
-f = ":sh /home/kome/.scripts/helix-lf.sh '%{buffer_name}'"
-l = ":sh /home/kome/.scripts/helix-term.sh lazygit"
+c = ":sh /home/kome/.scripts/helix-run.sh '%{buffer_name}' true"
+e = ":sh /home/kome/.scripts/helix-run-open-error.sh '%{selection}'"
 s = ":pipe sort"
 
 [keys.select.";"]
-# Open run command error path
-f = [
-  ":sh /home/kome/.scripts/helix-run-open-error.sh '%{selection}'",
-  "normal_mode"
-]
+e = ":sh /home/kome/.scripts/helix-run-open-error.sh '%{selection}'"
