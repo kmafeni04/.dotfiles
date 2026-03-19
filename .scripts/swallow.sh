@@ -11,7 +11,7 @@ if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
   [ -z "$address" ] && exit 1
 
   hyprctl dispatch movetoworkspacesilent special:swallow,address:$address
-  $("$@")
+  $("$@" 2> /dev/null)
   hyprctl dispatch movetoworkspacesilent name:$current_ws,address:$address
   hyprctl dispatch focuswindow address:$address
 else
@@ -19,6 +19,6 @@ else
   [ -z "$wid" ] && exit 1
 
   bspc node "$wid" -g hidden=on
-  $("$@")
+  $("$@" 2> /dev/null)
   bspc node "$wid" -g hidden=off
 fi
