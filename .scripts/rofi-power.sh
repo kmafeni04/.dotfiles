@@ -25,7 +25,7 @@ $restart)
   [ "$confirm" = "  Yes" ] && reboot
   ;;
 $suspend)
-  [ "$confirm" = "  Yes" ] && systemctl suspend
+  [ "$confirm" = "  Yes" ] && eval "$LOCK_SCRIPT" && systemctl suspend
   ;;
 $lock)
   [ "$confirm" = "  Yes" ] && eval "$LOCK_SCRIPT"
