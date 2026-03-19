@@ -26,6 +26,8 @@ fi
 
 unset rc
 
+set -o vi
+
 eval "$(fzf --bash)"
 
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
@@ -48,7 +50,7 @@ alias 'rroll'='rebos gen current rollback 1 && rebos gen current build'
 alias 'yre'='yay -Rns'
 alias 'yar'='yay -Rcns $(yay -Qdtq)' # auto remove unused dependecies
 alias 'yse'='yay -Ss'                # package search
-alias 'yum'='yay -Syy'               # update mirrors
+alias 'ysm'='yay -Syy'               # sync mirrors
 
 alias 'flu'='flatpak update -y'
 # alias 'fli'='flatpak install -y'
