@@ -21,14 +21,14 @@ cmd on-redraw &{{
     lf -remote "send $id set preview false"
     lf -remote "send $id set ratios 1"
   elif [ $lf_width -le 80 ]; then
-    lf -remote "send $id set preview true"
     lf -remote "send $id set ratios 1:1"
+    lf -remote "send $id set preview true"
   elif [ $lf_width -le 160 ]; then
-    lf -remote "send $id set preview true"
     lf -remote "send $id set ratios 1:1:2"
-  else
     lf -remote "send $id set preview true"
+  else
     lf -remote "send $id set ratios 1:1:2:4"
+    lf -remote "send $id set preview true"
   fi
   lf -remote "send $id :on-cd"
 }}
@@ -85,8 +85,7 @@ cmd open &{{
   case $(file --mime-type -Lb "$f") in
     text/* | */json | */javascript)
       case $f in
-        *.RPP|*.rpp) reaper "$f" & disown ;;
-        *.kdenlive) org.kde.kdenlive "$f" & disown ;;
+        *.RPP | *.rpp | *.RPP-bak | *.rpp-bak | *.kdenlive) $HOME/.dotfiles/.scripts/swallow.sh xdg-open "$f" ;;
         *) $HOME/.dotfiles/.scripts/lf-helix.sh "$f" ;;
       esac
       ;;
@@ -96,7 +95,7 @@ cmd open &{{
           $HOME/.dotfiles/.scripts/lf-helix.sh "$f"
           ;;
         *)
-          xdg-open "$f" & disown
+          $HOME/.dotfiles/.scripts/swallow.sh xdg-open "$f"
           ;;
       esac
       ;;
@@ -179,7 +178,7 @@ cmd delete %{{
 }}
 
 cmd trash-empty %{{
-  question="Are you sure you want to empty your trash directory"
+  question="Are you sure you want to empty your trash directory:"
   yes="Yes"
   no="No"
   options="$yes\n$no"
@@ -297,6 +296,10 @@ cmd copy-image &{{
   done
 }}
 
+cmd check-storage %{{
+  df -h --output=size,used,avail,pcent | awk 'NR==2 {printf "Total Size: %s, Used: %s, Available: %s, Percent: %s\n", $1, $2, $3, $4}'
+}}
+
 cmd full-clear &{{
   lf -remote "send $id clear"
   lf -remote "send $id unselect"
@@ -358,6 +361,9 @@ map cn copy-name-w-ext
 map ce copy-name-wo-ext
 map cp copy-parent-dir-path
 map ci copy-image
+
+map cs check-storage
+
 # show the result of execution of previous commands
 map ` !true
 
@@ -377,5 +383,6 @@ map gcp cd ~/Documents/code-projects
 map gce cd ~/Documents/code-projects/external-work
 map gcn cd ~/Documents/code-projects/languages/nelua
 map gcl cd ~/Documents/code-projects/languages/lua
+map gcs cd ~/.scripts
 map gcd cd ~/.dotfiles
 map gt cd ~/.local/share/Trash/files
