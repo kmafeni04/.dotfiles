@@ -58,8 +58,7 @@
   (eventbox
     :class "timer"
     :cursor "pointer"
-    :onclick "${timerTime != "--:--:--" ? "notify-send 'Timer' 'A timer is already running'" : "~/.scripts/eww-timer.sh &"}"
-    :onmiddleclick "pkill -f ~/.scripts/eww-timer.sh && eww update timerTime='--:--:--' && notify-send 'Timer' 'Cancelled Timer'"
+    :onclick "~/.scripts/eww-timer.sh &"
     (label :text "󰥔${timerTime != "--:--:--" ? ' ${timerTime}' : ""}")
     ; (label :text "󰥔 ${timerTime}") ; Undecided on what to use
   )
