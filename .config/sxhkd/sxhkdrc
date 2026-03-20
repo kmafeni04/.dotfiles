@@ -125,15 +125,15 @@ super + b
 
 #Screenshot sel
 shift + Print
-	/home/kome/.scripts/screenshot.sh sel
+	$HOME/.scripts/screenshot.sh sel
 
 #Screenshot active
 alt + Print
-	/home/kome/.scripts/screenshot.sh active
+	$HOME/.scripts/screenshot.sh active
 
 #Screenshot full
 Print
-	/home/kome/.scripts/screenshot.sh full
+	$HOME/.scripts/screenshot.sh full
 
 #Lock Screen
 super + l
@@ -153,10 +153,17 @@ super + shift + b
 	$HOME/.scripts/quick-calc.sh
 
 super + {_, shift} + n
-	{~/.scripts/rofi-network-manager.sh , ~/.scripts/rofi-bluetooth.sh}
+	{$HOME/.scripts/rofi-network-manager.sh , $HOME/.scripts/rofi-bluetooth.sh}
 
 super + o
 	org.onlyoffice.desktopeditors
 
 super + shift + t
-  ~/.scripts/eww-timer.sh
+  $HOME/.scripts/eww-timer.sh
+
+super + h
+	$HOME/.scripts/hide.sh hide
+
+super + u
+	$HOME/.scripts/hide.sh show
+
