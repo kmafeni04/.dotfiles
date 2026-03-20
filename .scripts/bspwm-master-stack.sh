@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -x
+# set -x
 
 readonly MASTER_SIZE=55
 

@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 compile_command="$@"
-[ -z "$compile_command" ] && echo "No command provided" && exit
+[ -z "$1" ] && echo "No command provided" && exit
 
 echo -e ":sh /home/kome/.scripts/helix-run.sh '%{buffer_name}' yes '$compile_command'\r" | wezterm cli send-text --no-paste

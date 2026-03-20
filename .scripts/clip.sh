@@ -1,6 +1,6 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-set -x # for testing
+# set -x
 
 hist_dir="$HOME/.cache/clip"
 hist_file="$hist_dir/hist"

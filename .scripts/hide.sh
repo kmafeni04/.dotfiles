@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -x
+# set -x
 
 readonly THUMB_DIR="/tmp/hidden_thumbs"
 mkdir -p "$THUMB_DIR"

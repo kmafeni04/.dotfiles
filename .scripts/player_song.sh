@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ "$(playerctl -p playerctld status -s)" = "Playing" ]; then
   title=$(exec playerctl -p playerctld metadata xesam:title)

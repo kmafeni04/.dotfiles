@@ -1,8 +1,10 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 set -e
 
 path="/tmp/temp_screenshot.png"
+
+[ -f "$path" ] && rm -rf "$path"
 
 if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
   case "$1" in

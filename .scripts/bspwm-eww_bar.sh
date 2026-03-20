@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -x
+# set -x
 
 bspc subscribe node_{state,focus} desktop_focus | while read -a line; do
   event="${line[0]}"

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 pane_id=$(wezterm cli get-pane-direction right)
 if [ -z "${pane_id}" ]; then
   pane_id=$(wezterm cli split-pane --right --percent 80)
