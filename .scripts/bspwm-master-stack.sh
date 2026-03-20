@@ -40,6 +40,12 @@ bspc subscribe node_{remove,add} desktop_focus | while read -a line; do
   fi
 
   for ((i = 1; i < count; i++)); do
+    if ([ $((i - 1)) -gt 0 ] && [ $i -lt 3 ]); then
+      # Fixes a weird behavior where, if there are only two windows on the screen with one in fullscreen mode,
+      # adding a new window breaks the layout.
+      bspc node "${windows[$((i - 1))]}" -p south
+      bspc node "${windows[$i]}" -n "${windows[$((i - 1))]}"
+    fi
     bspc node "${windows[$i]}" -f # Doing this so when I'm closing, the focus follows the stack
     bspc node "${windows[$i]}" -n "@/2"
   done
