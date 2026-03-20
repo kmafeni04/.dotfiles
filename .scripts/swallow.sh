@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-set -x
+# set -x
 
-[ -z "$@" ] && exit 1
+[ -z "$1" ] && exit 1
 
 if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
   current_ws="$(hyprctl activeworkspace -j | jq .name -r)"
@@ -21,4 +21,5 @@ else
   bspc node "$wid" -g hidden=on
   $("$@" 2> /dev/null)
   bspc node "$wid" -g hidden=off
+  bspc node "$wid" -f
 fi
