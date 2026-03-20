@@ -183,7 +183,7 @@
           "hyprctl dispatch workspace ${num}"
         }
         :style {
-          (occupiedWorkspaces[num] > 0 && activeWorkspace != num)
+          (occupiedWorkspaces[num] > 1 && activeWorkspace != num)
           ? "color: #9abdf5;"
           : activeWorkspace == num
             ? "color: #9abdf5; border-bottom: 3px solid #9abdf5;"
@@ -267,7 +267,7 @@
   "[ \"$XDG_SESSION_TYPE\" == \"x11\" ] && (caps=\"$(xset q | grep 'Caps Lock' | awk '{print $4}')\"; [ \"$caps\" = \"off\" ] && echo 'false' || echo 'true') || (hyprctl devices -j | jq '.keyboards[] | select(.main == true) | .capsLock') || (hyprctl devices -j | jq '.keyboards[] | select(.main == true) | .capsLock')")
 
 (defpoll occupiedWorkspaces :interval "0.1s"
-  "[ \"$XDG_SESSION_TYPE\" == \"x11\" ] && (bspc query -m -T | jq '.desktops | map({(.name): if .root != null then 1 else 0 end}) | add') || (hyprctl workspaces -j | jq 'map({(.name):(.windows)}) | add')")
+  "[ \"$XDG_SESSION_TYPE\" == \"x11\" ] && (bspc query -m -T | jq '.desktops | map({(.name): if .root != null then 2 else 0 end}) | add') || (hyprctl workspaces -j | jq 'map({(.name):(.windows)}) | add')")
 
 (defpoll shortTime :interval "1s"
   "date '+%H:%M'")
