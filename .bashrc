@@ -28,13 +28,10 @@ unset rc
 
 set -o vi
 
-eval "$(fzf --bash)"
-
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 #user aliases
 
-alias 'wget'='wget --hsts-file="$XDG_DATA_HOME/wget-hsts"'
 alias 'ls'='ls -a -p --group-directories-first --hyperlink --color=auto'
 
 alias 'sup'='rebos managers upgrade --sync'
@@ -45,20 +42,13 @@ alias 'rcommit'='rebos gen commit'
 alias 'rswitch'='rebos gen current to-latest && rebos gen current build'
 alias 'rroll'='rebos gen current rollback 1 && rebos gen current build'
 
-# alias 'yup'='yay && flatpak update -y'
-# alias 'yin'='yay -S'
 alias 'yre'='yay -Rns'
 alias 'yar'='yay -Rcns $(yay -Qdtq)' # auto remove unused dependecies
 alias 'yse'='yay -Ss'                # package search
 alias 'ysm'='yay -Syy'               # sync mirrors
 
 alias 'flu'='flatpak update -y'
-# alias 'fli'='flatpak install -y'
-# alias 'flr'='flatpak remove -y'
 alias 'fls'='flatpak search'
-
-# alias 'hx'='helix'
-# alias 'nv'='nvim'
 
 alias 'lps'='eval $(luarocks path --lua-version=5.1) && lapis server'
 alias 'bs'='browser-sync start --config bs-config.js'
@@ -72,7 +62,6 @@ alias 'lua5.1'='eval $(luarocks path --lua-version=5.1) && lua5.1'
 alias 'grep'='grep --colour'
 
 # Prompt colors
-
 gen_ps1() {
   local red="\[$(tput setaf 1)\]"
   local green="\[$(tput setaf 2)\]"
@@ -159,5 +148,11 @@ lf() {
   echo -en "\033]0;lf\a"
   command lf "$@"
 }
+
+eval "$(fzf --bash)"
+
+# Not aliased so that I can use it in all contexts
+fzf() { command fzf --layout=reverse "$@"; }
+wget() { wget --hsts-file="$XDG_DATA_HOME/wget-hsts"; }
 
 eval "$(eww shell-completions --shell bash)"
