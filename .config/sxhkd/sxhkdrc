@@ -72,13 +72,13 @@ super + r
 	rofi -show run
 
 super + {_,shift} + w
-	{source $HOME/.bash_profile && $BROWSER, com.brave.Browser}
+	{$BROWSER, com.brave.Browser}
 
 super + e
-	source $HOME/.bash_profile && $TERMINAL -e lf
+	$TERMINAL -e lf
 
 super + Return
-	source $HOME/.bash_profile && $TERMINAL
+	$TERMINAL
 
 super + y
 	youtube-music-desktop-app
@@ -167,3 +167,5 @@ super + h
 super + u
 	$HOME/.scripts/hide.sh show
 
+super +  + p
+	$TERMINAL -e pulsemixer
