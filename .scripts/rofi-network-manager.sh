@@ -16,7 +16,7 @@ get_network_info() {
 
 notify() {
   local status="$1"
-  notify-send -t 3000 "Network Manager" "$status"
+  notify-send "Network Manager" "$status"
 }
 
 attempt_connection() {
