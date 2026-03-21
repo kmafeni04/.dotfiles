@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 
-run() { [ -z $(pgrep -f "$1") ] && "$@" & }
+# set -x
+
+run() {
+  if ! pgrep --quiet -f "$1" > /dev/null; then
+    "$@" &
+    disown
+  fi
+}
 
 run source $HOME/.bash_profile
-run xfce4-power-manager
 run eww open bar
 run xrdb $XRESOURCES
 run dunst
 run caffeine start
 run $HOME/.scripts/bg.sh
-run lua $HOME/.scripts/low_battery.lua
+run $HOME/.scripts/battery-manager.sh
 run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 run dbus-update-activation-environment --systemd --all
 

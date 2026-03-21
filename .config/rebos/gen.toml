@@ -173,7 +173,6 @@ items = [
     "xdg-desktop-portal-hyprland",
     "xdg-ninja",
     "xdg-user-dirs-gtk",
-    "xfce4-power-manager",
     "xorg-xev",
     "xorg-xinput",
     "xorg-xkill",
