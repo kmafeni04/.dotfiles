@@ -1,4 +1,4 @@
-theme = "tokyonight"
+theme = "tokyonight_transparent"
 
 [editor]
 # line-number = "relative"
@@ -133,7 +133,19 @@ display-messages = true
 # Open file picker in current file's directory
 "o" = "file_picker_in_current_buffer_directory"
 # Copy yad color selction to clipboard
-"c" = ":insert-output yad --color --init-color='%{selection}' 2> /dev/null"
+"c" = [
+  ":insert-output yad --color --alpha --init-color='%{selection}' 2> /dev/null",
+  ":redraw"
+]
+
+[keys.select."space"]
+# Open file picker in current file's directory
+"o" = "file_picker_in_current_buffer_directory"
+# Copy yad color selction to clipboard
+"c" = [
+  ":insert-output yad --color --alpha --init-color='%{selection}' 2> /dev/null",
+  ":redraw"
+]
 
 [keys.insert]
 # Save Document
@@ -168,15 +180,14 @@ display-messages = true
 
 [keys.normal.";"]
 
-# Open Terminal
-t = ':sh pane_id=$(wezterm cli get-pane-direction down); [ -n "$pane_id" ] && wezterm cli kill-pane --pane-id "$pane_id" || wezterm cli split-pane --bottom --percent 30 > /dev/null'
-# Open lf file manager
-f = ':sh pane_id=$(wezterm cli get-pane-direction left); [ -n "$pane_id" ] && wezterm cli kill-pane --pane-id "$pane_id" || wezterm cli split-pane --left --percent 20 lf "%{buffer_name}" > /dev/null'
+t = ':sh $HOME/.scripts/helix-term.sh down 30'
+f = ':sh $HOME/.scripts/helix-term.sh left 20 lf "%{buffer_name}"'
+l = ':sh $HOME/.scripts/helix-term.sh down 40 lazygit'
 
-r = ":sh /home/kome/.scripts/helix-run.sh '%{buffer_name}'"
-c = ":sh /home/kome/.scripts/helix-run.sh '%{buffer_name}' true"
-e = ":sh /home/kome/.scripts/helix-run-open-error.sh '%{selection}'"
+r = ":sh $HOME/.scripts/helix-run.sh '%{buffer_name}'"
+c = ":sh $HOME/.scripts/helix-run.sh '%{buffer_name}' true"
+e = ":sh $HOME/.scripts/helix-run-open-error.sh '%{selection}'"
 s = ":pipe sort"
 
 [keys.select.";"]
-e = ":sh /home/kome/.scripts/helix-run-open-error.sh '%{selection}'"
+e = ":sh $HOME/.scripts/helix-run-open-error.sh '%{selection}'"
