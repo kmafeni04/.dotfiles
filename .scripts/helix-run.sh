@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-set -e
+# set -x
 
 filename="$1"
-in_editor="$2"
+in_fzf="$2"
 run_command="$3"
 
 if [ -z "$run_command" ]; then
-  basedir=$(realpath "$(dirname "$filename" | sed "s|^~|$HOME|")")
-  basename=$(basename "$filename")
+  basedir="$(realpath "$(dirname "$filename")")"
+  basename="$(basename "$filename")"
   basename_without_extension="${basename%.*}"
   extension="${filename##*.}"
 
@@ -35,28 +35,29 @@ if [ -z "$run_command" ]; then
     run_command="bash $filename"
     ;;
   "html")
-    run_command="$BROWSER $basedir/$filename"
+    run_command="python -m http.server 8080 --directory $basedir"
     ;;
   *)
-    echo "No defined case for extension '$extension'"
-    run_command=""
+    run_command="No defined case for extension '$extension'"
     ;;
   esac
 fi
 
 [ -z "$run_command" ] && echo "No commnand provided" && exit
+[ "$run_command" = "No defined case for extension '$extension'" ] && echo "$run_command" && exit
 
-if [ -n "$in_editor" ]; then
-  run_command="$run_command;source ~/.bash_profile;"
-  run_command="$run_command tmp_file=\$(mktemp /tmp/helix-run-open-error.XXXXXXXXXX);"
-  run_command="$run_command wezterm cli get-text > \$tmp_file;"
-  run_command="$run_command sed -i ':a;N;\$!ba;s/\n\+$//g' \$tmp_file_buffer;"
-  run_command="$run_command hx \$tmp_file;"
-  run_command="$run_command rm \$tmp_file;"
+if [ -n "$in_fzf" ]; then
+  run_command="$run_command; source ~/.bash_profile"
+  run_command="$run_command; pane_id=\$(wezterm cli get-pane-direction up)"
+  run_command="$run_command; [ -z \"\$pane_id\" ] && clear && read -p 'No editor pane. Press Enter to close:' && exit"
+  run_command="$run_command; selection=\$(wezterm cli get-text | fzf | grep -P '^\\s*.*?:[0-9]+:?[0-9]*' -o)"
+  run_command="$run_command; [ -z \"\$selection\" ] && clear && read -p 'Invalid path. Press Enter to close:' && exit"
+  run_command="$run_command; echo -e \":o \$selection\r\" | wezterm cli send-text --no-paste --pane-id \$pane_id"
+  run_command="$run_command; wezterm cli activate-pane --pane-id \$pane_id"
 else
   run_command="$run_command; read -p 'Press Enter to close:'"
 fi
 
 pane_id=$(wezterm cli get-pane-direction down)
 [ -n "$pane_id" ] && wezterm cli kill-pane --pane-id "$pane_id"
-pane_id="$(wezterm cli split-pane --bottom --percent 30 bash -c "$run_command")"
+wezterm cli split-pane --bottom --percent 30 bash -c "$run_command" > /dev/null
