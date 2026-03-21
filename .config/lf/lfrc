@@ -92,7 +92,7 @@ cmd open &{{
       ;;
     *)
       case $f in
-        *.nelua | *.env | *.tsx | *.ts)
+        *.nelua | *.env | *.tsx | *.ts | *.jsx | *.js | *.css | *.html)
           $HOME/.dotfiles/.scripts/lf-helix.sh "$f"
           ;;
         *)
