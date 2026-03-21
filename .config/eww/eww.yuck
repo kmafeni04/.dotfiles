@@ -32,7 +32,7 @@
 (defwidget time[]
   (eventbox
     :onclick "eww update timeFormat=${!timeFormat}"
-    :onmiddleclick "/home/kome/.scripts/clip.sh add '${longTime}'"
+    :onmiddleclick "$HOME/.scripts/clip.sh add '${longTime}'"
     :cursor "pointer"
     :tooltip "${calender}"
     (label :text {timeFormat == false ? shortTime : longTime})
@@ -44,7 +44,7 @@
     :class "blue"
     :tooltip "Connection: ${bluetooth_state == "yes" ? 'on' : 'off'}"
     :cursor "pointer"
-    :onclick "~/.scripts/rofi-bluetooth.sh &"
+    :onclick "$HOME/.scripts/rofi-bluetooth.sh &"
     (label :text
       "${
         bluetooth_state == 'yes' ? "󰂯" : "󰂲"
@@ -58,7 +58,7 @@
   (eventbox
     :class "timer"
     :cursor "pointer"
-    :onclick "~/.scripts/eww-timer.sh &"
+    :onclick "$HOME/.scripts/eww-timer.sh &"
     (label :text "󰥔${timerTime != "--:--:--" ? ' ${timerTime}' : ""}")
     ; (label :text "󰥔 ${timerTime}") ; Undecided on what to use
   )
@@ -67,7 +67,7 @@
 (defwidget volume[]
   (eventbox
     :class "volume"
-    :cursor "pointer"
+    :cursor "ns-resize"
     :onscroll "if [ '{}' == 'up' ]; then pamixer -u && pamixer -i 5; else pamixer -u && pamixer -d 5; fi"
     :onclick "wezterm -e pulsemixer &"
     :onmiddleclick "pamixer -t"
@@ -78,7 +78,7 @@
 (defwidget brightness[]
   (eventbox
     :class "brightness"
-    :cursor "pointer"
+    :cursor "ns-resize"
     :onscroll "if [ '{}' == 'up' ]; then light -A 5 ; else light -U 5; fi"
     (label :text "󰃚 ${brightness}")
   )
@@ -89,7 +89,7 @@
     :class "nm"
     :tooltip "Connection: ${nm_connection_name}"
     :cursor "pointer"
-    :onclick "~/.scripts/rofi-network-manager.sh &"
+    :onclick "$HOME/.scripts/rofi-network-manager.sh &"
     (label :text
       "${
         nm_connection_state == 'limited' ? "󰤠" :
@@ -150,7 +150,7 @@
   (eventbox
     :class "power-menu"
     :cursor "pointer"
-    :onclick "~/.scripts/rofi-power.sh &"
+    :onclick "$HOME/.scripts/rofi-power.sh &"
     (label :text "")
   )
 )
@@ -198,7 +198,7 @@
 (defwidget playerControls []
   (eventbox
     :class "player-controls"
-    :onclick "~/.scripts/rofi-playerctl.sh &"
+    :onclick "$HOME/.scripts/rofi-playerctl.sh &"
     :cursor "pointer"
     (label :text "")
   )
@@ -243,13 +243,13 @@
 (defvar workspacesCount "[1, 2, 3, 4, 5, 6, 7, 8, 9]")
 
 (defpoll music :interval "0.5s"
-  "~/.scripts/player_song.sh")
+  "$HOME/.scripts/player_song.sh")
 
 (defpoll volume :interval "0.1s"
   "pamixer --get-volume-human")
 
 (defpoll brightness :interval "0.1s"
-  "~/.scripts/light.sh")
+  "$HOME/.scripts/light.sh")
 
 (defpoll battery_percent :interval "1s"
   "cat /sys/class/power_supply/BAT0/capacity")
