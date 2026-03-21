@@ -139,6 +139,33 @@ PATH="$HOME/node_modules/.bin:$PATH"
 # Python
 eval "$(register-python-argcomplete pipx)"
 
+eval "$(eww shell-completions --shell bash)"
+
+eval "$(fzf --bash)"
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
+  --highlight-line \
+  --info=inline-right \
+  --ansi \
+  --layout=reverse \
+  --border=none \
+  --color=border:#27a1b9 \
+  --color=fg+:#9abdf5 \
+  --color=fg:#9abdf5 \
+  --color=bg+:#313349 \
+  --color=gutter:#16161e \
+  --color=header:#ff9e64 \
+  --color=hl+:#2ac3de \
+  --color=hl:#2ac3de \
+  --color=info:#545c7e \
+  --color=marker:#ff007c \
+  --color=pointer:#9abdf5 \
+  --color=prompt:#2ac3de \
+  --color=query:#9abdf5:regular \
+  --color=scrollbar:#27a1b9 \
+  --color=separator:#9abdf5 \
+  --color=spinner:#9abdf5 \
+"
+
 hx() {
   echo -en "\033]0;hx\a"
   command helix "$@"
@@ -149,10 +176,4 @@ lf() {
   command lf "$@"
 }
 
-eval "$(fzf --bash)"
-
-# Not aliased so that I can use it in all contexts
-fzf() { command fzf --layout=reverse "$@"; }
-wget() { wget --hsts-file="$XDG_DATA_HOME/wget-hsts"; }
-
-eval "$(eww shell-completions --shell bash)"
+wget() { command wget --hsts-file="$XDG_DATA_HOME/wget-hsts" "$@"; }
