@@ -1,4 +1,0 @@
-inherits = "tokyonight"
-"ui.background" = {}
-"ui.linenr" = { fg = "#4D5681" }
-"ui.linenr.selected" = { fg = "#B2BDFB" }
