@@ -1,4 +1,4 @@
-#### aliases ####
+#### Aliases ####
 alias global bc delete-buffer
 alias global bc! delete-buffer!
 
@@ -60,22 +60,22 @@ map global run  s '| sort<ret>' -docstring 'Sort selection'
 declare-user-mode match
 declare-user-mode match-tag
 map global normal m ':enter-user-mode match<ret>'
-map global match i ':surround-select-inside<ret>' -docstring 'Select inside object'
-map global match a ':surround-select-around<ret>' -docstring 'Match around object'
-map global match s ':surround-add<ret>' -docstring 'Surround selection with character'
-map global match d ':surround-delete<ret>' -docstring 'Delete selection''s surrounding character'
-map global match r ':surround-replace<ret>' -docstring 'Replace selection''s surrounding character'
+map global match i ':match-inside<ret>' -docstring 'Match inside object'
+map global match a ':match-around<ret>' -docstring 'Match around object'
+map global match s ':match-surround-add<ret>' -docstring 'Surround selection with character'
+map global match d ':match-surround-delete<ret>' -docstring 'Delete selection''s surrounding character'
+map global match r ':match-surround-replace<ret>' -docstring 'Replace selection''s surrounding character'
 
-def -hidden select-prev-word-part %{
+define-command -hidden select-prev-word-part %{
   exec <a-/>[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
 }
-def -hidden select-next-word-part %{
+define-command -hidden select-next-word-part %{
   exec /[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
 }
-def -hidden extend-prev-word-part %{
+define-command -hidden extend-prev-word-part %{
   exec <a-?>[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
 }
-def -hidden extend-next-word-part %{
+define-command -hidden extend-next-word-part %{
   exec ?[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
 }
 map global normal <a-w> :select-next-word-part<ret>
@@ -110,22 +110,20 @@ hook global ModeChange .* %{
   }
 }
 
-declare-option -docstring "Curretly open buffers"\
+declare-option -docstring "Curretly open buffers" \
     str buffers
 
 hook global WinCreate .* %{
   hook buffer NormalIdle .* %{
     try %{
       eval %sh{
+        [ "$kak_modified" = true ] && echo "write" && echo "echo $kak_bufname written"
+
         name=$(echo $kak_bufname | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
         buflist=$(echo $kak_buflist | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
         buffers=$(echo "$buflist" | sed "s/\\\\//g" | sed 's/ *\*debug\* *//' | sed "s/\($name\)/\[*\]\1/")
         printf 'set buffer buffers "%%{%s}"' "${buffers}"
       }
-
-      eval %sh{ [ "$kak_modified" = false ] && printf 'fail' }
-      write
-      echo "%val{bufname} written"
     }
   }
 }
@@ -191,7 +189,7 @@ hook global BufWritePost /.* %{
   }
 }
 
-def resource -params 1 %{
+define-command resource -params 1 %{
   eval %sh{
     file=$(mktemp)
     cat "$1" |
@@ -213,7 +211,7 @@ def resource -params 1 %{
   echo Reloaded %arg{1}
 }
 
-rmhooks global reload-kak
+remove-hooks global reload-kak
 hook -group reload-kak global BufWritePost (.*kakrc|.*\.kak) %{
    resource %val{hook_param}
 }
@@ -243,25 +241,25 @@ hook global -group git-gutter-hooks NormalIdle .* %{
 # foo_bar → fooBar
 # foo-bar → fooBar
 # foo bar → fooBar
-def camelcase %{
+define-command camelcase %{
   exec '`s[-_<space>]<ret>d~<a-i>w'
 }
 
 # fooBar → foo_bar
 # foo-bar → foo_bar
 # foo bar → foo_bar
-def snakecase %{
+define-command snakecase %{
   exec '<a-:><a-;>s-|[a-z][A-Z]<ret>;a<space><esc>s[-\s]+<ret>c_<esc><a-i>w`'
 }
 
 # fooBar → foo-bar
 # foo_bar → foo-bar
 # foo bar → foo-bar
-def kebabcase %{
+define-command kebabcase %{
   exec '<a-:><a-;>s_|[a-z][A-Z]<ret>;a<space><esc>s[_\s]+<ret>c-<esc><a-i>w`'
 }
 
-  #### Highliters ####
+#### Highliters ####
 add-highlighter global/git-diff flag-lines Default git_diff_flags
 add-highlighter shared/non_ascii_characters regex '[^\x00-\x7f]+' '0:DiagnosticError'
 add-highlighter global/ regex '[ \t]+$' '0:DiagnosticError'
