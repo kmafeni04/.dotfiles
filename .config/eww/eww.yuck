@@ -71,7 +71,15 @@
     :onscroll "if [ '{}' == 'up' ]; then pamixer -u && pamixer -i 5; else pamixer -u && pamixer -d 5; fi"
     :onclick "wezterm -e pulsemixer &"
     :onmiddleclick "pamixer -t"
-    (label :text "󰕾 ${volume}")
+    ; (label :text "󰕾 ${volume}")
+      "${
+        volume == "muted" ? '󰸈' :
+        volume == 0       ? '󰸈' :
+        volume < 50       ? '󰕿' :
+        volume < 70       ? '󰖀' : '󰕾'
+      } ${
+        volume == "muted" ? volume : "${volume}%"
+      }"
   )
 )
 
@@ -80,7 +88,18 @@
     :class "brightness"
     :cursor "ns-resize"
     :onscroll "if [ '{}' == 'up' ]; then light -A 5 ; else light -U 5; fi"
-    (label :text "󰃚 ${brightness}")
+    (label :text
+      "${
+        brightness < 20 ? '' :
+        brightness < 30 ? '' :
+        brightness < 40 ? '' :
+        brightness < 50 ? '' :
+        brightness < 60 ? '' :
+        brightness < 70 ? '' :
+        brightness < 80 ? '' :
+        brightness < 90 ? '' : ''
+      } ${brightness}%"
+    )
   )
 )
 
@@ -246,10 +265,10 @@
   "$HOME/.scripts/player_song.sh")
 
 (defpoll volume :interval "0.1s"
-  "pamixer --get-volume-human")
+  "pamixer --get-volume-human | sed 's/%//'")
 
 (defpoll brightness :interval "0.1s"
-  "$HOME/.scripts/light.sh")
+  "light | cut -d '.' -f 1")
 
 (defpoll battery_percent :interval "1s"
   "cat /sys/class/power_supply/BAT0/capacity")
@@ -275,7 +294,7 @@
 (defpoll longTime :interval "1s"
   "date '+%d-%m-%Y %H:%M:%S'")
 
-(defpoll calender :interval "1s"
+(defpoll calender :interval "1h"
   "cal")
 
 (defpoll nm_connection_state :interval "2s"
@@ -287,7 +306,7 @@
 (defpoll nm_connection_name :interval "2s"
   "if (nmcli -t d status | grep ethernet | grep -q connected); then nmcli -t d status | grep ethernet | cut -d ':' -f 4; elif (nmcli -t d status | grep wifi | grep -q connected); then nmcli -t d status | grep wifi | cut -d ':' -f 4; else echo 'none'; fi")
 
-(defpoll bluetooth_state :interval "1s"
+(defpoll bluetooth_state :interval "2s"
   "bluetoothctl show | grep Powered | cut -d ' ' -f 2")
 
 (defwindow bar
