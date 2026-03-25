@@ -1,7 +1,6 @@
 *.log
-.config/btop/btop.log
-.config/helix/runtime/grammars
 /.config/qutebrowser/qsettings/QtProject.conf
 /.config/qutebrowser/autoconfig.yml
 /.config/hypr/monitors.conf
 /.config/hypr/workspaces.conf
+/.config/kak/autoload/standard-library
