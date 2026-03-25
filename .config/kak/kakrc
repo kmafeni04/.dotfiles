@@ -1,0 +1,277 @@
+#### aliases ####
+alias global bc delete-buffer
+alias global bc! delete-buffer!
+
+#### Keybindings ####
+map global normal <a-1> ':buffer-previous<ret>'
+map global normal <a-2> ':buffer-next<ret>'
+map global normal <a-q> ':db<ret>'
+map global normal <a-o> :edit-kakrc<ret>
+
+map global normal <ret> <o>
+map global normal <esc> ,hl  -docstring  'Clear Multi-cursor Selection'
+
+map global normal <c-a> ':inc-dec-modify-numbers + 1 <ret>'
+map global normal <c-x> ':inc-dec-modify-numbers - 1 <ret>'
+map global normal <c-n> ':edit -scratch<ret>'
+map global normal <c-q> ':wq<ret>'
+
+map global normal <backspace> h<a-d>
+
+define-command clipboard-paste-before %{
+  eval %sh{
+    echo "exec i$(~/.scripts/clip.sh out | sed 's/<\(.*\)>/<lt>\1<gt>/g' | sed 's/ /<space>/g')"
+  }
+}
+define-command clipboard-paste-after %{
+  eval %sh{
+    echo "exec a$(~/.scripts/clip.sh out | sed 's/<\(.*\)>/<lt>\1<gt>/g' | sed 's/ /<space>/g')"
+  }
+}
+define-command clipboard-paste-replace %{
+  eval %sh{
+    echo "exec di$(~/.scripts/clip.sh out | sed 's/<\(.*\)>/<lt>\1<gt>/g' | sed 's/ /<space>/g')"
+  }
+}
+map global user <p> ':clipboard-paste-before<ret><esc>' -docstring 'Paste clipboard to buffer before cursor'
+map global user <P> ':clipboard-paste-after<ret><esc>' -docstring 'Paste clipboard to buffer after cursor'
+map global user <r> ':clipboard-paste-replace<ret><esc>' -docstring 'Replace buffer selection with clipboard'
+
+map global user <b> ':pick-buffers<ret>' -docstring 'Pick Buffer'
+map global user <B> ':enter-user-mode buffers<ret>' -docstring 'Enter Buffer Mode'
+map global user <c> ':comment-line<ret>' -docstring 'Toggle line comment'
+map global user <C> ':comment-block<ret>' -docstring 'Toggle block comment'
+map global user <y> ':nop %sh{~/.scripts/clip.sh add "$kak_selection"}<ret>' -docstring 'Copy selection to clipboard'
+map global user <f> ':nop %sh{~/.scripts/kak-fzf.sh}<ret>' -docstring 'Open Fuzzy File Picker'
+map global user <o> ':nop %sh{~/.scripts/kak-fzf.sh "$kak_buffile"}<ret>' -docstring "Open Fuzzy File Picker at current file's directory"
+
+# TODO: Write fzf mode for grep
+# kak $(grep -rn "" . | fzf --delimiter=':' --preview 'bat --color=always {1} --highlight-line {2}' | awk -F: '{print $1 " +" $2}')
+
+declare-user-mode run
+map global normal <semicolon> ':enter-user-mode run<ret>'
+map global run  t ':nop %sh{~/.scripts/kak-term.sh down 30}<ret>' -docstring 'Open Terminal Pane'
+map global run  f ':nop %sh{~/.scripts/kak-term.sh left 20 lf "$kak_buffile"}<ret>' -docstring 'Open File manager pane'
+map global run  l ':nop %sh{~/.scripts/kak-term.sh down 40 lazygit}<ret>' -docstring 'Open Lazygit pane'
+map global run  r ':nop %sh{~/.scripts/kak-run.sh "$kak_buffile"}<ret>' -docstring 'Run current file interm'
+map global run  c ':nop %sh{~/.scripts/kak-run.sh "$kak_buffile" true}<ret>' -docstring 'Run current file and pipe output to fzf picker'
+map global run  s '| sort<ret>' -docstring 'Sort selection'
+
+declare-user-mode match
+declare-user-mode match-tag
+map global normal m ':enter-user-mode match<ret>'
+map global match i ':surround-select-inside<ret>' -docstring 'Select inside object'
+map global match a ':surround-select-around<ret>' -docstring 'Match around object'
+map global match s ':surround-add<ret>' -docstring 'Surround selection with character'
+map global match d ':surround-delete<ret>' -docstring 'Delete selection''s surrounding character'
+map global match r ':surround-replace<ret>' -docstring 'Replace selection''s surrounding character'
+
+def -hidden select-prev-word-part %{
+  exec <a-/>[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
+}
+def -hidden select-next-word-part %{
+  exec /[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
+}
+def -hidden extend-prev-word-part %{
+  exec <a-?>[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
+}
+def -hidden extend-next-word-part %{
+  exec ?[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
+}
+map global normal <a-w> :select-next-word-part<ret>
+map global normal <a-W> :extend-next-word-part<ret>
+map global normal <a-b> :select-prev-word-part<ret>
+map global normal <a-B> :extend-prev-word-part<ret>
+
+#### hooks ####
+hook global BufCreate .* %{
+  expandtab
+}
+
+declare-option -docstring "name of the git branch holding the current buffer" \
+  str git_branch
+
+hook global WinCreate /.* %{
+  hook window NormalIdle .* %{ evaluate-commands %sh{
+    branch=$(cd "$(dirname "${kak_buffile}")" && git rev-parse--abbrev-ref HEAD 2>/dev/null)
+    if  [ -n "${branch}" ]; then
+      printf 'set window git_branch " %%{%s}|"'"${branch}"
+    fi
+  }}
+ }
+
+declare-option -docstring "Current mode" \
+  str mode 'NORMAL'
+
+hook global ModeChange .* %{
+  eval %sh{
+    new_mode=$(echo $kak_hook_param | cut -d ':' -f 3 | sed 's/.*/\U&/' 2>/dev/null)
+    printf 'set window mode "%%{%s}"' "${new_mode}"
+  }
+}
+
+declare-option -docstring "Curretly open buffers"\
+    str buffers
+
+hook global WinCreate .* %{
+  hook buffer NormalIdle .* %{
+    try %{
+      eval %sh{
+        name=$(echo $kak_bufname | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
+        buflist=$(echo $kak_buflist | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
+        buffers=$(echo "$buflist" | sed "s/\\\\//g" | sed 's/ *\*debug\* *//' | sed "s/\($name\)/\[*\]\1/")
+        printf 'set buffer buffers "%%{%s}"' "${buffers}"
+      }
+
+      eval %sh{ [ "$kak_modified" = false ] && printf 'fail' }
+      write
+      echo "%val{bufname} written"
+    }
+  }
+}
+
+set global modelinefmt '%opt{git_branch} %opt{buffers} | %val{bufname} | %val{cursor_line}:%val{cursor_char_column} | %val{modified} | %opt{mode} | {{mode_info}} |'
+
+hook global InsertCompletionShow .* %{
+  try %{
+    # this command temporarily removes cursors preceded by whitespace;
+    # if there are no cursors left, it raises an error, does not
+    # continue to execute the mapping commands, and the error is eaten
+    # by the `try` command so no warning appears.
+    execute-keys -draft 'h<a-K>\h<ret>'
+    map window insert <tab> <c-n>
+    map window insert <s-tab> <c-p>
+    hook -once -always window InsertCompletionHide .* %{
+      unmap window insert <tab> <c-n>
+      unmap window insert <s-tab> <c-p>
+    }
+  }
+}
+
+hook global InsertIdle .* %{
+  set-face window PrimaryCursor default,default+u
+  set-face window PrimaryCursorEol default,default+u
+  set-face window SecondaryCursor default,default+u
+}
+
+#set cursor to default
+hook global NormalIdle .* %{
+  set-face window PrimaryCursor default,default+r
+  set-face window PrimaryCursorEol default,default+r
+  set-face window SecondaryCursor default,default+r
+}
+
+hook global WinCreate /.* %{
+  hook global BufCreate /.* %{
+    eval %sh{kak-lsp}
+    lsp-enable
+  }
+
+  set-option global modelinefmt "%opt{lsp_modeline} %opt{modelinefmt}"
+
+  map global user l ':enter-user-mode lsp<ret>' -docstring 'LSP mode'
+
+  map global goto d <esc>:lsp-definition<ret> -docstring 'LSP definition'
+  map global goto r <esc>:lsp-references<ret> -docstring 'LSP references'
+  map global goto y <esc>:lsp-type-definition<ret> -docstring 'LSP type definition'
+
+  map global insert <tab> '<a-;>:try lsp-snippets-select-next-placeholders catch %{ execute-keys -with-hooks <lt>tab> }<ret>' -docstring 'Select next snippet placeholder'
+
+  map global object a '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
+  map global object <a-a> '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
+  map global object f '<a-semicolon>lsp-object Function Method<ret>' -docstring 'LSP function or method'
+  map global object t '<a-semicolon>lsp-object Class Interface Module Namespace Struct<ret>' -docstring 'LSP class or module'
+  map global object d '<a-semicolon>lsp-diagnostic-object error warning<ret>' -docstring 'LSP errors and warnings'
+  map global object D '<a-semicolon>lsp-diagnostic-object error<ret>' -docstring 'LSP errors'
+}
+
+hook global BufWritePost /.* %{
+  try %{
+    execute-keys -draft \%s\h+$<ret>d # Trim trailing new lines
+  }
+}
+
+def resource -params 1 %{
+  eval %sh{
+    file=$(mktemp)
+    cat "$1" |
+      sed 's/^def /def -override /'                       |
+      sed 's/^define-command /def -override /'            |
+      sed 's/^addhl /addhl -override /'                   |
+      sed 's/^add-highlighter /addhl -override /'         |
+      sed 's/^provide-module / provide-module -override/' |
+      sed 's/^require-module /# require-module/'          |
+      sed 's/^declare-user-mode /# declare-user-mode/'    |
+      cat > "$file"
+    printf %s "
+      source $file
+      nop %sh{
+          rm $file
+      }
+    "
+  }
+  echo Reloaded %arg{1}
+}
+
+rmhooks global reload-kak
+hook -group reload-kak global BufWritePost (.*kakrc|.*\.kak) %{
+   resource %val{hook_param}
+}
+map global normal <c-r> ':resource ~/.config/kak/kakrc<ret>'
+
+hook global -group git-gutter-hooks BufCreate .* %{
+  try %{ git show-diff }
+}
+hook global -group git-gutter-hooks FocusIn .* %{
+  try %{ git-async update-diff }
+}
+hook global -group git-gutter-hooks BufReload .* %{
+  try %{ git-async update-diff }
+}
+hook global -group git-gutter-hooks BufWritePost .* %{
+  try %{ git-async update-diff }
+}
+hook global -group git-gutter-hooks NormalIdle .* %{
+  try %{ git-async update-diff }
+}
+# hook global -group git-gutter-hooks InsertIdle .* %{
+#   try %{ git-async update-diff }
+# } # Probably a better way to do this
+
+#### Commands #####
+
+# foo_bar → fooBar
+# foo-bar → fooBar
+# foo bar → fooBar
+def camelcase %{
+  exec '`s[-_<space>]<ret>d~<a-i>w'
+}
+
+# fooBar → foo_bar
+# foo-bar → foo_bar
+# foo bar → foo_bar
+def snakecase %{
+  exec '<a-:><a-;>s-|[a-z][A-Z]<ret>;a<space><esc>s[-\s]+<ret>c_<esc><a-i>w`'
+}
+
+# fooBar → foo-bar
+# foo_bar → foo-bar
+# foo bar → foo-bar
+def kebabcase %{
+  exec '<a-:><a-;>s_|[a-z][A-Z]<ret>;a<space><esc>s[_\s]+<ret>c-<esc><a-i>w`'
+}
+
+  #### Highliters ####
+add-highlighter global/git-diff flag-lines Default git_diff_flags
+add-highlighter shared/non_ascii_characters regex '[^\x00-\x7f]+' '0:DiagnosticError'
+add-highlighter global/ regex '[ \t]+$' '0:DiagnosticError'
+add-highlighter global/ number-lines -relative -hlcursor
+add-highlighter global/ wrap
+add-highlighter global/ regex "%opt{comment_line}[ \t]*\b([A-Z][A-Z]+)\b" 1:default+br@comment
+add-highlighter global/ show-matching
+add-highlighter global/ show-whitespaces
+
+#### Misc ####
+colorscheme tokyonight
+set global indentwidth 2
+set global tabstop 2
