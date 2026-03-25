@@ -7,8 +7,10 @@ notify() {
   notify-send 'Battery Manager' "$msg" -u "$val" $@
 }
 
+powerprofilesctl query-battery-aware | grep -q True && powerprofilesctl configure-battery-aware --disable
+
 while true; do
-  current_profile=$(powerprofilesctl | grep '*' | sed -E 's/\*//;s/ //;s/://')
+  current_profile=$(powerprofilesctl get)
   battery_state=$(upower -i "$(upower -e | grep 'BAT')")
 
   state="$(echo "$battery_state" | grep state | sed 's/state://;s/ //g')"
@@ -16,8 +18,8 @@ while true; do
 
   if [ "$state" = "charging" ] || [ "$state" = "fully-charged" ]; then
     [ ! "$current_profile" = "performance" ] && powerprofilesctl set performance && notify "Profile set to 'Performance'" normal
-  elif [ "$state" = "discharging" ]; then
-    if [ ${percent:-0} -lt 60 ] && [ ! "$current_profile" = "power-saver" ]; then
+  elif [ "$state" = "discharging" ] && [ ${percent:-0} -lt 60 ]; then
+    if [ ! "$current_profile" = "power-saver" ]; then
       powerprofilesctl set power-saver && notify "Profile set to 'Power Saver'" normal
     fi
     if [ ${percent:-0} -lt 40 ]; then

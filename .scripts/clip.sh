@@ -45,7 +45,7 @@ get_selection() {
 
   IFS=$'\n' # Set internal field separator to new line
   for line in $(cat "$hist_file"); do
-    if [[ "$line" == "$img_surrond"* && "$line" == *"$img_surrond.png" ]]; then
+    if [[ $line == "$img_surrond"* && $line == *"$img_surrond.png" ]]; then
       echo -en "$line\x00icon\x1f$hist_dir/$line\n" >> "$temp_file" # How images get displayed in rofi
     else
       echo "$line" >> "$temp_file"
@@ -88,7 +88,7 @@ sel() {
   [ -z "$selection" ] && exit 0
 
   local original=$(echo -n "$selection" | sed "s/$new_line/\n/g")
-  if [[ "$selection" == "$img_surrond"* && "$selection" == *"$img_surrond.png" ]]; then
+  if [[ $selection == "$img_surrond"* && $selection == *"$img_surrond.png" ]]; then
     xclip -selection clipboard -target image/png -i "$hist_dir/$selection"
     [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-copy < "$hist_dir/$selection"
   else
@@ -106,7 +106,7 @@ del() {
   local line="$(grep -Fxon -m 1 -e "$selection" "$hist_file" | grep -Po -m 1 --color="never" "^\d+" 2> /dev/null)"
   [ ${line:-0} -le 0 ] && exit 1
   sed -i ""$line"d" "$hist_file"
-  if [[ "$selection" == "$img_surrond"* && "$selection" == *"$img_surrond.png" && -f "$hist_dir/$selection" ]]; then
+  if [[ $selection == "$img_surrond"* && $selection == *"$img_surrond.png" && -f "$hist_dir/$selection" ]]; then
     rm "$hist_dir/$selection"
   fi
   notify "Deleted from clipboard"
@@ -155,6 +155,7 @@ recopy) recopy ;;
 add) add "$2" ;;
 sel) sel ;;
 del) del ;;
+out) [ "$XDG_SESSION_TYPE" == "wayland" ] && wl-paste -n 2> /dev/null || xclip -o -selection clipboard 2> /dev/null ;;
 clear) rm -rf "$hist_dir" && init && notify "Clipboard cleared" ;;
 *) exit 1 ;;
 esac

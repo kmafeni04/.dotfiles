@@ -63,6 +63,7 @@ attempt_connection() {
 }
 
 show_menu() {
+  notify 'Opening menu'
   # This prints a beautifully formatted list. bash was a mistake
   local list=$(
     nmcli --fields SSID,SECURITY,BARS d wifi list \
@@ -235,5 +236,4 @@ show_menu() {
   esac
 }
 
-notify 'Opening menu'
 show_menu
