@@ -5,6 +5,8 @@ limits_path="$system_files_path/limits.conf"
 ly_path="$system_files_path/config.ini"
 pacman_conf="$system_files_path/pacman.conf"
 touchpad_30_path="$system_files_path/30-touchpad.conf"
+battery_threshold_service="$system_files_path/battery-threshold.service"
+battery_threshold_timer="$system_files_path/battery-threshold.timer"
 
 # Taken from OgloTheNerd
 overwrite_file () {
@@ -41,6 +43,14 @@ fi
 
 if ! cmp -s "$pacman_conf" /etc/pacman.conf; then
   OFSUDO=1 overwrite_file "$pacman_conf" /etc/pacman.conf || exit 1
+fi
+
+if ! cmp -s "$battery_threshold_service" /etc/systemd/system/battery-threshold.service; then
+  OFSUDO=1 overwrite_file "$battery_threshold_service" /etc/systemd/system/battery-threshold.service || exit 1
+fi
+
+if ! cmp -s "$battery_threshold_timer" /etc/systemd/system/battery-threshold.timer; then
+  OFSUDO=1 overwrite_file "$battery_threshold_timer" /etc/systemd/system/battery-threshold.timer || exit 1
 fi
 
 if ! cmp -s "$limits_path" /etc/security/limits.conf; then

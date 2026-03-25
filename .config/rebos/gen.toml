@@ -9,14 +9,14 @@ imports = [
 
 [managers.services]
 items = [
-    # "auto-cpufreq",
     "bluetooth",
+    "battery-threshold", # Custom script
+    "battery-threshold.timer", # Custom script
     "cups",
     "docker",
     "ly@tty2",
     "mariadb",
     "postgresql",
-    "tlp",
     "touchegg",
     "usbmuxd",
 ]
@@ -36,7 +36,6 @@ items = [
     "7zip",
     "adw-gtk-theme",
     "arandr",
-    "auto-cpufreq",
     "baobab",
     "base",
     "base-devel",
@@ -78,7 +77,6 @@ items = [
     "gvfs-afc",
     "gvfs-gphoto2",
     "gvfs-mtp",
-    "helix",
     "hyprland",
     "hyprpicker",
     "i3lock",
@@ -86,6 +84,8 @@ items = [
     "imagemagick",
     "intel-ucode",
     "jq",
+    "kak-lsp",
+    "kakoune",
     "kdeconnect",
     "komikku",
     "lazygit",
@@ -152,7 +152,6 @@ items = [
     "tailscale",
     "tcc",
     "terminator",
-    "tlp",
     "touchegg",
     "transmission-gtk",
     "trash-cli",
@@ -192,7 +191,6 @@ items = [
 [managers.flatpak]
 items = [
     "app.drey.EarTag",
-    "app.zen_browser.zen",
     "com.brave.Browser",
     "com.discordapp.Discord",
     "com.github.joseexposito.touche",
@@ -203,7 +201,7 @@ items = [
     "com.usebottles.bottles",
     "com.valvesoftware.Steam",
     "dev.bragefuglseth.Keypunch",
-    "io.github.swordpuffin.rewaita",
+    "io.gitlab.librewolf-community",
     "org.gnome.Boxes",
     "org.gnome.World.PikaBackup",
     "org.gtk.Gtk3theme.adw-gtk3",
