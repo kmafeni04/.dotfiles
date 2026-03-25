@@ -27,6 +27,9 @@ fi
 unset rc
 
 set -o vi
+bind 'set show-mode-in-prompt on'
+bind 'set vi-cmd-mode-string "\1\e[2 q\2"'
+bind 'set vi-ins-mode-string "\1\e[6 q\2"'
 
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
@@ -165,11 +168,6 @@ export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS \
   --color=separator:#9abdf5 \
   --color=spinner:#9abdf5 \
 "
-
-hx() {
-  echo -en "\033]0;hx\a"
-  command helix "$@"
-}
 
 lf() {
   echo -en "\033]0;lf\a"

@@ -5,7 +5,7 @@
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
 # app exports
-export EDITOR=helix
+export EDITOR=kak
 export TERMINAL=wezterm
 export BROWSER=qutebrowser
 export FILEBROWSER=lf
