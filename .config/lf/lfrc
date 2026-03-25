@@ -87,17 +87,15 @@ cmd open &{{
     text/* | */json | */javascript)
       case $f in
         *.RPP | *.rpp | *.RPP-bak | *.rpp-bak | *.kdenlive) $HOME/.dotfiles/.scripts/swallow.sh xdg-open "$f" ;;
-        *) $HOME/.dotfiles/.scripts/lf-helix.sh "$f" ;;
+        *) $HOME/.dotfiles/.scripts/lf-kak.sh "$f" ;;
       esac
       ;;
     *)
       case $f in
         *.nelua | *.env | *.tsx | *.ts | *.jsx | *.js | *.css | *.html)
-          $HOME/.dotfiles/.scripts/lf-helix.sh "$f"
-          ;;
+          $HOME/.dotfiles/.scripts/lf-kak.sh "$f" ;;
         *)
-          $HOME/.dotfiles/.scripts/swallow.sh xdg-open "$f"
-          ;;
+          $HOME/.dotfiles/.scripts/swallow.sh xdg-open "$f" ;;
       esac
       ;;
   esac
@@ -335,6 +333,7 @@ map <c-t> :term
 map ge bottom
 
 map <c-q> quit
+map ";f" quit
 
 nmap v visual
 vmap v visual-accept
