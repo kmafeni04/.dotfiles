@@ -295,7 +295,7 @@
   "date '+%d-%m-%Y %H:%M:%S'")
 
 (defpoll calender :interval "1h"
-  "cal")
+  ' cal | sed -E "s/ ?($(date +%d)) ?/|$(date +%d)|/"')
 
 (defpoll nm_connection_state :interval "2s"
   "nmcli -t g | cut -d ':' -f 2")
