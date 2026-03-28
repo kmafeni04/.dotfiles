@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# set -x
+
 notify() {
   local msg="$1"
   local val="$2"
@@ -18,17 +20,17 @@ while true; do
 
   if [ "$state" = "charging" ] || [ "$state" = "fully-charged" ]; then
     [ ! "$current_profile" = "performance" ] && powerprofilesctl set performance && notify "Profile set to 'Performance'" normal
-  elif [ "$state" = "discharging" ] && [ ${percent:-0} -lt 60 ]; then
+  elif [ "$state" = "discharging" ] && [ ${percent:-0} -lt 70 ]; then
     if [ ! "$current_profile" = "power-saver" ]; then
       powerprofilesctl set power-saver && notify "Profile set to 'Power Saver'" normal
     fi
     if [ ${percent:-0} -lt 40 ]; then
-      action=$(notify "Battery Critically Low" critical -A power-options="Check Power Options" -A ignore="Ignore")
+      action=$(notify "Battery Critically Low" critical -A power-options="Check-Power-Options" -A ignore="Ignore")
       [ "$action" = "power-options" ] && $HOME/.scripts/rofi-power.sh
     fi
   elif [ ! "$current_profile" = "balanced" ]; then
     powerprofilesctl set balanced && notify "Profile set to 'Balanced'" normal
   fi
 
-  sleep 60
+  sleep 30
 done

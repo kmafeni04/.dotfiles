@@ -3,7 +3,7 @@
 # set -x
 
 run() {
-  if ! pgrep --quiet -f "$1" > /dev/null; then
+  if ! pgrep --quiet -f "$1" >/dev/null; then
     "$@" &
     disown
   fi
