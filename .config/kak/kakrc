@@ -25,16 +25,16 @@ map global normal F ':format<ret>'
 define-command _clipboard-paste -hidden -params 1 %{
   eval %sh{
     content=$(
-      ~/.scripts/clip.sh out                     \
-      | sed 's/</#:____lt____:#/g'               \
-      | sed 's/>/#:____gt____:#/g'               \
-      | sed -E 's/#:____([a-z]{2})____:#/<\1>/g' \
-      | sed 's/;/<semicolon>/g'                  \
-      | sed 's/$/<ret>/g;'                       \
-      | sed 's/ /<space>/g'                      \
-      | sed 's/\t/<tab>/g'                       \
-      | sed ':a;N;$!ba;s/\n//g'                  \
-      | sed 's/<ret>$//'                         \
+      ~/.scripts/clip.sh out                   |
+      sed 's/</#:____lt____:#/g'               |
+      sed 's/>/#:____gt____:#/g'               |
+      sed -E 's/#:____([a-z]{2})____:#/<\1>/g' |
+      sed 's/;/<semicolon>/g'                  |
+      sed 's/$/<ret>/g;'                       |
+      sed 's/ /<space>/g'                      |
+      sed 's/\t/<tab>/g'                       |
+      sed ':a;N;$!ba;s/\n//g'                  |
+      sed 's/<ret>$//'
     )
     echo "exec $1${content}"
   }
@@ -66,7 +66,7 @@ map global user W ":jumpJump -extend<ret>"
 map global user <a-w> ":jumpJump -add<ret>"
 
 declare-user-mode run
-map global normal <semicolon> ':enter-user-mode run<ret>'
+map global normal <a-r> ':enter-user-mode run<ret>'
 map global run  t ':nop %sh{~/.scripts/kak-term.sh down 30}<ret>' -docstring 'Open Terminal Pane'
 map global run  f ':nop %sh{~/.scripts/kak-term.sh left 20 lf "$kak_buffile"}<ret>' -docstring 'Open File manager pane'
 map global run  l ':nop %sh{~/.scripts/kak-term.sh down 40 lazygit}<ret>' -docstring 'Open Lazygit pane'
@@ -111,12 +111,16 @@ hook global BufCreate .* %{
 declare-option -docstring "name of the git branch holding the current buffer" \
   str git_branch
 
-hook global WinCreate /.* %{
+hook global WinCreate .* %{
   hook window NormalIdle .* %{
     eval %sh{
-      branch=$(cd "$(dirname "${kak_buffile}")" && git rev-parse --abbrev-ref HEAD 2>/dev/null)
-      if [ -n "${branch}" ]; then
-        printf 'set window git_branch " %%{%s}"' "${branch}"
+      if [[ ! "$kak_buffile" =~ \*.+\* ]]; then
+        branch=$(cd "$(dirname "${kak_buffile}")" && git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        if [ -n "${branch}" ]; then
+          printf 'set window git_branch " %%{%s}"' "${branch}"
+        fi
+      else
+        echo 'set window git_branch NONE'
       fi
     }
   }
@@ -152,7 +156,7 @@ declare-option -docstring "Curretly open buffers" \
     str buffers
 
 
-set global modelinefmt '{cyan}%opt{git_branch}{default} | %opt{buffers} | %val{cursor_line}:%val{cursor_char_column} | %opt{mode} | %val{selection_count} | '
+set global modelinefmt '{cyan}%opt{git_branch}{default} | %opt{buffers} | %val{cursor_line}:%val{cursor_char_column} | %opt{mode} | %val{selection_count} | %opt{filetype} | '
 
 hook global InsertCompletionShow .* %{
   map window insert <tab>   '<c-n>'
@@ -169,12 +173,12 @@ hook global -once KakBegin .* %{
   eval %sh{kak-lsp}
 }
 
-hook global WinCreate /.* %{
+hook global -once WinCreate /.* %{
   lsp-enable-window
   hook global -once -always WinClose .* %{
     lsp-disable-window
   }
-  set-option global modelinefmt "%opt{lsp_modeline} %opt{modelinefmt}"
+  set-option global modelinefmt "%opt{lsp_modeline}| %opt{modelinefmt}"
 }
 
 map global user l ':enter-user-mode lsp<ret>' -docstring 'LSP mode'
