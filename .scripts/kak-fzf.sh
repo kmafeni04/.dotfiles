@@ -20,21 +20,21 @@ pick() {
 global_search() {
   git_base_dir="$1"
 
-  grep_command
+  [ -n "$git_base_dir" ] && grep_command="git ls-files --exclude-standard | xargs grep -rnP '.+'" || grep_command="grep -rnP '.+'"
 
   run_command="pane_id=\$(wezterm cli get-pane-direction up)"
-  run_command="$run_command; selection=\$(git ls-files --exclude-standard | xargs grep -rnP '.+' | fzf --delimiter=':' --preview ' \
+  run_command="$run_command; selection=\$($grep_command | fzf -e --delimiter=':' --preview ' \
     LINE={2}; \
-    if [ \$LINE -lt 11 ]; then \
+    if [ \$LINE -lt 16 ]; then \
       START=1; \
     else \
-      START=\$((LINE - 10)); \
+      START=\$((LINE - 15)); \
     fi; \
-    END=\$((LINE + 10)); \
+    END=\$((LINE + 15)); \
     bat --color=always --highlight-line \$LINE --line-range \$START:\$END {1}' | \
     awk -F: '{print \$1 \" \" \$2}')"
   run_command="$run_command; [ -z \"\$selection\" ] && echo -en \"vv\" | wezterm cli send-text --no-paste --pane-id \$pane_id && exit"
-  run_command="$run_command; echo -en \":e \$selection\r\" | wezterm cli send-text --no-paste --pane-id \$pane_id"
+  run_command="$run_command; echo -en \":e \$selection; exec 'vv'\r\" | wezterm cli send-text --no-paste --pane-id \$pane_id"
   run_command="$run_command; wezterm cli activate-pane --pane-id \$pane_id"
 }
 
