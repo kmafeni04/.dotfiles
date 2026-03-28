@@ -4,3 +4,10 @@ hook global WinSetOption filetype=sh %{
     format
   }
 }
+
+hook global WinSetOption filetype=nelt %{
+  set-option buffer formatcmd "bash ~/.scripts/nelt-format.sh"
+  hook buffer BufWritePost .* %{
+    format
+  }
+}
