@@ -50,14 +50,18 @@ map global user <p> ':clipboard-paste-before<ret><esc>' -docstring 'Paste clipbo
 map global user <P> ':clipboard-paste-after<ret><esc>' -docstring 'Paste clipboard to buffer after cursor'
 map global user <r> ':clipboard-paste-replace<ret><esc>' -docstring 'Replace buffer selection with clipboard'
 
-map global user <b> ':pick-buffers<ret>' -docstring 'Pick buffer'
-map global user <B> ':enter-user-mode buffers<ret>' -docstring 'Enter buffer mode'
+map global user <B> ':pick-buffers<ret>' -docstring 'Pick buffer'
+map global user <b> ':enter-user-mode buffers<ret>' -docstring 'Enter buffer mode'
 map global user <c> ':comment-line<ret>' -docstring 'Toggle line comment'
 map global user <C> ':comment-block<ret>' -docstring 'Toggle block comment'
 map global user <y> ':nop %sh{~/.scripts/clip.sh add "$kak_selection"}<ret>' -docstring 'Copy selection to clipboard'
 map global user <f> ':nop %sh{~/.scripts/kak-fzf.sh pick }<ret>' -docstring 'Open fuzzy file picker'
 map global user <o> ':nop %sh{~/.scripts/kak-fzf.sh pick "$kak_buffile"}<ret>' -docstring "Open fuzzy file picker at current file's directory"
 map global user </> ':nop %sh{~/.scripts/kak-fzf.sh global_search}<ret>' -docstring "Open global search text picker"
+
+map global user w ":jumpJump<ret>"
+map global user W ":jumpJump -extend<ret>"
+map global user <a-w> ":jumpJump -add<ret>"
 
 declare-user-mode run
 map global normal <semicolon> ':enter-user-mode run<ret>'
@@ -106,13 +110,31 @@ declare-option -docstring "name of the git branch holding the current buffer" \
   str git_branch
 
 hook global WinCreate /.* %{
-  hook window NormalIdle /.* %{ evaluate-commands %sh{
-    branch=$(cd "$(dirname "${kak_buffile}")" && git rev-parse --abbrev-ref HEAD 2>/dev/null)
-    if [ -n "${branch}" ]; then
-      printf 'set window git_branch " %%{%s}"' "${branch}"
-    fi
-  }}
- }
+  hook window NormalIdle .* %{
+    eval %sh{
+      branch=$(cd "$(dirname "${kak_buffile}")" && git rev-parse --abbrev-ref HEAD 2>/dev/null)
+      if [ -n "${branch}" ]; then
+        printf 'set window git_branch " %%{%s}"' "${branch}"
+      fi
+    }
+  }
+
+  hook buffer NormalIdle .* %{
+    try %{
+      eval %sh{
+        [ "$kak_modified" = true ] && echo "write"
+
+        # modified=""
+        # [ "$kak_modified" = true ] && modified="[+]"
+        bufname=$(echo $kak_bufname | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
+        buflist=$(echo $kak_buflist | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
+        buffers=$(echo "$buflist" | sed "s/\\\\//g" | sed 's/ *\*debug\* *//' | sed "s/\($bufname\)/>\1/")
+        printf 'set buffer buffers "%%{%s}"' "${buffers}"
+
+      }
+    }
+  }
+}
 
 declare-option -docstring "Current mode" \
   str mode 'NORMAL'
@@ -127,80 +149,64 @@ hook global ModeChange .* %{
 declare-option -docstring "Curretly open buffers" \
     str buffers
 
-hook global WinCreate .* %{
-  hook buffer NormalIdle .* %{
-    try %{
-      eval %sh{
-        [ "$kak_modified" = true ] && echo "write" && echo "echo $kak_bufname written"
-
-        # modified=""
-        # [ "$kak_modified" = true ] && modified="[+]"
-        bufname=$(echo $kak_bufname | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
-        buflist=$(echo $kak_buflist | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
-        buffers=$(echo "$buflist" | sed "s/\\\\//g" | sed 's/ *\*debug\* *//' | sed "s/\($bufname\)/>\1/")
-        printf 'set buffer buffers "%%{%s}"' "${buffers}"
-
-      }
-    }
-  }
-}
 
 set global modelinefmt '{cyan}%opt{git_branch}{default} | %opt{buffers} | %val{cursor_line}:%val{cursor_char_column} | %opt{mode} | %val{selection_count} | '
 
 hook global InsertCompletionShow .* %{
-  try %{
-    # this command temporarily removes cursors preceded by whitespace;
-    # if there are no cursors left, it raises an error, does not
-    # continue to execute the mapping commands, and the error is eaten
-    # by the `try` command so no warning appears.
-    execute-keys -draft 'h<a-K>\h<ret>'
-    map window insert <tab> <c-n>
-    map window insert <s-tab> <c-p>
-    hook -once -always window InsertCompletionHide .* %{
-      unmap window insert <tab> <c-n>
-      unmap window insert <s-tab> <c-p>
-    }
-  }
+  map window insert <tab>   '<c-n>'
+  map window insert <s-tab> '<c-p>'
+  # map window insert <esc>   '<c-o>'
+}
+hook global InsertCompletionHide .* %{
+  unmap window insert <tab>   '<c-n>'
+  unmap window insert <s-tab> '<c-p>'
+  # unmap window insert <esc>   '<c-o>
 }
 
 hook global -once KakBegin .* %{
   eval %sh{kak-lsp}
-  lsp-enable
-
-  set-option global modelinefmt "%opt{lsp_modeline} %opt{modelinefmt}"
-
-  map global user l ':enter-user-mode lsp<ret>' -docstring 'LSP mode'
-
-  map global goto d <esc>:lsp-definition<ret> -docstring 'LSP definition'
-  map global goto r <esc>:lsp-references<ret> -docstring 'LSP references'
-  map global goto y <esc>:lsp-type-definition<ret> -docstring 'LSP type definition'
-
-  map global insert <tab> '<a-;>:try lsp-snippets-select-next-placeholders catch %{ execute-keys -with-hooks <lt>tab> }<ret>' -docstring 'Select next snippet placeholder'
-
-  map global object a '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
-  map global object <a-a> '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
-  map global object f '<a-semicolon>lsp-object Function Method<ret>' -docstring 'LSP function or method'
-  map global object t '<a-semicolon>lsp-object Class Interface Module Namespace Struct<ret>' -docstring 'LSP class or module'
-  map global object d '<a-semicolon>lsp-diagnostic-object error warning<ret>' -docstring 'LSP errors and warnings'
-  map global object D '<a-semicolon>lsp-diagnostic-object error<ret>' -docstring 'LSP errors'
 }
+
+hook global WinCreate /.* %{
+  lsp-enable-window
+  hook global -once -always WinClose .* %{
+    lsp-disable-window
+  }
+  set-option global modelinefmt "%opt{lsp_modeline} %opt{modelinefmt}"
+}
+
+map global user l ':enter-user-mode lsp<ret>' -docstring 'LSP mode'
+
+map global goto d <esc>:lsp-definition<ret> -docstring 'LSP definition'
+map global goto r <esc>:lsp-references<ret> -docstring 'LSP references'
+map global goto y <esc>:lsp-type-definition<ret> -docstring 'LSP type definition'
+
+map global insert <tab> '<a-;>:try lsp-snippets-select-next-placeholders catch %{ execute-keys -with-hooks <lt>tab> }<ret>' -docstring 'Select next snippet placeholder'
+
+map global object a '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
+map global object <a-a> '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
+map global object f '<a-semicolon>lsp-object Function Method<ret>' -docstring 'LSP function or method'
+map global object t '<a-semicolon>lsp-object Class Interface Module Namespace Struct<ret>' -docstring 'LSP class or module'
+map global object d '<a-semicolon>lsp-diagnostic-object error warning<ret>' -docstring 'LSP errors and warnings'
+map global object D '<a-semicolon>lsp-diagnostic-object error<ret>' -docstring 'LSP errors'
 
 hook global BufWritePost /.* %{
   try %{ exec -draft "%%s\h+$<ret>d" } # Trim trailing new lines
   try %{ exec -draft "%%s\t<ret>i<space><space><esc><a-d>" } # Replace tabs with spaces
+  echo "%val{bufname} written"
 }
 
 define-command resource -params 1 %{
   eval %sh{
     file=$(mktemp)
     cat "$1" |
-      sed 's/^def /def -override /'                       |
-      sed 's/^define-command /def -override /'            |
-      sed 's/^addhl /addhl -override /'                   |
-      sed 's/^add-highlighter /addhl -override /'         |
-      sed 's/^provide-module / provide-module -override/' |
-      sed 's/^require-module /# require-module/'          |
-      sed 's/^declare-user-mode /# declare-user-mode/'    |
+      sed 's/^def /def -override /'                        |
+      sed 's/^define-command /def -override /'             |
+      sed 's/^addhl /addhl -override /'                    |
+      sed 's/^add-highlighter /addhl -override /'          |
+      sed 's/^provide-module / provide-module -override /' |
+      sed 's/^require-module /# require-module /'          |
+      sed 's/^declare-user-mode /# declare-user-mode /'    |
       cat > "$file"
     printf %s "
       source $file
@@ -218,19 +224,19 @@ hook -group reload-kak global BufWritePost (.*kakrc|.*\.kak) %{
 }
 map global normal <c-r> ':resource ~/.config/kak/kakrc<ret>'
 
-hook global -group git-gutter-hooks BufCreate .* %{
+hook global -group git-gutter-hooks BufCreate /.* %{
   try %{ git show-diff }
 }
-hook global -group git-gutter-hooks FocusIn .* %{
+hook global -group git-gutter-hooks FocusIn /.* %{
   try %{ git-async update-diff }
 }
-hook global -group git-gutter-hooks BufReload .* %{
+hook global -group git-gutter-hooks BufReload /.* %{
   try %{ git-async update-diff }
 }
-hook global -group git-gutter-hooks BufWritePost .* %{
+hook global -group git-gutter-hooks BufWritePost /.* %{
   try %{ git-async update-diff }
 }
-hook global -group git-gutter-hooks NormalIdle .* %{
+hook global -group git-gutter-hooks NormalIdle /.* %{
   try %{ git-async update-diff }
 }
 # hook global -group git-gutter-hooks InsertIdle .* %{
@@ -275,4 +281,13 @@ add-highlighter global/ show-whitespaces
 colorscheme tokyonight
 set global indentwidth 2
 set global tabstop 2
+set-option global ui_options "terminal_set_title=true"
 set-option global ui_options "terminal_title=kak"
+set-option global startup_info_version 40000000 # Disable startup changelog message
+
+# Texture Plugin
+set-option global texture_trunk_color "rgb:%opt{blue}"
+set-option global texture_fork_color "rgb:%opt{blue}"
+set-option global texture_limb_color "rgb:%opt{orange}"
+set-option global texture_tile_color "rgb:%opt{bg_alt}"
+set-option global texture_pane_color "rgb:%opt{comment}"
