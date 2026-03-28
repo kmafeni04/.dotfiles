@@ -20,6 +20,8 @@ map global normal <c-s> ':w<ret>'
 
 map global normal <backspace> h<a-d>
 
+map global normal F ':format<ret>'
+
 define-command _clipboard-paste -hidden -params 1 %{
   eval %sh{
     content=$(
@@ -239,9 +241,7 @@ hook global -group git-gutter-hooks BufWritePost /.* %{
 hook global -group git-gutter-hooks NormalIdle /.* %{
   try %{ git-async update-diff }
 }
-# hook global -group git-gutter-hooks InsertIdle .* %{
-#   try %{ git-async update-diff }
-# } # Probably a better way to do this
+
 
 #### Commands #####
 
