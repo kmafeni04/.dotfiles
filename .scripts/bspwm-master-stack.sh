@@ -39,16 +39,18 @@ bspc subscribe node_{remove,add} desktop_focus | while read -a line; do
     fi
   fi
 
-  for ((i = 1; i < count; i++)); do
-    if ([ $((i - 1)) -gt 0 ] && [ $i -lt 3 ]); then
-      # Fixes a weird behavior where, if there are only two windows on the screen with one in fullscreen mode,
-      # adding a new window breaks the layout.
-      bspc node "${windows[$((i - 1))]}" -p south
-      bspc node "${windows[$i]}" -n "${windows[$((i - 1))]}"
-    fi
-    bspc node "${windows[$i]}" -f # Doing this so when I'm closing, the focus follows the stack
-    bspc node "${windows[$i]}" -n "@/2"
-  done
+  if [ "$event" = "node_add" ] && [ "$(bspc query -T -n ${line[4]} | jq .client.state -r 2>/dev/null)" = "tiled" ]; then
+    for ((i = 1; i < count; i++)); do
+      if ([ $((i - 1)) -gt 0 ] && [ $i -lt 3 ]); then
+        # Fixes a weird behavior where, if there are only two windows on the screen with one in fullscreen mode,
+        # adding a new window breaks the layout.
+        bspc node "${windows[$((i - 1))]}" -p south
+        bspc node "${windows[$i]}" -n "${windows[$((i - 1))]}"
+      fi
+      bspc node "${windows[$i]}" -f # Doing this so when I'm closing, the focus follows the stack
+      bspc node "${windows[$i]}" -n "@/2"
+    done
+  fi
 
   # Balance the slave window stack
   bspc node "@/2" -B
