@@ -196,28 +196,28 @@ cmd rename-in-editor ${{
   set shellopts '-eu'
   set ifs "\n"
 
-	index=$(mktemp /tmp/lf-rename-in-editor-index.XXXXXXXXXX)
-	[ -n "${fs}" ] && echo "$fs" > $index || echo "$f" > $index
+  index=$(mktemp /tmp/lf-rename-in-editor-index.XXXXXXXXXX)
+  [ -n "${fs}" ] && echo "$fs" > $index || echo "$f" > $index
 
-	index_edit=$(mktemp /tmp/lf-rename-in-editor.XXXXXXXXXX)
-	cat $index > $index_edit
-	$EDITOR $index_edit
-	if [ $(cat $index | wc -l) -eq $(cat $index_edit | wc -l) ]; then
-		max=$(($(cat $index | wc -l)+1))
-		counter=1
-		while [ $counter -le $max ]; do
-			a="$(cat $index | sed "${counter}q;d")"
-			b="$(cat $index_edit | sed "${counter}q;d")"
-			counter=$(($counter+1))
+  index_edit=$(mktemp /tmp/lf-rename-in-editor.XXXXXXXXXX)
+  cat $index > $index_edit
+  $EDITOR $index_edit
+  if [ $(cat $index | wc -l) -eq $(cat $index_edit | wc -l) ]; then
+    max=$(($(cat $index | wc -l)+1))
+    counter=1
+    while [ $counter -le $max ]; do
+      a="$(cat $index | sed "${counter}q;d")"
+      b="$(cat $index_edit | sed "${counter}q;d")"
+      counter=$(($counter+1))
 
-			[ "$a" = "$b" ] && continue
-			[ -e "$b" ] && echo "File exists: $b" && continue
-			mv "$a" "$b"
-		done
-	else
-		notify-send "lf-rename-in-editor" "ERROR: More lines than selected files"
-	fi
-	rm $index $index_edit
+      [ "$a" = "$b" ] && continue
+      [ -e "$b" ] && echo "File exists: $b" && continue
+      mv "$a" "$b"
+    done
+  else
+    notify-send "lf-rename-in-editor" "ERROR: More lines than selected files"
+  fi
+  rm $index $index_edit
 }}
 
 cmd create %{{
@@ -328,12 +328,12 @@ map sn :{{ set sortby natural; set info; set reverse!; }}
 map ss :{{ set sortby size; set info size; set reverse!; }}
 map st :{{ set sortby time; set info time; set reverse!; }}
 
-map <c-t> :term
+map ; :term
 
 map ge bottom
 
 map <c-q> quit
-map ";f" quit
+map <a-r>f quit
 
 nmap v visual
 vmap v visual-accept
