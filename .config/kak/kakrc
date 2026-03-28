@@ -10,43 +10,54 @@ map global normal <a-o> :edit-kakrc<ret>
 
 map global normal <ret> <o>
 map global normal <esc> ,hl  -docstring  'Clear Multi-cursor Selection'
+map global normal <a-esc> <a-,>hl  -docstring  'Clear Multi-cursor Selection'
 
 map global normal <c-a> ':inc-dec-modify-numbers + 1 <ret>'
 map global normal <c-x> ':inc-dec-modify-numbers - 1 <ret>'
 map global normal <c-n> ':edit -scratch<ret>'
-map global normal <c-q> ':wq<ret>'
+map global normal <c-q> ':q<ret>'
+map global normal <c-s> ':w<ret>'
 
 map global normal <backspace> h<a-d>
 
-define-command clipboard-paste-before %{
+define-command _clipboard-paste -hidden -params 1 %{
   eval %sh{
-    echo "exec i$(~/.scripts/clip.sh out | sed 's/<\(.*\)>/<lt>\1<gt>/g' | sed 's/ /<space>/g')"
+    content=$(
+      ~/.scripts/clip.sh out                     \
+      | sed 's/</#:____lt____:#/g'               \
+      | sed 's/>/#:____gt____:#/g'               \
+      | sed -E 's/#:____([a-z]{2})____:#/<\1>/g' \
+      | sed 's/;/<semicolon>/g'                  \
+      | sed 's/$/<ret>/g;'                       \
+      | sed 's/ /<space>/g'                      \
+      | sed 's/\t/<tab>/g'                       \
+      | sed ':a;N;$!ba;s/\n//g'                  \
+      | sed 's/<ret>$//'                         \
+    )
+    echo "exec $1${content}"
   }
+}
+define-command clipboard-paste-before %{
+  _clipboard-paste "i"
 }
 define-command clipboard-paste-after %{
-  eval %sh{
-    echo "exec a$(~/.scripts/clip.sh out | sed 's/<\(.*\)>/<lt>\1<gt>/g' | sed 's/ /<space>/g')"
-  }
+  _clipboard-paste "a"
 }
 define-command clipboard-paste-replace %{
-  eval %sh{
-    echo "exec di$(~/.scripts/clip.sh out | sed 's/<\(.*\)>/<lt>\1<gt>/g' | sed 's/ /<space>/g')"
-  }
+  _clipboard-paste "di"
 }
 map global user <p> ':clipboard-paste-before<ret><esc>' -docstring 'Paste clipboard to buffer before cursor'
 map global user <P> ':clipboard-paste-after<ret><esc>' -docstring 'Paste clipboard to buffer after cursor'
 map global user <r> ':clipboard-paste-replace<ret><esc>' -docstring 'Replace buffer selection with clipboard'
 
-map global user <b> ':pick-buffers<ret>' -docstring 'Pick Buffer'
-map global user <B> ':enter-user-mode buffers<ret>' -docstring 'Enter Buffer Mode'
+map global user <b> ':pick-buffers<ret>' -docstring 'Pick buffer'
+map global user <B> ':enter-user-mode buffers<ret>' -docstring 'Enter buffer mode'
 map global user <c> ':comment-line<ret>' -docstring 'Toggle line comment'
 map global user <C> ':comment-block<ret>' -docstring 'Toggle block comment'
 map global user <y> ':nop %sh{~/.scripts/clip.sh add "$kak_selection"}<ret>' -docstring 'Copy selection to clipboard'
-map global user <f> ':nop %sh{~/.scripts/kak-fzf.sh}<ret>' -docstring 'Open Fuzzy File Picker'
-map global user <o> ':nop %sh{~/.scripts/kak-fzf.sh "$kak_buffile"}<ret>' -docstring "Open Fuzzy File Picker at current file's directory"
-
-# TODO: Write fzf mode for grep
-# kak $(grep -rn "" . | fzf --delimiter=':' --preview 'bat --color=always {1} --highlight-line {2}' | awk -F: '{print $1 " +" $2}')
+map global user <f> ':nop %sh{~/.scripts/kak-fzf.sh pick }<ret>' -docstring 'Open fuzzy file picker'
+map global user <o> ':nop %sh{~/.scripts/kak-fzf.sh pick "$kak_buffile"}<ret>' -docstring "Open fuzzy file picker at current file's directory"
+map global user </> ':nop %sh{~/.scripts/kak-fzf.sh global_search}<ret>' -docstring "Open global search text picker"
 
 declare-user-mode run
 map global normal <semicolon> ':enter-user-mode run<ret>'
@@ -60,8 +71,11 @@ map global run  s '| sort<ret>' -docstring 'Sort selection'
 declare-user-mode match
 declare-user-mode match-tag
 map global normal m ':enter-user-mode match<ret>'
+map global match m m -docstring 'Match next matching pair'
 map global match i ':match-inside<ret>' -docstring 'Match inside object'
 map global match a ':match-around<ret>' -docstring 'Match around object'
+map global match n ':match-next<ret>' -docstring 'Match next object'
+map global match p ':match-prev<ret>' -docstring 'Match previous object'
 map global match s ':match-surround-add<ret>' -docstring 'Surround selection with character'
 map global match d ':match-surround-delete<ret>' -docstring 'Delete selection''s surrounding character'
 map global match r ':match-surround-replace<ret>' -docstring 'Replace selection''s surrounding character'
@@ -92,10 +106,10 @@ declare-option -docstring "name of the git branch holding the current buffer" \
   str git_branch
 
 hook global WinCreate /.* %{
-  hook window NormalIdle .* %{ evaluate-commands %sh{
-    branch=$(cd "$(dirname "${kak_buffile}")" && git rev-parse--abbrev-ref HEAD 2>/dev/null)
-    if  [ -n "${branch}" ]; then
-      printf 'set window git_branch " %%{%s}|"'"${branch}"
+  hook window NormalIdle /.* %{ evaluate-commands %sh{
+    branch=$(cd "$(dirname "${kak_buffile}")" && git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [ -n "${branch}" ]; then
+      printf 'set window git_branch " %%{%s}"' "${branch}"
     fi
   }}
  }
@@ -119,16 +133,19 @@ hook global WinCreate .* %{
       eval %sh{
         [ "$kak_modified" = true ] && echo "write" && echo "echo $kak_bufname written"
 
-        name=$(echo $kak_bufname | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
+        # modified=""
+        # [ "$kak_modified" = true ] && modified="[+]"
+        bufname=$(echo $kak_bufname | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
         buflist=$(echo $kak_buflist | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
-        buffers=$(echo "$buflist" | sed "s/\\\\//g" | sed 's/ *\*debug\* *//' | sed "s/\($name\)/\[*\]\1/")
+        buffers=$(echo "$buflist" | sed "s/\\\\//g" | sed 's/ *\*debug\* *//' | sed "s/\($bufname\)/>\1/")
         printf 'set buffer buffers "%%{%s}"' "${buffers}"
+
       }
     }
   }
 }
 
-set global modelinefmt '%opt{git_branch} %opt{buffers} | %val{bufname} | %val{cursor_line}:%val{cursor_char_column} | %val{modified} | %opt{mode} | {{mode_info}} |'
+set global modelinefmt '{cyan}%opt{git_branch}{default} | %opt{buffers} | %val{cursor_line}:%val{cursor_char_column} | %opt{mode} | %val{selection_count} | '
 
 hook global InsertCompletionShow .* %{
   try %{
@@ -146,24 +163,9 @@ hook global InsertCompletionShow .* %{
   }
 }
 
-hook global InsertIdle .* %{
-  set-face window PrimaryCursor default,default+u
-  set-face window PrimaryCursorEol default,default+u
-  set-face window SecondaryCursor default,default+u
-}
-
-#set cursor to default
-hook global NormalIdle .* %{
-  set-face window PrimaryCursor default,default+r
-  set-face window PrimaryCursorEol default,default+r
-  set-face window SecondaryCursor default,default+r
-}
-
-hook global WinCreate /.* %{
-  hook global BufCreate /.* %{
-    eval %sh{kak-lsp}
-    lsp-enable
-  }
+hook global -once KakBegin .* %{
+  eval %sh{kak-lsp}
+  lsp-enable
 
   set-option global modelinefmt "%opt{lsp_modeline} %opt{modelinefmt}"
 
@@ -184,9 +186,8 @@ hook global WinCreate /.* %{
 }
 
 hook global BufWritePost /.* %{
-  try %{
-    execute-keys -draft \%s\h+$<ret>d # Trim trailing new lines
-  }
+  try %{ exec -draft "%%s\h+$<ret>d" } # Trim trailing new lines
+  try %{ exec -draft "%%s\t<ret>i<space><space><esc><a-d>" } # Replace tabs with spaces
 }
 
 define-command resource -params 1 %{
@@ -269,7 +270,9 @@ add-highlighter global/ regex "%opt{comment_line}[ \t]*\b([A-Z][A-Z]+)\b" 1:defa
 add-highlighter global/ show-matching
 add-highlighter global/ show-whitespaces
 
+
 #### Misc ####
 colorscheme tokyonight
 set global indentwidth 2
 set global tabstop 2
+set-option global ui_options "terminal_title=kak"

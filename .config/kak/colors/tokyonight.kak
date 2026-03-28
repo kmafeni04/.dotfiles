@@ -49,15 +49,28 @@ set-face global list "rgb:%opt{fg}"
 
 # BUILTIN
 
+
+hook global InsertIdle .* %{
+  set-face global PrimaryCursor "default,default+u"
+  set-face global PrimaryCursorEol "default,default+u"
+  set-face global SecondaryCursor "default,default+u"
+}
+
+#set cursor to default
+hook global NormalIdle .* %{
+  set-face global PrimaryCursor "default,rgb:%opt{bg_alt}"
+  set-face global PrimaryCursorEol "rgb:%opt{bg},rgb:%opt{red}"
+  set-face global SecondaryCursor "rgb:%opt{bg},rgb:%opt{green}"
+}
 # set-face global Default "rgb:%opt{fg},rgb:%opt{bg}"
 set-face global Default "rgb:%opt{fg}"
 # set-face global PrimarySelection "default,rgba:%opt{blue}%opt{selectionalpha}"
 set-face global PrimarySelection "default,rgba:%opt{bg_alt}%opt{selectionalpha}"
 set-face global SecondarySelection "default,rgba:%opt{bg_alt}%opt{selectionalpha}"
 # set-face global PrimaryCursor "rgb:%opt{bg},rgb:%opt{blue}"
-set-face global PrimaryCursor "rgb:%opt{fg},rgb:%opt{bg_alt}"
-set-face global SecondaryCursor "rgb:%opt{bg},rgb:%opt{green}"
-set-face global PrimaryCursorEol "rgb:%opt{bg},rgb:%opt{red}"
+# set-face global PrimaryCursor "default,rgb:%opt{bg_alt}"
+# set-face global SecondaryCursor "rgb:%opt{bg},rgb:%opt{green}"
+# set-face global PrimaryCursorEol "rgb:%opt{bg},rgb:%opt{red}"
 set-face global SecondaryCursorEol "rgb:%opt{bg},rgb:%opt{cyan}"
 set-face global LineNumbers "rgb:%opt{comment}"
 set-face global LineNumberCursor "rgb:%opt{white}"
