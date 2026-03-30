@@ -1,35 +1,32 @@
+$fg: #9abdf5;
+$bg: #1a1b26;
+
 * {
   all: unset; // Unsets everything so you can style everything from scratch
 }
 
 tooltip {
-  background-color: #1a1b26;
+  background-color: $bg;
   font-family: "DejaVuSansM Nerd Font Propo";
-  color: #9abdf5;
-  border: solid 1px #9abdf5;
+  color: $fg;
+  border: solid 1px $fg;
 }
 
 // Global Styles
 .bar {
-  background-color: #1a1b26;
-  color: #9abdf5;
+  background-color: $bg;
+  color: $fg;
   padding: 10px;
   font-family: "DejaVuSansM Nerd Font Propo";
   font-size: 17px;
 }
 
 // Styles on classes (see eww.yuck for more information)
-
-.power-menu label,
-.gpaste label,
-.volume label,
-.brigthness label,
-.dunst label,
-.player-controls label,
-.nm label,
-.workspace label {
-  margin-left: 5px;
-  margin-right: 5px;
+$menu-items: power-menu, blue, clip, timer, battery, volume, brightness, dunst, player-controls, nm, workspace;
+@each $item in $menu-items {
+  .#{$item} label {
+    margin: 0 5px;
+  }
 }
 
 .blue label {
@@ -43,7 +40,7 @@ tooltip {
 }
 
 .workspace:hover {
-  color: #9abdf5;
+  color: $fg;
 
 }
 
@@ -51,10 +48,9 @@ tooltip {
   margin-bottom: 2px;
 
   menu {
-    background-color: #1a1b26;
-    padding: 20px 0;
-    border: solid 1px #9abdf5;
-    border-radius: 0.75rem;
+    background-color: $bg;
+    padding: 10px 0;
+    border: solid 1px $fg;
 
     >menuitem {
       padding: 0 20px;
@@ -64,7 +60,9 @@ tooltip {
       }
 
       &:hover {
-        background-color: rgba(0, 0, 0, 0.25);
+        background-color: lighten($bg, 20%) ;
+        border-left: solid 1px $fg;
+        border-right: solid 1px $fg;
       }
     }
   }
