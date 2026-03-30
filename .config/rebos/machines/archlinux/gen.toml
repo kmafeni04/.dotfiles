@@ -18,9 +18,3 @@ items = [
 items = [
     # "com.github.tchx84.Flatseal",
 ]
-
-# Packages to be installed via Cargo.
-[managers.cargo]
-items = [
-    # "bacon",
-]
