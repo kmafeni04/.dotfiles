@@ -26,11 +26,6 @@ fi
 
 unset rc
 
-set -o vi
-bind 'set show-mode-in-prompt on'
-bind 'set vi-cmd-mode-string "\1\e[2 q\2"'
-bind 'set vi-ins-mode-string "\1\e[6 q\2"'
-
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 #user aliases
@@ -39,7 +34,7 @@ alias 'ls'='ls -a -p --group-directories-first --hyperlink --color=auto'
 
 alias 'sup'='rebos managers upgrade --sync'
 alias 'sups'='rebos managers upgrade --sync && poweroff'
-alias 'rconf'='hx ~/.config/rebos/gen.toml'
+alias 'rconf'='$EDITOR ~/.config/rebos/gen.toml'
 alias 'rclean'='rebos gen tidy-up'
 alias 'rcommit'='rebos gen commit'
 alias 'rswitch'='rebos gen current to-latest && rebos gen current build'
@@ -83,16 +78,16 @@ gen_ps1() {
 
   PS1="$PS1($bold$blue\W$reset)"
 
-  local git_branch="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
+  local git_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
   if [ -n "$git_branch" ]; then
     PS1="$PS1$cyan$bold  $git_branch"
 
-    local upstream="$(git for-each-ref --format='%(upstream:short)' "refs/heads/$git_branch" 2> /dev/null)"
+    local upstream="$(git for-each-ref --format='%(upstream:short)' "refs/heads/$git_branch" 2>/dev/null)"
 
     if [ -n "$upstream" ]; then
       local ahead_behind=" "
-      local ahead=$(git rev-list --count HEAD ^"$upstream" 2> /dev/null)
-      local behind=$(git rev-list --count "$upstream" ^HEAD 2> /dev/null)
+      local ahead=$(git rev-list --count HEAD ^"$upstream" 2>/dev/null)
+      local behind=$(git rev-list --count "$upstream" ^HEAD 2>/dev/null)
 
       [ "${ahead:-0}" -gt 0 ] && ahead_behind="$ahead_behind$ahead"
       [ "${behind:-0}" -gt 0 ] && ahead_behind="$ahead_behind$behind"
@@ -109,7 +104,7 @@ gen_ps1() {
     local renamed=0
     local deleted=0
 
-    local git_status="$(git status -s --porcelain 2> /dev/null)"
+    local git_status="$(git status -s --porcelain 2>/dev/null)"
     if [ -n "$git_status" ]; then
       modified="$(echo "$git_status" | grep -Po "^[\s]*M " | wc -l)"
       untracked="$(echo "$git_status" | grep -Po "^[\s]*\?\? " | wc -l)"
