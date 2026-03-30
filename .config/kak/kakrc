@@ -22,6 +22,23 @@ map global normal <backspace> h<a-d>
 
 map global normal F ':format<ret>'
 
+define-command -hidden select-prev-word-part %{
+  exec <a-/>[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
+}
+define-command -hidden select-next-word-part %{
+  exec /[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
+}
+define-command -hidden extend-prev-word-part %{
+  exec <a-?>[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
+}
+define-command -hidden extend-next-word-part %{
+  exec ?[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
+}
+map global normal <a-w> :select-next-word-part<ret>
+map global normal <a-W> :extend-next-word-part<ret>
+map global normal <a-b> :select-prev-word-part<ret>
+map global normal <a-B> :extend-prev-word-part<ret>
+
 define-command _clipboard-paste -hidden -params 1 %{
   eval %sh{
     content=$(
@@ -57,25 +74,35 @@ map global user <b> ':enter-user-mode buffers<ret>' -docstring 'Enter buffer mod
 map global user <c> ':comment-line<ret>' -docstring 'Toggle line comment'
 map global user <C> ':comment-block<ret>' -docstring 'Toggle block comment'
 map global user <y> ':nop %sh{~/.scripts/clip.sh add "$kak_selection"}<ret>' -docstring 'Copy selection to clipboard'
-map global user <f> ':nop %sh{~/.scripts/kak-fzf.sh pick }<ret>' -docstring 'Open fuzzy file picker'
-map global user <o> ':nop %sh{~/.scripts/kak-fzf.sh pick "$kak_buffile"}<ret>' -docstring "Open fuzzy file picker at current file's directory"
-map global user </> ':nop %sh{~/.scripts/kak-fzf.sh global_search}<ret>' -docstring "Open global search text picker"
+map global user <f> ':_wez-fzf pick<ret>' -docstring 'Open fuzzy file picker at current working directory'
+map global user <o> ':_wez-fzf pick_cur_dir "%val{buffile}"<ret>' -docstring "Open fuzzy file picker at current file's directory"
+map global user </> ':_wez-fzf global_search "%val{buffile}"<ret>' -docstring "Open global text search picker"
 
-map global user w ":jumpJump<ret>"
-map global user W ":jumpJump -extend<ret>"
-map global user <a-w> ":jumpJump -add<ret>"
+map global goto w "<esc>:jumpJump<ret>" -docstring "Go to word"
+map global goto W "<esc>:jumpJump -extend<ret>" -docstring "Go to word and extend selection"
+map global goto <a-w> "<esc>:jumpJump -add<ret>" -docstring "Go to word and add to selection"
+
+define-command _color-picker -hidden %{
+  eval %sh{
+    color="$(yad --color --picker --init-color="$kak_selection")"
+    if [[ "$kak_selection" =~ \#[0-9a-fA-F]+ ]]; then
+      echo "exec '<a-d>'<ret>"
+    fi
+    echo "exec 'i$color<esc>'<ret>"
+  }
+}
 
 declare-user-mode run
 map global normal <a-r> ':enter-user-mode run<ret>'
-map global run  t ':nop %sh{~/.scripts/kak-term.sh down 30}<ret>' -docstring 'Open Terminal Pane'
-map global run  f ':nop %sh{~/.scripts/kak-term.sh left 20 lf "$kak_buffile"}<ret>' -docstring 'Open File manager pane'
-map global run  l ':nop %sh{~/.scripts/kak-term.sh down 40 lazygit}<ret>' -docstring 'Open Lazygit pane'
-map global run  r ':nop %sh{~/.scripts/kak-run.sh "$kak_buffile"}<ret>' -docstring 'Run current file interm'
-map global run  c ':nop %sh{~/.scripts/kak-run.sh "$kak_buffile" true}<ret>' -docstring 'Run current file and pipe output to fzf picker'
+map global run  t ':_term down 30<ret>' -docstring 'Open Terminal Pane'
+map global run  f ':_term left 20 lf "%val{buffile}"<ret>' -docstring 'Open File manager pane'
+map global run  l ':_term down 40 lazygit<ret>' -docstring 'Open Lazygit pane'
+map global run  r ':_run %val{buffile} false <ret>' -docstring 'Run current file interm'
+map global run  c ':_run %val{buffile} false <ret>' -docstring 'Run current file and pipe output to fzf picker'
 map global run  s '| sort<ret>' -docstring 'Sort selection'
+map global run  p ':_color-picker<ret>' -docstring 'Color Picker'
 
 declare-user-mode match
-declare-user-mode match-tag
 map global normal m ':enter-user-mode match<ret>'
 map global match m m -docstring 'Match next matching pair'
 map global match i ':match-inside<ret>' -docstring 'Match inside object'
@@ -86,115 +113,109 @@ map global match s ':match-surround-add<ret>' -docstring 'Surround selection wit
 map global match d ':match-surround-delete<ret>' -docstring 'Delete selection''s surrounding character'
 map global match r ':match-surround-replace<ret>' -docstring 'Replace selection''s surrounding character'
 
-define-command -hidden select-prev-word-part %{
-  exec <a-/>[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
-}
-define-command -hidden select-next-word-part %{
-  exec /[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
-}
-define-command -hidden extend-prev-word-part %{
-  exec <a-?>[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
-}
-define-command -hidden extend-next-word-part %{
-  exec ?[A-Z][a-z]+|[A-Z]+|[a-z]+<ret>
-}
-map global normal <a-w> :select-next-word-part<ret>
-map global normal <a-W> :extend-next-word-part<ret>
-map global normal <a-b> :select-prev-word-part<ret>
-map global normal <a-B> :extend-prev-word-part<ret>
-
 #### hooks ####
 hook global BufCreate .* %{
   expandtab
 }
 
-declare-option -docstring "name of the git branch holding the current buffer" \
-  str git_branch
+declare-option -docstring "Name of the git branch holding the current buffer" \
+  str modeline_git_branch
+
+declare-option -docstring "List of currently open buffers" \
+  str modeline_buflist
+
+declare-option -docstring "Formatted list of curretly open buffers" \
+    str modeline_buffers
+
+declare-option -docstring "Curretly buffer filetype" \
+    str modeline_filetype
 
 hook global WinCreate .* %{
   hook window NormalIdle .* %{
     eval %sh{
-      if [[ ! "$kak_buffile" =~ \*.+\* ]]; then
-        branch=$(cd "$(dirname "${kak_buffile}")" && git rev-parse --abbrev-ref HEAD 2>/dev/null)
-        if [ -n "${branch}" ]; then
-          printf 'set window git_branch " %%{%s}"' "${branch}"
-        fi
-      else
-        echo 'set window git_branch NONE'
-      fi
+      [ "$kak_modified" = true ] && echo "write"
     }
-  }
 
-  hook buffer NormalIdle .* %{
     try %{
       eval %sh{
-        [ "$kak_modified" = true ] && echo "write"
+        [[ "$kak_buffile" =~ \*.+\* ]] && echo 'set window modeline_git_branch NONE' && exit
+        branch=$(cd "$(dirname "${kak_buffile}")" && git rev-parse --abbrev-ref HEAD 2>/dev/null)
+        [ -n "$branch" ] && printf 'set window modeline_git_branch " %%{%s}"' "$branch" && exit
+        echo 'set window modeline_git_branch NONE'
+      }
+    }
 
-        # modified=""
-        # [ "$kak_modified" = true ] && modified="[+]"
+    set-option global modeline_buflist ""
+    evaluate-commands -no-hooks -buffer * %{
+      set-option -add global modeline_buflist "%val{bufname} "
+    }
+
+    try %{
+      eval %sh{
         bufname=$(echo $kak_bufname | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
-        buflist=$(echo $kak_buflist | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
-        buffers=$(echo "$buflist" | sed "s/\\\\//g" | sed 's/ *\*debug\* *//' | sed "s/\($bufname\)/>\1/")
-        printf 'set buffer buffers "%%{%s}"' "${buffers}"
+        buflist=$(echo $kak_opt_modeline_buflist | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
+        buffers=$(echo "$buflist" | sed "s/\\\\//g" | sed "s/\($bufname\)/>\1/")
+        printf 'set window modeline_buffers "%%{%s}"' "$buffers"
+      }
+    }
 
+    try %{
+      eval %sh{
+        filetype="$kak_opt_filetype"
+        [ -n "$filetype" ] && echo "set window modeline_filetype $filetype" && exit
+        [[ "$kak_bufname" =~ \*.+\* ]] && echo "set window modeline_filetype 'kak-star'" && exit
+        echo "set window modeline_filetype 'txt'"
       }
     }
   }
 }
 
 declare-option -docstring "Current mode" \
-  str mode 'NORMAL'
+  str modeline_mode 'NORMAL'
 
 hook global ModeChange .* %{
   eval %sh{
     new_mode=$(echo $kak_hook_param | cut -d ':' -f 3 | sed 's/.*/\U&/' 2>/dev/null)
-    printf 'set window mode "%%{%s}"' "${new_mode}"
+    printf 'set window modeline_mode "%%{%s}"' "${new_mode}"
   }
 }
-
-declare-option -docstring "Curretly open buffers" \
-    str buffers
-
-
-set global modelinefmt '{cyan}%opt{git_branch}{default} | %opt{buffers} | %val{cursor_line}:%val{cursor_char_column} | %opt{mode} | %val{selection_count} | %opt{filetype} | '
 
 hook global InsertCompletionShow .* %{
   map window insert <tab>   '<c-n>'
   map window insert <s-tab> '<c-p>'
-  # map window insert <esc>   '<c-o>'
 }
 hook global InsertCompletionHide .* %{
   unmap window insert <tab>   '<c-n>'
   unmap window insert <s-tab> '<c-p>'
-  # unmap window insert <esc>   '<c-o>
 }
 
 hook global -once KakBegin .* %{
   eval %sh{kak-lsp}
 }
 
-hook global -once WinCreate /.* %{
+hook global WinCreate .* %{
   lsp-enable-window
-  hook global -once -always WinClose .* %{
-    lsp-disable-window
-  }
+
+  set-option global modelinefmt '{cyan}%opt{modeline_git_branch}{default} | %opt{modeline_buffers} | %val{cursor_line}:%val{cursor_char_column} | %opt{modeline_mode} | %val{selection_count} | %opt{modeline_filetype} | '
+
   set-option global modelinefmt "%opt{lsp_modeline}| %opt{modelinefmt}"
+
+
+  map global user l ':enter-user-mode lsp<ret>' -docstring 'LSP mode'
+
+  map global goto d <esc>:lsp-definition<ret> -docstring 'LSP definition'
+  map global goto r <esc>:lsp-references<ret> -docstring 'LSP references'
+  map global goto y <esc>:lsp-type-definition<ret> -docstring 'LSP type definition'
+
+  map global insert <tab> '<a-;>:try lsp-snippets-select-next-placeholders catch %{ execute-keys -with-hooks <lt>tab> }<ret>' -docstring 'Select next snippet placeholder'
+
+  map global object a '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
+  map global object <a-a> '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
+  map global object f '<a-semicolon>lsp-object Function Method<ret>' -docstring 'LSP function or method'
+  map global object t '<a-semicolon>lsp-object Class Interface Module Namespace Struct<ret>' -docstring 'LSP class or module'
+  map global object d '<a-semicolon>lsp-diagnostic-object error warning<ret>' -docstring 'LSP errors and warnings'
+  map global object D '<a-semicolon>lsp-diagnostic-object error<ret>' -docstring 'LSP errors'
 }
-
-map global user l ':enter-user-mode lsp<ret>' -docstring 'LSP mode'
-
-map global goto d <esc>:lsp-definition<ret> -docstring 'LSP definition'
-map global goto r <esc>:lsp-references<ret> -docstring 'LSP references'
-map global goto y <esc>:lsp-type-definition<ret> -docstring 'LSP type definition'
-
-map global insert <tab> '<a-;>:try lsp-snippets-select-next-placeholders catch %{ execute-keys -with-hooks <lt>tab> }<ret>' -docstring 'Select next snippet placeholder'
-
-map global object a '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
-map global object <a-a> '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
-map global object f '<a-semicolon>lsp-object Function Method<ret>' -docstring 'LSP function or method'
-map global object t '<a-semicolon>lsp-object Class Interface Module Namespace Struct<ret>' -docstring 'LSP class or module'
-map global object d '<a-semicolon>lsp-diagnostic-object error warning<ret>' -docstring 'LSP errors and warnings'
-map global object D '<a-semicolon>lsp-diagnostic-object error<ret>' -docstring 'LSP errors'
 
 hook global BufWritePost /.* %{
   try %{ exec -draft "%%s\h+$<ret>d" } # Trim trailing new lines
@@ -230,26 +251,27 @@ hook -group reload-kak global BufWritePost (.*kakrc|.*\.kak) %{
 }
 map global normal <c-r> ':resource ~/.config/kak/kakrc<ret>'
 
-hook global -group git-gutter-hooks BufCreate /.* %{
+hook global -group git-gutter-setup BufCreate /.* %{
+  add-highlighter buffer/git-diff flag-lines Default git_diff_flags
   try %{ git show-diff }
-}
-hook global -group git-gutter-hooks FocusIn /.* %{
-  try %{ git-async update-diff }
-}
-hook global -group git-gutter-hooks BufReload /.* %{
-  try %{ git-async update-diff }
-}
-hook global -group git-gutter-hooks BufWritePost /.* %{
-  try %{ git-async update-diff }
-}
-hook global -group git-gutter-hooks NormalIdle /.* %{
-  try %{ git-async update-diff }
-}
 
+  hook buffer -group git-gutter-buffer FocusIn .* %{
+    try %{ git-async update-diff }
+  }
+  hook buffer -group git-gutter-buffer BufReload .* %{
+    try %{ git-async update-diff }
+  }
+  hook buffer -group git-gutter-buffer BufWritePost .* %{
+    try %{ git-async update-diff }
+  }
+  hook buffer -group git-gutter-buffer NormalIdle .* %{
+    try %{ git-async update-diff }
+  }
+}
 
 #### Commands #####
 
-# foo_bar → fooBar
+  # foo_bar → fooBar
 # foo-bar → fooBar
 # foo bar → fooBar
 define-command camelcase %{
@@ -271,7 +293,6 @@ define-command kebabcase %{
 }
 
 #### Highliters ####
-add-highlighter global/git-diff flag-lines Default git_diff_flags
 add-highlighter shared/non_ascii_characters regex '[^\x00-\x7f]+' '0:DiagnosticError'
 add-highlighter global/ regex '[ \t]+$' '0:DiagnosticError'
 add-highlighter global/ number-lines -relative -hlcursor
