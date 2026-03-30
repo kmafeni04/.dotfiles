@@ -8,7 +8,7 @@
 
 # Example: add = "sudo apt install #:?"
 
-add = "yay -S #:?" # Example: sudo apt install #:?
+add = "yay -S --needed #:?" # Example: sudo apt install #:?
 remove = "yay -Rns #:?" # Example: sudo apt remove #:?
 sync = "yay -S" # Example: sudo apt update
 upgrade = "yay -Syu" # Example: sudo apt upgrade
