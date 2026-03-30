@@ -36,7 +36,7 @@ define-command _wez-fzf -hidden -params 1.. %{
         bat --color=always --highlight-line \$LINE --line-range \$START:\$END {1}' | \
         awk -F: '{print \$1 \" \" \$2}')"
       run_command="$run_command; [ -z \"\$selection\" ] && echo -en \"vv\" | wezterm cli send-text --no-paste --pane-id \$pane_id && exit"
-      run_command="$run_command; echo -en \":e \$selection; exec 'vv'\r\" | wezterm cli send-text --no-paste --pane-id \$pane_id"
+      run_command="$run_command; echo -en \":e $dir/\$selection; exec 'vv'\r\" | wezterm cli send-text --no-paste --pane-id \$pane_id"
       run_command="$run_command; wezterm cli activate-pane --pane-id \$pane_id"
     }
 
