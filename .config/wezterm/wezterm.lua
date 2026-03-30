@@ -10,7 +10,7 @@ end
 config.enable_wayland = false
 config.window_decorations = "RESIZE"
 config.color_scheme = "Tokyo Night"
-config.window_background_opacity = 0.75
+config.window_background_opacity = 0.9
 config.enable_tab_bar = false
 config.scrollback_lines = 1000000
 config.window_padding = {
@@ -105,22 +105,22 @@ config.keys = {
   },
   {
     key = "l",
-    mods = "ALT|SHIFT",
+    mods = "ALT|CTRL",
     action = act.ActivatePaneDirection("Right"),
   },
   {
     key = "h",
-    mods = "ALT|SHIFT",
+    mods = "ALT|CTRL",
     action = act.ActivatePaneDirection("Left"),
   },
   {
     key = "k",
-    mods = "ALT|SHIFT",
+    mods = "ALT|CTRL",
     action = act.ActivatePaneDirection("Up"),
   },
   {
     key = "j",
-    mods = "ALT|SHIFT",
+    mods = "ALT|CTRL",
     action = act.ActivatePaneDirection("Down"),
   },
 }
