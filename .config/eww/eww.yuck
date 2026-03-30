@@ -262,7 +262,7 @@
 (defvar workspacesCount "[1, 2, 3, 4, 5, 6, 7, 8, 9]")
 
 (defpoll music :interval "0.5s"
-  "$HOME/.scripts/player_song.sh")
+  "status=\"$(playerctl status -s)\"; [ -n \"$status\" ] && echo \"$([ $status = \"Paused\" ] && echo '(PAUSED)') $(playerctl metadata xesam:title) - $(playerctl metadata xesam:artist)\"")
 
 (defpoll volume :interval "0.1s"
   "pamixer --get-volume-human | sed 's/%//'")
