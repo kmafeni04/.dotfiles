@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
 
 wallpaper_dir="/home/kome/Pictures/wallpapers"
+seen=()
 
 while true; do
-  wallpaper=$(find "$wallpaper_dir" -type f | shuf -n 1)
-  cp $wallpaper /tmp/current_wallpaper.png
+  mapfile -t wallpapers < <(find "$wallpaper_dir" -type f)
+
+  [ ${#seen[@]} -ge ${#wallpapers[@]} ] && seen=()
+
+  while true; do
+    wallpaper=$(printf "%s\n" "${wallpapers[@]}" | shuf -n 1)
+    if [[ ! " ${seen[@]} " =~ " $wallpaper " ]]; then
+      seen+=("$wallpaper")
+      break
+    fi
+  done
+
+  cp "$wallpaper" /tmp/current_wallpaper.png
 
   if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     killall swaybg
