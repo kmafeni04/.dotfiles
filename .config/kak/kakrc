@@ -6,7 +6,7 @@ alias global bc! delete-buffer!
 map global normal <a-1> ':buffer-previous<ret>'
 map global normal <a-2> ':buffer-next<ret>'
 map global normal <a-q> ':db<ret>'
-map global normal <a-o> :edit-kakrc<ret>
+map global normal <a-o> ':edit ~/.config/kak/kakrc<ret>'
 
 map global normal <ret> <o>
 map global normal <esc> ,hl  -docstring  'Clear Multi-cursor Selection'
@@ -65,18 +65,19 @@ define-command clipboard-paste-after %{
 define-command clipboard-paste-replace %{
   _clipboard-paste "di"
 }
-map global user <p> ':clipboard-paste-before<ret><esc>' -docstring 'Paste clipboard to buffer before cursor'
-map global user <P> ':clipboard-paste-after<ret><esc>' -docstring 'Paste clipboard to buffer after cursor'
-map global user <r> ':clipboard-paste-replace<ret><esc>' -docstring 'Replace buffer selection with clipboard'
+map global user p ':clipboard-paste-before<ret><esc>' -docstring 'Paste clipboard to buffer before cursor'
+map global user P ':clipboard-paste-after<ret><esc>' -docstring 'Paste clipboard to buffer after cursor'
+map global user r ':clipboard-paste-replace<ret><esc>' -docstring 'Replace buffer selection with clipboard'
 
-map global user <B> ':pick-buffers<ret>' -docstring 'Pick buffer'
-map global user <b> ':enter-user-mode buffers<ret>' -docstring 'Enter buffer mode'
-map global user <c> ':comment-line<ret>' -docstring 'Toggle line comment'
-map global user <C> ':comment-block<ret>' -docstring 'Toggle block comment'
-map global user <y> ':nop %sh{~/.scripts/clip.sh add "$kak_selection"}<ret>' -docstring 'Copy selection to clipboard'
-map global user <f> ':_wez-fzf pick<ret>' -docstring 'Open fuzzy file picker at current working directory'
-map global user <o> ':_wez-fzf pick_cur_dir "%val{buffile}"<ret>' -docstring "Open fuzzy file picker at current file's directory"
-map global user </> ':_wez-fzf global_search "%val{buffile}"<ret>' -docstring "Open global text search picker"
+map global user d ':buffer *debug*<ret>' -docstring 'Enter debug buffer'
+map global user c ':comment-line<ret>' -docstring 'Toggle line comment'
+map global user C ':comment-block<ret>' -docstring 'Toggle block comment'
+map global user y ':nop %sh{~/.scripts/clip.sh add "$kak_selection"}<ret>' -docstring 'Copy selection to clipboard'
+map global user b ':_wez-fzf buffer<ret>' -docstring 'Open fuzzy buffer picker'
+map global user f ':_wez-fzf pick<ret>' -docstring 'Open fuzzy file picker at git root'
+map global user F ':_wez-fzf pick_cwd "%sh{pwd}" <ret>' -docstring 'Open fuzzy file picker at current working directory'
+map global user o ':_wez-fzf pick_cbd "%val{buffile}"<ret>' -docstring "Open fuzzy file picker at current buffer's directory"
+map global user / ':_wez-fzf global_search<ret>' -docstring "Open global text search picker at git root"
 
 map global goto w "<esc>:jumpJump<ret>" -docstring "Go to word"
 map global goto W "<esc>:jumpJump -extend<ret>" -docstring "Go to word and extend selection"
@@ -130,7 +131,7 @@ declare-option -docstring "Formatted list of curretly open buffers" \
 declare-option -docstring "Curretly buffer filetype" \
     str modeline_filetype
 
-hook global WinCreate .* %{
+hook global WinCreate /.* %{
   hook window NormalIdle .* %{
     eval %sh{
       [ "$kak_modified" = true ] && echo "write"
@@ -193,7 +194,7 @@ hook global -once KakBegin .* %{
   eval %sh{kak-lsp}
 }
 
-hook global WinCreate .* %{
+hook global WinCreate /.* %{
   lsp-enable-window
 
   set-option global modelinefmt '{cyan}%opt{modeline_git_branch}{default} | %opt{modeline_buffers} | %val{cursor_line}:%val{cursor_char_column} | %opt{modeline_mode} | %val{selection_count} | %opt{modeline_filetype} | '
