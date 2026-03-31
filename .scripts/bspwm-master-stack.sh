@@ -39,18 +39,16 @@ bspc subscribe node_{remove,add} desktop_focus | while read -a line; do
     fi
   fi
 
-  for ((i = 1; i < count; i++)); do
-    if ([ $((i - 1)) -gt 0 ] && [ $i -lt 3 ]); then
-      # Fixes a weird behavior where, if there are only two windows on the screen with and the second spawned widow is in fullscreen mode,
-      # adding a new window breaks the layout.
-      bspc node "${windows[$((i - 1))]}" -p south
-      bspc node "${windows[$i]}" -n "${windows[$((i - 1))]}"
+  if [ $count -ge 3]; then
+    # Fixes a weird behavior where, if there are only two windows on the screen with and the second spawned widow is in fullscreen mode,
+    # adding a new window breaks the layout.
+    bspc node "${windows[$((count - 2))]}" -p south
+    bspc node "${windows[$((count - 1))]}" -n "${windows[$((count - 2))]}"
+    if [ "$event" = "node_add" ] && [ "$(bspc query -T -n ${line[3]} | jq .client.state -r 2>/dev/null)" = "tiled" ]; then
+      bspc node "${windows[$((count - 1))]}" -f # Doing this so when I'm closing, the focus follows the stack
     fi
-    if [ "$event" = "node_add" ] && [ "$(bspc query -T -n ${line[4]} | jq .client.state -r 2>/dev/null)" = "tiled" ]; then
-      bspc node "${windows[$i]}" -f # Doing this so when I'm closing, the focus follows the stack
-    fi
-    bspc node "${windows[$i]}" -n "@/2"
-  done
+  fi
+  bspc node "${windows[$((count - 1))]}" -n "@/2"
 
   # Balance the slave window stack
   bspc node "@/2" -B
@@ -63,11 +61,9 @@ bspc subscribe node_{remove,add} desktop_focus | while read -a line; do
   current_master_width="$(bspc query -T -n "$master" | jq .rectangle.width -r)"
 
   # Resize master if needed
-  if [ -n "$current_master_width" ] && [ -n "$master_width" ]; then
-    diff=$((master_width - current_master_width))
-    if [ "$diff" -gt 10 ] || [ "$diff" -lt -10 ]; then
-      bspc node "$master" --resize right "$diff" 0
-    fi
+  diff=$((master_width - current_master_width))
+  if [ "$diff" -gt 10 ] || [ "$diff" -lt -10 ]; then
+    bspc node "$master" --resize right "$diff" 0
   fi
 
 done
