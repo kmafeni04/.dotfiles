@@ -198,7 +198,7 @@ config.bind("=", "zoom-in")
 
 config.bind(
     "wd",
-    "config-cycle colors.webpage.darkmode.enabled;; set colors.webpage.darkmode.enabled?;; cmd-later 1000 clear-messages",
+    "config-cycle colors.webpage.darkmode.enabled;; set colors.webpage.darkmode.enabled?;; cmd-later 2000 clear-messages",
 )
 config.bind("wbb", "spawn --userscript qute-bitwarden")
 config.bind("wbu", "spawn --userscript qute-bitwarden --username-only")
