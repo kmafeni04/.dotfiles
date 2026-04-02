@@ -31,7 +31,6 @@ config.skip_close_confirmation_for_processes_named = {
   "sh",
   "btop",
   "lf",
-  "pulsemixer",
 }
 
 config.mouse_bindings = {
