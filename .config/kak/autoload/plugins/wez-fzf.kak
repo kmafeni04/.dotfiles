@@ -20,7 +20,7 @@ define-command _wez-fzf -hidden -params 1.. %{
       git_base_dir="$1"
       dir="$2"
 
-      [ -n "$git_base_dir" ] && fzf_command="fd --type f --strip-cwd-prefix | fzf" || fzf_command="fzf"
+      [ -n "$git_base_dir" ] && fzf_command="fd --type f --strip-cwd-prefix | fzf" || fzf_command="fd --type f | head -90000 | fzf"
 
       run_command="cd $dir"
       run_command="$run_command; pane_id=\$(wezterm cli get-pane-direction up)"

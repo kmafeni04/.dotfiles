@@ -1,13 +1,13 @@
 hook global WinSetOption filetype=sh %{
   set-option buffer formatcmd "shfmt -i 2 -ci"
-  hook buffer BufWritePost .* %{
+  hook buffer BufWritePre .* %{
     format
   }
 }
 
 hook global WinSetOption filetype=nelt %{
   set-option buffer formatcmd 'djlint - --reformat --indent 2 --max-blank-lines 1 --custom-blocks "local\sfunction,global\sfunction" --format-css --indent-css 2 --format-js --indent-js 2 --close-void-tag'
-  hook buffer BufWritePost .* %{
+  hook buffer BufWritePre .* %{
     format
   }
   set-option buffer lsp_servers %{
@@ -22,7 +22,7 @@ hook global WinSetOption filetype=nelt %{
 
 hook global WinSetOption filetype=json %{
   set-option buffer formatcmd "jq -M"
-  hook buffer BufWritePost .* %{
+  hook buffer BufWritePre .* %{
     format
   }
 }

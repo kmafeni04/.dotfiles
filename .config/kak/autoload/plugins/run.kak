@@ -37,6 +37,9 @@ define-command _run -hidden -params 2.. %{
         "um")
           run_command="umka $filename"
           ;;
+        "md")
+          run_command="file=$(mktemp /tmp/markdown-XXXXXX.html) && qutebrowser --target window \$file && watch \"comrak $filename -o \$file\" && rm \$file && clear"
+          ;;
         "html")
           run_command="python -m http.server 8080 --directory $base_dir"
           ;;

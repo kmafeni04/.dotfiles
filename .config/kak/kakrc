@@ -40,7 +40,7 @@ map global normal <a-b> :select-prev-word-part<ret>
 map global normal <a-B> :extend-prev-word-part<ret>
 
 define-command _clipboard-paste -hidden -params 1 %{
-  eval %sh{
+  eval -save-regs c %sh{
     content=$(
       ~/.scripts/clip.sh out                   |
       sed 's/</#:____lt____:#/g'               |
@@ -53,23 +53,21 @@ define-command _clipboard-paste -hidden -params 1 %{
       sed ':a;N;$!ba;s/\n//g'                  |
       sed 's/<ret>$//'
     )
-    echo "exec $1${content}"
+    echo "exec -draft o$content<esc>x_<dquote>cdx<a-d>"
+    echo "exec <dquote>c$1"
   }
 }
-define-command clipboard-paste-before %{
-  _clipboard-paste "i"
-}
-define-command clipboard-paste-after %{
-  _clipboard-paste "a"
-}
-define-command clipboard-paste-replace %{
-  _clipboard-paste "di"
-}
-map global user p ':clipboard-paste-before<ret><esc>' -docstring 'Paste clipboard to buffer before cursor'
-map global user P ':clipboard-paste-after<ret><esc>' -docstring 'Paste clipboard to buffer after cursor'
-map global user r ':clipboard-paste-replace<ret><esc>' -docstring 'Replace buffer selection with clipboard'
+map global user p ':_clipboard-paste "p"<ret>' -docstring 'Paste clipboard to buffer after cursor'
+map global user P ':_clipboard-paste "P"<ret>' -docstring 'Paste clipboard to buffer before cursor'
+map global user R ':_clipboard-paste "R"<ret>' -docstring 'Replace buffer selection with clipboard'
 
+define-command copy-and-comment %{
+  evaluate-commands -save-regs ^ %{
+    execute-keys -draft %{ZxyP: comment-line<ret>z}
+  }
+}
 map global user d ':buffer *debug*<ret>' -docstring 'Enter debug buffer'
+map global user <a-c> ':copy-and-comment<ret>' -docstring 'Copy line and place it as a comment above'
 map global user c ':comment-line<ret>' -docstring 'Toggle line comment'
 map global user C ':comment-block<ret>' -docstring 'Toggle block comment'
 map global user y ':nop %sh{~/.scripts/clip.sh add "$kak_selection"}<ret>' -docstring 'Copy selection to clipboard'
@@ -78,6 +76,10 @@ map global user f ':_wez-fzf pick<ret>' -docstring 'Open fuzzy file picker at gi
 map global user F ':_wez-fzf pick_cwd "%sh{pwd}" <ret>' -docstring 'Open fuzzy file picker at current working directory'
 map global user o ':_wez-fzf pick_cbd "%val{buffile}"<ret>' -docstring "Open fuzzy file picker at current buffer's directory"
 map global user / ':_wez-fzf global_search<ret>' -docstring "Open global text search picker at git root"
+
+map global user r ":git apply --reverse<ret>" -docstring "Revert git changes on selections"
+
+map global user <space> ': focus-toggle<ret>' -docstring "toggle selections focus"
 
 map global goto w "<esc>:jumpJump<ret>" -docstring "Go to word"
 map global goto W "<esc>:jumpJump -extend<ret>" -docstring "Go to word and extend selection"
@@ -125,17 +127,16 @@ declare-option -docstring "Name of the git branch holding the current buffer" \
 declare-option -docstring "List of currently open buffers" \
   str modeline_buflist
 
-declare-option -docstring "Formatted list of curretly open buffers" \
-    str modeline_buffers
-
 declare-option -docstring "Curretly buffer filetype" \
     str modeline_filetype
 
-hook global WinCreate /.* %{
-  hook window NormalIdle .* %{
+hook global WinCreate .* %{
+  hook window ModeChange pop:insert:normal %{
     eval %sh{
       [ "$kak_modified" = true ] && echo "write"
     }
+  }
+  hook window NormalIdle .* %{
 
     try %{
       eval %sh{
@@ -149,15 +150,6 @@ hook global WinCreate /.* %{
     set-option global modeline_buflist ""
     evaluate-commands -no-hooks -buffer * %{
       set-option -add global modeline_buflist "%val{bufname} "
-    }
-
-    try %{
-      eval %sh{
-        bufname=$(echo $kak_bufname | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
-        buflist=$(echo $kak_opt_modeline_buflist | sed 's/[.\*+?[^$()|{}]/\\&/g; s/\//\\\//g;')
-        buffers=$(echo "$buflist" | sed "s/\\\\//g" | sed "s/\($bufname\)/>\1/")
-        printf 'set window modeline_buffers "%%{%s}"' "$buffers"
-      }
     }
 
     try %{
@@ -197,7 +189,7 @@ hook global -once KakBegin .* %{
 hook global WinCreate /.* %{
   lsp-enable-window
 
-  set-option global modelinefmt '{cyan}%opt{modeline_git_branch}{default} | %opt{modeline_buffers} | %val{cursor_line}:%val{cursor_char_column} | %opt{modeline_mode} | %val{selection_count} | %opt{modeline_filetype} | '
+  set-option global modelinefmt '{cyan}%opt{modeline_git_branch}{default} | %val{bufname} | placeholder_buffer_count | %val{cursor_line}:%val{cursor_char_column} | %opt{modeline_mode} | %val{selection_count} | %opt{modeline_filetype} | '
 
   set-option global modelinefmt "%opt{lsp_modeline}| %opt{modelinefmt}"
 
@@ -218,7 +210,7 @@ hook global WinCreate /.* %{
   map global object D '<a-semicolon>lsp-diagnostic-object error<ret>' -docstring 'LSP errors'
 }
 
-hook global BufWritePost /.* %{
+hook global BufWritePre /.* %{
   try %{ exec -draft "%%s\h+$<ret>d" } # Trim trailing new lines
   try %{ exec -draft "%%s\t<ret>i<space><space><esc><a-d>" } # Replace tabs with spaces
   echo "%val{bufname} written"
@@ -250,8 +242,9 @@ remove-hooks global reload-kak
 hook -group reload-kak global BufWritePost (.*kakrc|.*\.kak) %{
    resource %val{hook_param}
 }
-map global normal <c-r> ':resource ~/.config/kak/kakrc<ret>'
+map global normal <c-r> ':resource /home/kome/.config/kak/kakrc<ret>'
 
+set-option global git_gutter_leave_space true
 hook global -group git-gutter-setup BufCreate /.* %{
   add-highlighter buffer/git-diff flag-lines Default git_diff_flags
   try %{ git show-diff }
