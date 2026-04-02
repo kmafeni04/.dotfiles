@@ -7,12 +7,13 @@
   (box :class "left" :orientation "h" :space-evenly false :halign "start" :spacing 10
     (workspaces)
     (activeWindow)
+    (rec)
   )
 )
 (defwidget right []
   (box :class "right" :orientation "h" :space-evenly false :halign "end" :spacing 10
     (capsLock)
-    (music)
+    (player)
     (playerControls)
     (clip)
     (nm)
@@ -25,6 +26,12 @@
     (time)
     (dunst)
     (powerMenu)
+  )
+)
+
+(defwidget rec[]
+  (box
+    {rec_state == "true" ? "REC 󰑊": ""}
   )
 )
 
@@ -71,7 +78,6 @@
     :onscroll "if [ '{}' == 'up' ]; then pamixer -u && pamixer -i 5; else pamixer -u && pamixer -d 5; fi"
     :onclick "wezterm -e pulsemixer &"
     :onmiddleclick "pamixer -t"
-    ; (label :text "󰕾 ${volume}")
       "${
         volume == "muted" ? '󰸈' :
         volume == 0       ? '󰸈' :
@@ -233,14 +239,14 @@
   )
 )
 
-(defwidget music []
-  (eventbox :class "music"
+(defwidget player []
+  (eventbox :class "player"
       :orientation "h"
       :cursor "pointer"
       :space-evenly false
       :halign "center"
       :onmiddleclick "playerctl play-pause"
-    (label :text {music} :limit-width 30)
+    (label :text {player} :limit-width 30)
   )
 )
 
@@ -261,7 +267,7 @@
 
 (defvar workspacesCount "[1, 2, 3, 4, 5, 6, 7, 8, 9]")
 
-(defpoll music :interval "0.5s"
+(defpoll player :interval "0.5s"
   "status=\"$(playerctl -p playerctld status -s)\"; ([ -n \"$status\" ] && [ ! \"$status\" = \"Stopped\" ]) && echo \"$([ $status = \"Paused\" ] && echo '(PAUSED)') $(playerctl -p playerctld metadata xesam:title) - $(playerctl -p playerctld metadata xesam:artist)\" || echo ''")
 
 (defpoll volume :interval "0.1s"
@@ -295,7 +301,7 @@
   "date '+%d-%m-%Y %H:%M:%S'")
 
 (defpoll calender :interval "1h"
-  ' cal | sed -E "s/ ?($(date +%d)) ?/|$(date +%d)|/"')
+  "cal | sed -E \"s/ ?\\b$(date +%-d)\\b ?/[$(date +%-d)]/\"")
 
 (defpoll nm_connection_state :interval "2s"
   "nmcli -t g | cut -d ':' -f 2")
@@ -308,6 +314,9 @@
 
 (defpoll bluetooth_state :interval "2s"
   "bluetoothctl show | grep Powered | cut -d ' ' -f 2")
+
+(defpoll rec_state :interval "0.5s"
+  "$HOME/.scripts/rec.sh check-recording")
 
 (defwindow bar
   :monitor '[0, 1]'

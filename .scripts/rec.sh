@@ -8,7 +8,7 @@ rec_dest="/tmp/rec_dest"
 
 rec() {
   mkdir -p "$rec_dir"
-  local out="$rec_dir/$(date '+%d-%m-%Y_%H:%M:%S').mkv"
+  local out="$rec_dir/$(date '+%d-%m-%Y_%H-%M-%S').mkv"
 
   ffmpeg -f x11grab -i :0 -f pulse -i alsa_output.pci-0000_00_1f.3.analog-stereo.monitor -r 60 -c:v libx264 -preset fast -c:a aac "$out" &
 
@@ -18,15 +18,19 @@ rec() {
   notify-send "Rec" "Recording Started"
 }
 
-end() {
+stop() {
   kill -15 "$(cat "$rec_pid")" && rm "$rec_pid"
   local dest="$(cat "$rec_dest")"
 
-  local action="$(notify-send "Rec" "Recording Ended" -A open="Open File" -A convert="Convert File")"
+  local action="$(notify-send "Rec" "Recording Ended" -A open="Open File" -A location="Open File Location" -A convert="Convert File")"
 
   case "$action" in
     open)
       xdg-open "$dest" &
+      disown
+      ;;
+    location)
+      $TERMINAL -e $FILEBROWSER "$dest" &
       disown
       ;;
     convert)
@@ -48,16 +52,22 @@ convert() {
   ffmpeg -i "$input" -c:v copy -c:a aac "$dest"
   [ $? -ne 0 ] && notify-send "Rec" "Failed to convert file" && return 1
 
-  action="$(notify-send "Rec" "File converted to .$extension" -A open="Open File" -A ignore="Ignore")"
-  [ "$action" = "open" ] && (
-    xdg-open "$dest" &
-    disown
-  )
+  action="$(notify-send "Rec" "File converted to .$extension" -A open="Open File" -A location="Open File Location")"
+  case "$action" in
+    open)
+      xdg-open "$dest" &
+      disown
+      ;;
+    location)
+      $TERMINAL -e $FILEBROWSER "$dest" &
+      disown
+      ;;
+  esac
 }
 
 case "$1" in
   rec)
-    [ -f "$rec_pid" ] && end || rec
+    [ -f "$rec_pid" ] && stop || rec
     ;;
   convert)
     convert "$2" "$3"

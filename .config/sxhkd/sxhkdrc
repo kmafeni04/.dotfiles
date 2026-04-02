@@ -2,170 +2,173 @@
 
 #Restart bspwm and sxhkd
 super + shift + r
-	bspc wm -r && notify-send BSPWN Restarted && \
-	pkill -USR1 -x sxhkd && notify-send SXHd Restarted
+  bspc wm -r && notify-send BSPWN Restarted && \
+  pkill -USR1 -x sxhkd && notify-send SXHd Restarted
 
 super + shift + Escape
-	pkill -u "$USER"
+  pkill -u "$USER"
 
 #Fullscreen Applicatioms
 super + f
-	 bspc node -t ~fullscreen
+   bspc node -t ~fullscreen
 
 #Toggle tiling of a window
 super + t
-	 bspc node -t ~tiled
+   bspc node -t ~tiled
 
 #Toggle floating of a window
 super + d
-	 bspc node -t ~floating
+   bspc node -t ~floating
 
 #Set layout to monocle
 super + shift + f
-	bspc desktop -l next
+  bspc desktop -l next
 
 #Change to next or prev desktop
 super + alt + {h,l}
-	bspc desktop -f {prev,next}
+  bspc desktop -f {prev,next}
 
 #Move window to desktop
 super + shift + {1,2,3,4,5,6,7,8,9}
-	bspc node -f -d {1,2,3,4,5,6,7,8,9} --follow
+  bspc node -f -d {1,2,3,4,5,6,7,8,9} --follow
 
 #Change to specific Desktop
 super + {1,2,3,4,5,6,7,8,9}
-	bspc desktop -f {1,2,3,4,5,6,7,8,9}
+  bspc desktop -f {1,2,3,4,5,6,7,8,9}
 
 #Close application
 super + q
-	bspc node -c
+  bspc node -c
 
 #Focus next/prev window
 alt + {_,shift} + Tab
-	bspc node -f {next,prev}.local.!hidden.window
+  bspc node -f {next,prev}.local.!hidden.window
 
 #Focus window
 super + ctrl + {h,j,k,l}
-	bspc node -f {west,south,north,east}.local.!hidden.window
+  bspc node -f {west,south,north,east}.local.!hidden.window
 
 #Move window around stack
 super + ctrl + alt + {h,j,k,l}
-	bspc node -f -s {west,south,north,east}.local.!hidden.window
+  bspc node -f -s {west,south,north,east}.local.!hidden.window
 
 #Resize tiled window out
 super + shift + {h,j,k,l}
-	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
+  bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
 
 #Resize tiled window in
 super + shift + alt + {h,j,k,l}
-	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+  bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
 
 #Toggle compistor
 super + c
-	killall picom || picom
+  killall picom || picom
 
 #Program launchers
 super + a
-	rofi -show drun
+  rofi -show drun
 
 super + r
-	rofi -show run
+  rofi -show run
 
 super + {_,shift} + w
-	{$BROWSER, com.brave.Browser}
+  {$BROWSER, com.brave.Browser}
 
 super + e
-	$TERMINAL -e lf
+  $TERMINAL -e lf
 
 super + Return
-	$TERMINAL
+  $TERMINAL
 
 super + y
-	youtube-music-desktop-app
+  youtube-music-desktop-app
 
 super + m
-	reaper
+  reaper
 
 super +  Tab
-	rofi -show window
+  rofi -show window
 
 super + shift + e
-	$HOME/.scripts/clip.sh add "$(rofi -show emoji -emoji-mode stdout)"
+  $HOME/.scripts/clip.sh add "$(rofi -show emoji -emoji-mode stdout)"
 
 #Volume Keys
 {super + shift + equal, XF86AudioRaiseVolume}
-	pamixer -u && pamixer -i 5
+  pamixer -u && pamixer -i 5
 
 {super + shift + minus, XF86AudioLowerVolume}
-	pamixer -u && pamixer -d 5
+  pamixer -u && pamixer -d 5
 
 {super + shift + m, XF86AudioMute}
-	pamixer -t #mute
+  pamixer -t #mute
 
 #Brightness Keys
 {super + shift + bracketright, XF86MonBrightnessUp}
-	light -A 5
+  light -A 5
 
 {super + shift + bracketleft, XF86MonBrightnessDown}
-	light -U 5
+  light -U 5
 
 #Media Keys
 {super + shift + period, XF86AudioNext}
-	playerctl next
+  playerctl next
 
 {super + shift + p, XF86AudioPlay}
-	playerctl play-pause
+  playerctl play-pause
 
 {super + shift + comma, XF86AudioPrev}
-	playerctl previous
+  playerctl previous
 
 #Bar
 super + b
-	[ -n "$(eww active-windows | grep bar)" ] && (eww close bar && bspc config top_padding 0) || (eww open bar && bspc config top_padding 40)
+  [ -n "$(eww active-windows | grep bar)" ] && (eww close bar && bspc config top_padding 0) || (eww open bar && bspc config top_padding 40)
 
 #Screenshot sel
 shift + Print
-	$HOME/.scripts/screenshot.sh sel
+  $HOME/.scripts/screenshot.sh sel
 
 #Screenshot active
 alt + Print
-	$HOME/.scripts/screenshot.sh active
+  $HOME/.scripts/screenshot.sh active
 
 #Screenshot full
 Print
-	$HOME/.scripts/screenshot.sh full
+  $HOME/.scripts/screenshot.sh full
 
 #Lock Screen
 super + l
-	eval $LOCK_SCRIPT
+  eval $LOCK_SCRIPT
 
 #Power
 super + shift + F4
-	$HOME/.scripts/rofi-power.sh
+  $HOME/.scripts/rofi-power.sh
 
 super + shift + {c,v,s,d}
-	$HOME/.scripts/clip.sh {copy,recopy,sel,del}
+  $HOME/.scripts/clip.sh {copy,recopy,sel,del}
 
 super + shift + b
-	$HOME/.scripts/bm.sh
+  $HOME/.scripts/bm.sh
 
 {super + alt + c, XF86Calculator}
-	$HOME/.scripts/quick-calc.sh
+  $HOME/.scripts/quick-calc.sh
 
 super + {_, shift} + n
-	{$HOME/.scripts/rofi-network-manager.sh , $HOME/.scripts/rofi-bluetooth.sh}
+  {$HOME/.scripts/rofi-network-manager.sh , $HOME/.scripts/rofi-bluetooth.sh}
 
 super + o
-	org.onlyoffice.desktopeditors
+  org.onlyoffice.desktopeditors
 
 super + shift + t
   $HOME/.scripts/eww-timer.sh
 
 super + h
-	$HOME/.scripts/hide.sh hide
+  $HOME/.scripts/hide.sh hide
 
 super + u
-	$HOME/.scripts/hide.sh show
+  $HOME/.scripts/hide.sh show
 
 super +  + p
-	$TERMINAL -e pulsemixer
+  $TERMINAL -e pulsemixer
+
+super + alt + r
+  $HOME/.scripts/rec.sh rec
