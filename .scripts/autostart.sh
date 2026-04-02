@@ -30,6 +30,5 @@ else
   run $HOME/.scripts/bspwm-eww_bar.sh
   run $HOME/.scripts/bspwm-master-stack.sh
 
-  touchegg_count=$(pgrep -xc touchegg)
-  [ "$touchegg_count" -le 1 ] && touchegg & # systemctl start touchegg counts as 1
+  [ "$(pgrep -xc touchegg)" -le 1 ] && touchegg & # systemctl start touchegg counts as 1
 fi
