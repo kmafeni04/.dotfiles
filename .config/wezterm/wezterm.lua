@@ -51,33 +51,33 @@ config.mouse_bindings = {
 config.keys = {
   {
     key = "w",
-    mods = "CTRL",
+    mods = "CTRL|SHIFT",
     action = act.CloseCurrentPane({ confirm = true }),
   },
   {
     key = "l",
-    mods = "CTRL",
+    mods = "ALT|SHIFT",
     action = act.SplitPane({
       direction = "Right",
     }),
   },
   {
     key = "h",
-    mods = "CTRL",
+    mods = "ALT|SHIFT",
     action = act.SplitPane({
       direction = "Left",
     }),
   },
   {
     key = "k",
-    mods = "CTRL",
+    mods = "ALT|SHIFT",
     action = act.SplitPane({
       direction = "Up",
     }),
   },
   {
     key = "j",
-    mods = "CTRL",
+    mods = "ALT|SHIFT",
     action = act.SplitPane({
       direction = "Down",
     }),
