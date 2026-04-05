@@ -58,14 +58,14 @@ hook global InsertIdle .* %{
 
 #set cursor to default
 hook global NormalIdle .* %{
-  set-face global PrimaryCursor "default,rgb:%opt{bg_alt}"
+  set-face global PrimaryCursor "rgb:9ABDF5,rgb:454867"
   set-face global PrimaryCursorEol "rgb:%opt{bg},rgb:%opt{red}"
   set-face global SecondaryCursor "rgb:%opt{bg},rgb:%opt{green}"
 }
 # set-face global Default "rgb:%opt{fg},rgb:%opt{bg}"
 set-face global Default "rgb:%opt{fg}"
 # set-face global PrimarySelection "default,rgba:%opt{blue}%opt{selectionalpha}"
-set-face global PrimarySelection "default,rgba:%opt{bg_alt}%opt{selectionalpha}"
+set-face global PrimarySelection "rgb:9ABDF5,rgb:454867"
 set-face global SecondarySelection "default,rgba:%opt{bg_alt}%opt{selectionalpha}"
 # set-face global PrimaryCursor "rgb:%opt{bg},rgb:%opt{blue}"
 # set-face global PrimaryCursor "default,rgb:%opt{bg_alt}"
@@ -89,7 +89,7 @@ set-face global Prompt "rgb:%opt{blue}"
 # set-face global MatchingChar +bu
 set-face global MatchingChar +r
 # set-face global BufferPadding "rgb:%opt{bg},rgb:%opt{bg}"
-set-face global Whitespace "+d@comment"
+set-face global Whitespace "+d@comment # Remove comment following"
 
 # OTHER
 

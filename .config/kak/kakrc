@@ -53,7 +53,7 @@ define-command _clipboard-paste -hidden -params 1 %{
       sed ':a;N;$!ba;s/\n//g'                  |
       sed 's/<ret>$//'
     )
-    echo "exec -draft o$content<esc>x_<dquote>cdx<a-d>"
+    echo "exec -draft o<space><esc><left>a$content<esc>x_<dquote>cdi<backspace><backspace><esc>" # double backspace removes added space and newline to reset file state
     echo "exec <dquote>c$1"
   }
 }
@@ -116,6 +116,20 @@ map global match s ':match-surround-add<ret>' -docstring 'Surround selection wit
 map global match d ':match-surround-delete<ret>' -docstring 'Delete selection''s surrounding character'
 map global match r ':match-surround-replace<ret>' -docstring 'Replace selection''s surrounding character'
 
+map global user l ':enter-user-mode lsp<ret>' -docstring 'LSP mode'
+
+map global goto d <esc>:lsp-definition<ret> -docstring 'LSP definition'
+map global goto r <esc>:lsp-references<ret> -docstring 'LSP references'
+map global goto y <esc>:lsp-type-definition<ret> -docstring 'LSP type definition'
+
+map global insert <tab> '<a-;>:try lsp-snippets-select-next-placeholders catch %{ execute-keys -with-hooks <lt>tab> }<ret>' -docstring 'Select next snippet placeholder'
+
+map global object a '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
+map global object <a-a> '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
+map global object f '<a-semicolon>lsp-object Function Method<ret>' -docstring 'LSP function or method'
+map global object t '<a-semicolon>lsp-object Class Interface Module Namespace Struct<ret>' -docstring 'LSP class or module'
+map global object d '<a-semicolon>lsp-diagnostic-object error warning<ret>' -docstring 'LSP errors and warnings'
+map global object D '<a-semicolon>lsp-diagnostic-object error<ret>' -docstring 'LSP errors'
 #### hooks ####
 hook global BufCreate .* %{
   expandtab
@@ -127,17 +141,29 @@ declare-option -docstring "Name of the git branch holding the current buffer" \
 declare-option -docstring "List of currently open buffers" \
   str modeline_buflist
 
+declare-option -docstring "Count of currently open buffers" \
+  str modeline_bufcount
+
+declare-option -docstring "Current Buffer name" \
+  str modeline_bufname
+
 declare-option -docstring "Curretly buffer filetype" \
     str modeline_filetype
 
 hook global WinCreate .* %{
-  hook window ModeChange pop:insert:normal %{
+  hook window FocusOut .*  %{
     eval %sh{
       [ "$kak_modified" = true ] && echo "write"
     }
   }
-  hook window NormalIdle .* %{
 
+  hook window ModeChange pop:.*:normal %{
+    eval %sh{
+      [ "$kak_modified" = true ] && echo "write"
+    }
+  }
+
+  hook window NormalIdle .* %{
     try %{
       eval %sh{
         [[ "$kak_buffile" =~ \*.+\* ]] && echo 'set window modeline_git_branch NONE' && exit
@@ -148,9 +174,43 @@ hook global WinCreate .* %{
     }
 
     set-option global modeline_buflist ""
-    evaluate-commands -no-hooks -buffer * %{
-      set-option -add global modeline_buflist "%val{bufname} "
+    eval -no-hooks -buffer * %{
+      set-option -add global modeline_buflist "%val{bufname}\n"
     }
+    try %{
+      eval %sh{
+        buflist=($(echo -e "$kak_opt_modeline_buflist"))
+        count=0
+        current_buf_num=0
+        for bufname in "${buflist[@]}"; do
+          count=$((count+1))
+          [ "$bufname" = "$kak_bufname" ] && current_buf_num=$count
+        done
+        echo "set window modeline_bufcount [$current_buf_num/$count]"
+      }
+    }
+
+  hook window FocusOut .*  %{
+    try %{
+      eval %sh{
+        echo "set window modeline_bufname $kak_bufname$([ "$kak_modified" = true ] && echo "[+]")"
+      }
+    }
+  }
+
+  hook window NormalIdle .* %{
+    try %{
+      eval %sh{
+        echo "set window modeline_bufname $kak_bufname$([ "$kak_modified" = true ] && echo "[+]")"
+      }
+    }
+  }
+
+  try %{
+    eval %sh{
+      echo "set window modeline_bufname $kak_bufname$([ "$kak_modified" = true ] && echo "[+]")"
+    }
+  }
 
     try %{
       eval %sh{
@@ -184,31 +244,26 @@ hook global InsertCompletionHide .* %{
 
 hook global -once KakBegin .* %{
   eval %sh{kak-lsp}
+  remove-hooks global lsp-filetype-javascript
 }
 
-hook global WinCreate /.* %{
+# declare-option -docstring "Lsp warning count" \
+#     str modeline_lsp_warning  ""
+# declare-option -docstring "Lsp error count" \
+#     str modeline_lsp_error ""
+
+hook global WinSetOption filetype=(javascript|typescript|json|lua|html|css|nelt|c|cpp|python) %{
   lsp-enable-window
+  lsp-inlay-diagnostics-enable window
+  lsp-inlay-hints-enable window
 
-  set-option global modelinefmt '{cyan}%opt{modeline_git_branch}{default} | %val{bufname} | placeholder_buffer_count | %val{cursor_line}:%val{cursor_char_column} | %opt{modeline_mode} | %val{selection_count} | %opt{modeline_filetype} | '
+  # set-option modeline_lsp_warning "{yellow} %opt{lsp_diagnostic_warning_count}{default}"
+  # set-option modeline_lsp_error "{red} %opt{lsp_diagnostic_error_count}{default}"
 
-  set-option global modelinefmt "%opt{lsp_modeline}| %opt{modelinefmt}"
-
-
-  map global user l ':enter-user-mode lsp<ret>' -docstring 'LSP mode'
-
-  map global goto d <esc>:lsp-definition<ret> -docstring 'LSP definition'
-  map global goto r <esc>:lsp-references<ret> -docstring 'LSP references'
-  map global goto y <esc>:lsp-type-definition<ret> -docstring 'LSP type definition'
-
-  map global insert <tab> '<a-;>:try lsp-snippets-select-next-placeholders catch %{ execute-keys -with-hooks <lt>tab> }<ret>' -docstring 'Select next snippet placeholder'
-
-  map global object a '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
-  map global object <a-a> '<a-semicolon>lsp-object<ret>' -docstring 'LSP any symbol'
-  map global object f '<a-semicolon>lsp-object Function Method<ret>' -docstring 'LSP function or method'
-  map global object t '<a-semicolon>lsp-object Class Interface Module Namespace Struct<ret>' -docstring 'LSP class or module'
-  map global object d '<a-semicolon>lsp-diagnostic-object error warning<ret>' -docstring 'LSP errors and warnings'
-  map global object D '<a-semicolon>lsp-diagnostic-object error<ret>' -docstring 'LSP errors'
+  set-option global modelinefmt '{yellow} %opt{lsp_diagnostic_warning_count}{default} {red} %opt{lsp_diagnostic_error_count}{default} | {cyan}%opt{modeline_git_branch}{default} | %opt{modeline_bufname} | %opt{modeline_bufcount} | %val{cursor_line}:%val{cursor_char_column} | %opt{modeline_mode} | %val{selection_count} | %opt{modeline_filetype} '
 }
+
+set-option global modelinefmt ' | {cyan}%opt{modeline_git_branch}{default} | %opt{modeline_bufname} | %opt{modeline_bufcount} | %val{cursor_line}:%val{cursor_char_column} | %opt{modeline_mode} | %val{selection_count} | %opt{modeline_filetype} '
 
 hook global BufWritePre /.* %{
   try %{ exec -draft "%%s\h+$<ret>d" } # Trim trailing new lines
@@ -216,33 +271,33 @@ hook global BufWritePre /.* %{
   echo "%val{bufname} written"
 }
 
-define-command resource -params 1 %{
-  eval %sh{
-    file=$(mktemp)
-    cat "$1" |
-      sed 's/^def /def -override /'                        |
-      sed 's/^define-command /def -override /'             |
-      sed 's/^addhl /addhl -override /'                    |
-      sed 's/^add-highlighter /addhl -override /'          |
-      sed 's/^provide-module / provide-module -override /' |
-      sed 's/^require-module /# require-module /'          |
-      sed 's/^declare-user-mode /# declare-user-mode /'    |
-      cat > "$file"
-    printf %s "
-      source $file
-      nop %sh{
-          rm $file
-      }
-    "
-  }
-  echo Reloaded %arg{1}
-}
+# define-command resource -params 1 %{
+#   eval %sh{
+#     file=$(mktemp)
+#     cat "$1" |
+#       sed 's/^def /def -override /'                        |
+#       sed 's/^define-command /def -override /'             |
+#       sed 's/^addhl /addhl -override /'                    |
+#       sed 's/^add-highlighter /addhl -override /'          |
+#       sed 's/^provide-module / provide-module -override /' |
+#       sed 's/^require-module /# require-module /'          |
+#       sed 's/^declare-user-mode /# declare-user-mode /'    |
+#       cat > "$file"
+#     printf %s "
+#       source $file
+#       nop %sh{
+#           rm $file
+#       }
+#     "
+#   }
+#   echo Reloaded %arg{1}
+# }
 
-remove-hooks global reload-kak
-hook -group reload-kak global BufWritePost (.*kakrc|.*\.kak) %{
-   resource %val{hook_param}
-}
-map global normal <c-r> ':resource /home/kome/.config/kak/kakrc<ret>'
+# remove-hooks global reload-kak
+# hook -group reload-kak global BufWritePost (.*kakrc|.*\.kak) %{
+#    resource %val{hook_param}
+# }
+# map global normal <c-r> ':resource /home/kome/.config/kak/kakrc<ret>'
 
 set-option global git_gutter_leave_space true
 hook global -group git-gutter-setup BufCreate /.* %{
@@ -303,6 +358,8 @@ set global tabstop 2
 set-option global ui_options "terminal_set_title=true"
 set-option global ui_options "terminal_title=kak"
 set-option global startup_info_version 40000000 # Disable startup changelog message
+set-option global disabled_hooks .*-insert # Remove comment following
+
 
 # Texture Plugin
 set-option global texture_trunk_color "rgb:%opt{blue}"

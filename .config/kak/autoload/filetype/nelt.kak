@@ -15,6 +15,10 @@ provide-module nelt %{
 
 hook global WinSetOption filetype=nelt %{
   require-module nelt
+  set-option buffer comment_line ''
+  set-option buffer comment_block_begin '{#'
+  set-option buffer comment_block_end '#}'
+
   add-highlighter window/nelt ref nelt
   hook -group nelt-indent window InsertChar '\n' html-indent-on-new-line
   hook -always -once window WinSetOption filetype=.* %{
