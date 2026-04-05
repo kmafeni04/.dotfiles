@@ -30,8 +30,10 @@
 )
 
 (defwidget rec[]
-  (box
-    {rec_state == "true" ? "REC 󰑊": ""}
+  (eventbox
+    :onmiddleclick "${rec_state == 'true' ? '$HOME/.scripts/rec.sh rec' : ''}"
+    :cursor "${rec_state == 'true' ? 'pointer' : 'default'}"
+    (label :text {rec_state == "true" ? "[REC 󰑊]": ""})
   )
 )
 
